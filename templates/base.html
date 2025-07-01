@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stockify - Inventory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar -->
+      {% block sidebar %} {% endblock %} 
+      {% include 'components/sidebar.html' with active='shipments' %}
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col">
+        <!-- Top Navbar -->
+        {% include 'components/navbar.html' %}
+
+        <!-- Inventory Section -->
+        <main class="flex-1 p-6 overflow-y-auto">
+          {% block content %} {% endblock %}
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

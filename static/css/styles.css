@@ -1,0 +1,16 @@
+:root {
+  --color-brand: #615fff;
+  --color-brand-light: oklch(67.3% 0.182 276.935);
+  --color-brand-dark: oklch(45.7% 0.24 277.023);
+
+  --color-gray-100: #F2F4F6;
+}
+
+.text-brand {
+  color: var(--color-brand);
+}
+
+.active_nav {
+  border-radius: 9999px;
+  background-color: var(--color-gray-100);
+}
