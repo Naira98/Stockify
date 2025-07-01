@@ -41,6 +41,11 @@ class Product(TimestampModel):
         null=False,
         blank=False,
     )
+    image = models.ImageField(
+        upload_to="products/",
+        null=False,
+        blank=False,
+    )
 
     def __str__(self):
         return f"{self.name} (ID: {self.pk})"
