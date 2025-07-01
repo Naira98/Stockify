@@ -8,4 +8,6 @@ class User(AbstractUser):
     image = models.ImageField(upload_to='profile_images/', default='default.jpg', blank=True, null=True)
     # The image field allows users to upload a profile image.
     
-    
+    def __str__(self):
+        return self.username
+    # String representation of the User model, returning the username.
