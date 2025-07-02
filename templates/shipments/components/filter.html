@@ -1,0 +1,52 @@
+<!-- Filters -->
+<form method="GET" class="bg-white p-6 px-4 sm:px-6 rounded-xl shadow-md mb-6">
+  <h2 class="text-lg font-semibold mb-4 text-gray-700">Filter Shipments</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <div class="w-full max-w-full">
+      <input
+        type="text"
+        name="factory_name"
+        placeholder="Factory Name"
+        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+    </div>
+
+    <div class="w-full max-w-full">
+      <select
+        name="status"
+        class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      >
+        <option value="">Status</option>
+        <option value="pending">Pending</option>
+        <option value="loaded">Loaded</option>
+        <option value="received">Received</option>
+      </select>
+    </div>
+
+    <div class="w-full max-w-full">
+      <input
+        type="date"
+        name="from_date"
+        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+    </div>
+
+    <div class="w-full max-w-full">
+      <input
+        type="date"
+        name="to_date"
+        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+    </div>
+
+    <div class="w-full max-w-full">
+      <button
+        type="submit"
+        class="w-full bg-indigo-600 text-white rounded-lg px-4 py-2 hover:bg-indigo-700 transition font-medium"
+      >
+        Filter
+      </button>
+    </div>
+  </div>
+</form>

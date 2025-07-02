@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from stockify.models import TimestampModel
 from inventory.models import Product, Factory
@@ -9,19 +10,30 @@ class Shipment(TimestampModel):
     STATUS_CHOICES = [
         ("pending", "Pending"),
         ("loaded", "Loaded"),
-        ("recieved", "Recieved"),
+        ("recieved", "Received"),
     ]
 
-    factory = models.ForeignKey(Factory, on_delete=models.PROTECT)
-    received_by = models.ForeignKey(User, on_delete=models.PROTECT)
-    received_at = models.DateTimeField(auto_now_add=True)
-    notes = models.TextField(blank=True)
-    is_confirmed = models.BooleanField(default=False)
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default="pending",
+    factory = models.ForeignKey(
+        Factory, on_delete=models.PROTECT, null=False, blank=False
     )
+    received_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=True, blank=True
+    )
+    received_at = models.DateTimeField(null=True, blank=True)
+    notes = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+
+    def confirm(self):
+        if self.status == "pending":
+            self.status = "loaded"
+            self.save()
+
+    def mark_as_received(self, user):
+        if self.status == "loaded":
+            self.status = "recieved"
+            self.received_by = user
+            self.received_at = timezone.now()
+            self.save()
 
     def __str__(self):
         return f"Shipment #{self.pk} from {self.factory.name}"
