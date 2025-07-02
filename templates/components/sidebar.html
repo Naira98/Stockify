@@ -1,0 +1,156 @@
+<aside class="w-20 md:w-80 bg-white flex flex-col justify-between shadow-md">
+  <div class="p-6">
+    <!-- Logo & User Info -->
+    <div class="flex justify-center mt-8 mb-16">LOGO</div>
+
+    <!-- Nav Tabs -->
+    <div class="flex flex-col gap-2">
+      <!-- Dashboard -->
+      <div
+        class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 hover:bg-gray-100 hover:rounded-full {%if active == 'dashboard' %}active_nav{% endif %}"
+      >
+        <div
+          class="{% if active == 'dashboard' %} text-brand {% else %} text-[#141414] {% endif %}"
+          data-icon="ChartLine"
+          data-size="24px"
+          data-weight="regular"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-chart-line-icon lucide-chart-line"
+          >
+            <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+            <path d="m19 9-5 5-4-4-3 3" />
+          </svg>
+        </div>
+        <p
+          class="text-[#141414] text-sm font-medium leading-normal hidden md:block"
+        >
+          Dashboard
+        </p>
+      </div>
+      <!-- Inventory -->
+      <div
+        class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 hover:bg-gray-100 hover:rounded-full {%if active == 'inventory' %}active_nav{% endif %}"
+      >
+        <div
+          class="{% if active == 'inventory' %} text-brand {% else %} text-[#141414] {% endif %}"
+          data-icon="Package"
+          data-size="24px"
+          data-weight="regular"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-factory-icon lucide-factory"
+          >
+            <path d="M12 16h.01" />
+            <path d="M16 16h.01" />
+            <path
+              d="M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 10.5v-2a.5.5 0 0 0-.769-.422L9.77 10.922A.5.5 0 0 1 9 10.5V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"
+            />
+            <path d="M8 16h.01" />
+          </svg>
+        </div>
+        <p
+          class="text-[#141414] text-sm font-medium leading-normal hidden md:block"
+        >
+          Inventory
+        </p>
+      </div>
+      <!-- Shipments -->
+      <div
+        class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 hover:bg-gray-100 hover:rounded-full {%if active == 'shipments' %}active_nav{% endif %}"
+      >
+        <div
+          class="{% if active == 'shipments' %} text-brand {% else %} text-[#141414] {% endif %}"
+          data-icon="Truck"
+          data-size="24px"
+          data-weight="fill"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-truck-icon lucide-truck"
+          >
+            <path
+              d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"
+            />
+            <path d="M15 18H9" />
+            <path
+              d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"
+            />
+            <circle cx="17" cy="18" r="2" />
+            <circle cx="7" cy="18" r="2" />
+          </svg>
+        </div>
+        <p
+          class="text-[#141414] text-sm font-medium leading-normal hidden md:block"
+        >
+          Shipments
+        </p>
+      </div>
+
+      <!-- Orders -->
+      <a href="#">
+        <div
+          class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 hover:bg-gray-100 hover:rounded-full {%if active == 'orders' %}active_nav{% endif %}"
+        >
+          <div
+            class="{% if active == 'orders' %} text-brand {% else %} text-[#141414] {% endif %}"
+            data-icon="Package"
+            data-size="24px"
+            data-weight="regular"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-package-icon lucide-package"
+            >
+              <path
+                d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"
+              />
+              <path d="M12 22V12" />
+              <polyline points="3.29 7 12 12 20.71 7" />
+              <path d="m7.5 4.27 9 5.15" />
+            </svg>
+          </div>
+          <p
+            class="text-[#141414] text-sm font-medium leading-normal hidden md:block"
+          >
+            Orders
+          </p>
+        </div>
+      </a>
+    </div>
+  </div>
+</aside>
