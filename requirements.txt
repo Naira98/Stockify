@@ -14,11 +14,11 @@ docutils==0.17
 idna==2.10
 isodate==0.7.2
 lxml==4.8.0
-MarkupSafe==2.0.1
+MarkupSafe==2.0.1 # for rendering templates
 maxminddb==2.7.0
 num2words==0.5.10
 passlib==1.7.4
-Pillow==9.0.1
+Pillow==9.0.1 # for image processing
 platformdirs==4.3.8
 polib==1.1.1
 psutil==5.9.0
