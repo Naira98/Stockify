@@ -1,70 +1,81 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
-from models import User
-# Create your views here.
+from django.contrib.auth.decorators import login_required
+from .forms import CustomUserCreationForm, ProfileEditForm  
+from django.conf import settings
+from .models import User  
+from django.views.decorators.csrf import csrf_protect
 
 
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        
-        user = User.objects.filter(username=username).first()
-        
-        if user and user.check_password(password):
-            login(request, user)
-            return redirect('home')  # Redirect to a home page or dashboard
-        else:
-            return render(request, 'accounts/login.html', {'error': 'Invalid credentials'})
-    return render(request, 'accounts/login.html')
 
 
-    
-@login_required
-def profile_view(request):
-    if request.method == 'POST':
-        user = request.is_staff
-        return redirect('profile')  # Redirect to the profile page after login
-    else:
-        user = request.user    
-        return render(request, 'accounts/profile.html', {'user': user})
-    
-    
+# def login_view(request):
+#     if request.method == 'POST':
+#         form = loginForm(request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data['username']
+#             password = form.cleaned_data['password']
+#             if user := authenticate(request, username=username, password=password):
+#                 login(request, user)
+#                 return redirect('home')
+#             else:
+#                 form.add_error(None, 'Invalid login credentials')
+#     else:
+#         form = loginForm()
+#     return render(request, 'accounts/login.html', {'form': form})
+
 @login_required
 def edit_profile_view(request):
+    user = request.user
     if request.method == 'POST':
-        user = request.is_staff
-        user.username = request.POST.get('username')
-        user.email = request.POST.get('email')
-        if 'profile_image' in request.FILES:
-            user.image = request.FILES['profile_image']
-        user.save()
-        return redirect('profile')  # Redirect to the profile page after editing
+        form = ProfileEditForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
     else:
-        user = request.user
-        return render(request, 'accounts/edit_profile.html', {'user': user})
-    
-    
-    
-    
+        form = ProfileEditForm(instance=user)
+    return render(request, 'accounts/edit_profile.html', {'form': form})
+
+
+# TODO Rename this here and in `login_view`
+# def _extracted_from_login_view_(form, request):
+#     username = form.cleaned_data['username']
+#     password = form.cleaned_data['password']
+#     user = authenticate(request, username=username, password=password)
+#     if not user:
+#         return render(request, 'accounts/login.html', {'form': form, 'error': 'Invalid credentials'})
+#     login(request, user)
+#     return redirect('home')
+
+
+
+@csrf_protect
+def register_view(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST, request.FILES)
+        if not form.is_valid():
+            return render(request, 'accounts/register.html', {'form': form})
+        user = form.save()
+        login(request, user)
+        return redirect('home')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'accounts/register.html', {'form': form})
+
+
+@login_required
+def profile_view(request):
+    return render(request, 'accounts/profile.html', {'user': request.user})
+
+
+
+
+
+def home_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    return render(request, 'accounts/home.html', {'user': request.user})
 def logout_view(request):
     if request.method == 'POST':
         logout(request)
-        return redirect('login')  # Redirect to the login page after logout
-    
-    
-def register_view(request):
-    if request.method != 'POST':
-        return render(request, 'accounts/register.html')
-    username = request.POST.get('username')
-    password = request.POST.get('password')
-    email = request.POST.get('email')
-    
-    if User.objects.filter(username=username).exists():
-        return render(request, 'accounts/register.html', {'error': 'Username already exists'})
-    
-    user = User.objects.create_user(username=username, password=password, email=email)
-    login(request, user)  # Automatically log in the user after registration
-    return redirect('home')  # Redirect to a home page or dashboard
-    
+        return redirect('login')
