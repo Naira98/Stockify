@@ -4,10 +4,9 @@ from django.contrib.auth.models import AbstractUser
 
 # This file defines the User model for the accounts app, extending Django's AbstractUser.
 class User(AbstractUser):
-
-    ROLE_CHOICES = [
-        ('employee', 'Employee'),
-        ('manager', 'Manager'),
-    ]
     
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='employee')
+    image = models.ImageField(upload_to='profile_images/', default='default.jpg', blank=True, null=True)
+    # The image field allows users to upload a profile image.
+    
+
+
