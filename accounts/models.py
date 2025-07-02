@@ -13,7 +13,6 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
-    bio = models.TextField(blank=True, null=True)
 
     # The image field allows users to upload a profile image.
     
