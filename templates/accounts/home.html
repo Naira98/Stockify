@@ -3,6 +3,10 @@
   Home | Stockify
 {% endblock %}
 
+{% block sidebar %} 
+    {% include 'components/sidebar.html' with active='dashboard' %}
+{% endblock sidebar %} 
+
 {% block content %}
   <div class="min-h-screen bg-gray-50">
     <!-- Dashboard Header -->
