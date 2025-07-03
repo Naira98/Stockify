@@ -63,8 +63,8 @@
                 <td class="py-2 px-4 border-b">{{ item.quantity }}</td>
                 {% if shipment.is_pending %}
                   <td class="py-2 px-4 border-b text-center space-x-2">
-                    <a href="{% url 'shipments:edit_shipment_item' shipment.pk item.pk %}" class="text-indigo-600 hover:underline">Edit</a>
-                    <a href="{% url 'shipments:delete_shipment_item' shipment.pk item.pk %}" class="text-red-600 hover:underline">Delete</a>
+                  
+                  
                   </td>
                 {% endif %}
               </tr>

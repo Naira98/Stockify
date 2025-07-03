@@ -13,8 +13,8 @@
 }
 
 .active_nav {
-  border-radius: 9999px;
   background-color: var(--color-gray-100);
+  color: var(--color-brand-dark);
 }
 
 .btn {

@@ -12,17 +12,11 @@ from .models import Shipment, ShipmentItem
 from .forms import AddShipmentItemForm, ShipmentForm, FactoryForm
 
 
-class ShipmentListView(
-    TemplateView
-    #    , LoginRequiredMixin
-):
+class ShipmentListView(TemplateView, LoginRequiredMixin):
     template_name = "shipments/shipments.html"
 
 
-class CreateShipmentView(
-    CreateView
-    #  , LoginRequiredMixin
-):
+class CreateShipmentView(CreateView, LoginRequiredMixin):
     model = Shipment
     form_class = ShipmentForm
     template_name = "shipments/create_shipment.html"
@@ -35,25 +29,20 @@ class CreateShipmentView(
         return reverse("shipments:shipment_details", kwargs={"pk": self.object.pk})  # type: ignore
 
 
-class CreateFactoryView(
-    CreateView
-    # , LoginRequiredMixin
-):
+class CreateFactoryView(CreateView, LoginRequiredMixin):
     model = Factory
     form_class = FactoryForm
     template_name = "shipments/create_factory.html"
     success_url = reverse_lazy("shipments:create_shipment")
 
 
-class ShipmentDetailsView(
-    DetailView
-    #   , LoginRequiredMixin
-):
+class ShipmentDetailsView(DetailView, LoginRequiredMixin):
     model = Shipment
     template_name = "shipments/shipment_details.html"
     context_object_name = "shipment"
 
-# @login_required
+
+@login_required
 @shipment_is_not_loaded
 def add_product_to_shipment(request, pk):
     shipment = get_object_or_404(Shipment, pk=pk)
@@ -63,19 +52,25 @@ def add_product_to_shipment(request, pk):
         if form.is_valid():
             product = form.cleaned_data["product"]
             quantity = form.cleaned_data["quantity"]
-            ShipmentItem.objects.create(
-                shipment=shipment, product=product, quantity=quantity
+
+            # Check if product already exists in shipment
+            item, created = ShipmentItem.objects.get_or_create(
+                shipment=shipment, product=product, defaults={"quantity": quantity}
             )
-            return redirect("shipments:shipment_detail", pk=shipment.pk)
+
+            if not created:
+                item.quantity += quantity
+                item.save()
+
+            return redirect("shipments:shipment_details", pk=shipment.pk)
     else:
         form = AddShipmentItemForm()
 
-    return render(request, "shipments/add_product_to_shipment.html", {
-        "form": form,
-        "shipment": shipment
-    })
-
-
+    return render(
+        request,
+        "shipments/add_product_to_shipment.html",
+        {"form": form, "shipment": shipment},
+    )
 
 
 @login_required
@@ -87,4 +82,3 @@ def get_products_by_category(request):
 
     products = Product.objects.filter(category_id=category_id).values("id", "name")
     return JsonResponse(list(products), safe=False)
-
