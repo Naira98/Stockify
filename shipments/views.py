@@ -4,14 +4,20 @@ from django.http import JsonResponse
 from django.views.generic import TemplateView, CreateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
-from .decorators import shipment_is_not_loaded
+from typing import cast
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db import transaction
+
+
+from accounts.models import User
+from .decorators import shipment_is_pending, shipment_is_loaded, shipment_is_received
 from django.urls import reverse, reverse_lazy
 from inventory.models import Factory, Product
 from .models import Shipment, ShipmentItem
 from .forms import AddShipmentItemForm, ShipmentForm, FactoryForm, EditShipmentItemForm
 
 
-class ShipmentListView(TemplateView, LoginRequiredMixin):
+class ShipmentListView(LoginRequiredMixin, TemplateView):
     template_name = "shipments/shipments.html"
 
 
@@ -28,21 +34,38 @@ class CreateShipmentView(CreateView, LoginRequiredMixin):
         return reverse("shipments:shipment_details", kwargs={"pk": self.object.pk})  # type: ignore
 
 
-class CreateFactoryView(CreateView, LoginRequiredMixin):
+class CreateFactoryView(LoginRequiredMixin, CreateView):
     model = Factory
     form_class = FactoryForm
     template_name = "shipments/create_factory.html"
     success_url = reverse_lazy("shipments:create_shipment")
 
 
-class ShipmentDetailsView(DetailView, LoginRequiredMixin):
+class ShipmentDetailsView(LoginRequiredMixin, DetailView):
     model = Shipment
     template_name = "shipments/shipment_details.html"
     context_object_name = "shipment"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        shipment = cast(Shipment, self.get_object())
+
+        received_user = None
+        if shipment.is_received and shipment.received_by:
+            try:
+                received_user = User.objects.get(username=shipment.received_by)
+            except User.DoesNotExist:
+                received_user = None
+
+        context["received_user"] = received_user.username if received_user else None
+        return context
+
+
+""" DEAL WITH SHIPMENT ITEMS """
+
 
 @login_required
-@shipment_is_not_loaded
+@shipment_is_pending
 def add_item_to_shipment(request, pk):
     shipment = get_object_or_404(Shipment, pk=pk)
 
@@ -73,7 +96,7 @@ def add_item_to_shipment(request, pk):
 
 
 @login_required
-@shipment_is_not_loaded
+@shipment_is_pending
 def edit_shipment_item(request, pk):
     item = get_object_or_404(ShipmentItem, pk=pk)
     shipment = item.shipment
@@ -98,7 +121,7 @@ def edit_shipment_item(request, pk):
 
 
 @login_required
-@shipment_is_not_loaded
+@shipment_is_pending
 def delete_shipment_item(request, pk):
     item = get_object_or_404(ShipmentItem, pk=pk)
     shipment_pk = item.shipment.pk
@@ -106,7 +129,37 @@ def delete_shipment_item(request, pk):
     return redirect("shipments:shipment_details", pk=shipment_pk)
 
 
-# API endpoint to get products by category
+""" CHANGE SHIPMENT STATUS """
+
+
+@staff_member_required
+@shipment_is_pending
+def mark_shipment_loaded(request, pk):
+    shipment = cast(Shipment, get_object_or_404(Shipment, pk=pk))
+    if shipment.items.exists():  # type: ignore
+        shipment.confirm()
+    return redirect("shipments:shipment_details", pk=shipment.pk)
+
+
+@login_required
+@shipment_is_loaded
+@transaction.atomic
+def mark_shipment_received(request, pk):
+    shipment = get_object_or_404(Shipment, pk=pk)
+
+    # Update the product quantities
+    for item in shipment.items.select_related("product").all():  # type: ignore
+        item.product.quantity += item.quantity
+        item.product.save()
+
+    shipment.mark_as_received(request.user)
+
+    return redirect("shipments:shipment_details", pk=shipment.pk)
+
+
+""" API ENDPOINT TO GET PRODUCTS BY CATEGORY """
+
+
 @login_required
 @require_GET
 def get_products_by_category(request):

@@ -4,7 +4,7 @@ from shipments import views
 app_name = "shipments"
 
 urlpatterns = [
-    path("", views.ShipmentListView.as_view(), name="list_shipments"),
+    path("", views.ShipmentListView.as_view(), name="shipment_list"),
     path("create/", views.CreateShipmentView.as_view(), name="create_shipment"),
     path("factories/create/", views.CreateFactoryView.as_view(), name="create_factory"),
     path("<int:pk>/", views.ShipmentDetailsView.as_view(), name="shipment_details"),
@@ -17,6 +17,8 @@ urlpatterns = [
     path(
         "item/<int:pk>/delete/", views.delete_shipment_item, name="delete_shipment_item"
     ),
+    path("<int:pk>/mark-loaded/", views.mark_shipment_loaded, name="mark_loaded"),
+    path("<int:pk>/mark-received/", views.mark_shipment_received, name="mark_received"),
     path(
         "api/products/", views.get_products_by_category, name="get_products_by_category"
     ),

@@ -19,7 +19,9 @@ class Shipment(TimestampModel):
     ]
 
     factory = models.ForeignKey(Factory, on_delete=models.PROTECT)
-    received_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    received_by = models.ForeignKey(
+        User, on_delete=models.PROTECT, null=True, blank=True
+    )
     received_at = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
 
@@ -50,10 +52,12 @@ class Shipment(TimestampModel):
 
 class ShipmentItem(models.Model):
     shipment = models.ForeignKey(
-        Shipment, related_name="items", on_delete=models.CASCADE
+        Shipment,
+        on_delete=models.CASCADE,
+        related_name="items"
     )
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    quantity = models.IntegerField(validators=[MinValueValidator(1)])
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
 
     def __str__(self):
         return f"{self.quantity} of {self.product.name}"

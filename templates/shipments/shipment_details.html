@@ -8,8 +8,14 @@
 {% endblock sidebar %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto py-10 fade-in-down">
+<div class="mb-4">
+  <a href="{% url 'shipments:shipment_list' %}" 
+     class="inline-block bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded shadow">
+    ← Back to Shipments
+  </a>
+</div>
 
+<div class="max-w-4xl mx-auto py-10 fade-in-down">
   <!-- Top Section: Shipment Info -->
   <div class="bg-white shadow-md rounded-lg p-6 mb-8">
     <h1 class="text-2xl font-bold mb-2 text-center">Shipment #{{ shipment.id }}</h1>
@@ -27,17 +33,41 @@
           <span class="text-yellow-500 font-semibold">Pending</span>
         {% endif %}
       </p>
+        <p><strong>Received by:</strong> 
+          {% if shipment.is_received %}
+            {{ received_user }}
+          {% else %}
+            --
+          {% endif %}
+        </p>
+        <p><strong>Received at:</strong> 
+          {% if shipment.is_received %}
+            {{ shipment.received_at|date:"Y-m-d H:i" }}
+          {% else %}
+            --
+          {% endif %}
+        </p>
     </div>
   </div>
 
   <!-- Add Product Button (only if not loaded) -->
   {% if shipment.is_pending %}
-    <div class="text-right mb-4">
-      <a href="{% url 'shipments:add_shipment_item' shipment.pk %}"
-         class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow">
-        + Add Product
-      </a>
-    </div>
+  <div class="text-right mb-4">
+    <a href="{% url 'shipments:add_shipment_item' shipment.pk %}"
+      class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round" class="lucide lucide-package-plus-icon lucide-package-plus">
+        <path d="M16 16h6"/>
+        <path d="M19 13v6"/>
+        <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
+        <path d="m7.5 4.27 9 5.15"/>
+        <polyline points="3.29 7 12 12 20.71 7"/>
+        <line x1="12" x2="12" y1="22" y2="12"/>
+      </svg>
+      Add Product
+    </a>
+  </div>
   {% endif %}
 
   <!-- Products Table -->
@@ -100,6 +130,58 @@
           </tbody>
         </table>
       </div>
+
+    <!-- Shipment Status Actions -->
+    {% if shipment.items.exists %}
+      <div class="mt-6 text-center">
+        
+        {% if shipment.is_pending and user.is_staff %}
+          <!-- Mark as Loaded Button -->
+          <form method="post" action="{% url 'shipments:mark_loaded' shipment.pk %}">
+            {% csrf_token %}
+            <button type="submit"
+                    class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded shadow">
+              <!-- Truck Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" class="lucide lucide-truck-icon lucide-truck">
+                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
+                <path d="M15 18H9"/>
+                <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/>
+                <circle cx="17" cy="18" r="2"/>
+                <circle cx="7" cy="18" r="2"/>
+              </svg>
+              Mark as Loaded Shipment
+            </button>
+          </form>
+
+
+        {% elif shipment.is_loaded %}
+          <!-- Mark as Received Button -->
+          <form method="post" action="{% url 'shipments:mark_received' shipment.pk %}">
+            {% csrf_token %}
+            <button type="submit"
+                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded shadow">
+              <!-- Package Check Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" 
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+                  stroke-linejoin="round" class="lucide lucide-package-check-icon lucide-package-check">
+                <path d="m16 16 2 2 4-4"/>
+                <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/>
+                <path d="m7.5 4.27 9 5.15"/>
+                <polyline points="3.29 7 12 12 20.71 7"/>
+                <line x1="12" x2="12" y1="22" y2="12"/>
+              </svg>
+              Mark as Received Shipment
+            </button>
+          </form>
+
+        {% endif %}
+      
+      </div>
+    {% endif %}
+
+
     {% else %}
       <p class="text-gray-600">No products added to this shipment yet.</p>
     {% endif %}
