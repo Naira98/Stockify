@@ -4,12 +4,11 @@ from django.http import JsonResponse
 from django.views.generic import TemplateView, CreateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.decorators import method_decorator
 from .decorators import shipment_is_not_loaded
 from django.urls import reverse, reverse_lazy
 from inventory.models import Factory, Product
 from .models import Shipment, ShipmentItem
-from .forms import AddShipmentItemForm, ShipmentForm, FactoryForm
+from .forms import AddShipmentItemForm, ShipmentForm, FactoryForm, EditShipmentItemForm
 
 
 class ShipmentListView(TemplateView, LoginRequiredMixin):
@@ -44,7 +43,7 @@ class ShipmentDetailsView(DetailView, LoginRequiredMixin):
 
 @login_required
 @shipment_is_not_loaded
-def add_product_to_shipment(request, pk):
+def add_item_to_shipment(request, pk):
     shipment = get_object_or_404(Shipment, pk=pk)
 
     if request.method == "POST":
@@ -68,11 +67,46 @@ def add_product_to_shipment(request, pk):
 
     return render(
         request,
-        "shipments/add_product_to_shipment.html",
+        "shipments/add_item_to_shipment.html",
         {"form": form, "shipment": shipment},
     )
 
 
+@login_required
+@shipment_is_not_loaded
+def edit_shipment_item(request, pk):
+    item = get_object_or_404(ShipmentItem, pk=pk)
+    shipment = item.shipment
+
+    if request.method == "POST":
+        form = EditShipmentItemForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect("shipments:shipment_details", pk=shipment.pk)
+    else:
+        form = EditShipmentItemForm(instance=item)
+
+    return render(
+        request,
+        "shipments/edit_shipment_item.html",
+        {
+            "form": form,
+            "item": item,
+            "shipment": shipment,
+        },
+    )
+
+
+@login_required
+@shipment_is_not_loaded
+def delete_shipment_item(request, pk):
+    item = get_object_or_404(ShipmentItem, pk=pk)
+    shipment_pk = item.shipment.pk
+    item.delete()
+    return redirect("shipments:shipment_details", pk=shipment_pk)
+
+
+# API endpoint to get products by category
 @login_required
 @require_GET
 def get_products_by_category(request):

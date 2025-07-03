@@ -10,8 +10,12 @@ urlpatterns = [
     path("<int:pk>/", views.ShipmentDetailsView.as_view(), name="shipment_details"),
     path(
         "<int:pk>/add-item/",
-        views.add_product_to_shipment,
+        views.add_item_to_shipment,
         name="add_shipment_item",
+    ),
+    path("items/<int:pk>/edit/", views.edit_shipment_item, name="edit_shipment_item"),
+    path(
+        "item/<int:pk>/delete/", views.delete_shipment_item, name="delete_shipment_item"
     ),
     path(
         "api/products/", views.get_products_by_category, name="get_products_by_category"
@@ -22,7 +26,7 @@ urlpatterns = [
 # create_shipment
 # create_factory
 # shipment_detail
-# add_product_to_shipment
+# add_item_to_shipment
 # edit_shipment_item_quantity
 # delete_product_from_shipment
 # delete_shipment

@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 
@@ -52,7 +53,7 @@ class ShipmentItem(models.Model):
         Shipment, related_name="items", on_delete=models.CASCADE
     )
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(validators=[MinValueValidator(1)])
 
     def __str__(self):
         return f"{self.quantity} of {self.product.name}"

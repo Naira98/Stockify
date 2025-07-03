@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block title %}Shipment {{ shipment.id }} | Stockify{% endblock %}
 
 {% block sidebar %}
@@ -47,9 +49,9 @@
         <table class="min-w-full border border-gray-200">
           <thead class="bg-gray-100 text-left">
             <tr>
-              <th class="py-2 px-4 border-b">Product</th>
-              <th class="py-2 px-4 border-b">Category</th>
-              <th class="py-2 px-4 border-b">Quantity</th>
+              <th class="py-2 px-4 border-b text-center">Product</th>
+              <th class="py-2 px-4 border-b text-center">Category</th>
+              <th class="py-2 px-4 border-b text-center">Quantity</th>
               {% if shipment.is_pending %}
                 <th class="py-2 px-4 border-b text-center">Actions</th>
               {% endif %}
@@ -58,13 +60,39 @@
           <tbody>
             {% for item in shipment.items.all %}
               <tr class="hover:bg-gray-50">
-                <td class="py-2 px-4 border-b">{{ item.product.name }}</td>
-                <td class="py-2 px-4 border-b">{{ item.product.category.name }}</td>
-                <td class="py-2 px-4 border-b">{{ item.quantity }}</td>
+                <td class="py-2 px-4 border-b text-center">{{ item.product.name }}</td>
+                <td class="py-2 px-4 border-b text-center">{{ item.product.category.name }}</td>
+                <td class="py-2 px-4 border-b text-center">{{ item.quantity }}</td>
                 {% if shipment.is_pending %}
-                  <td class="py-2 px-4 border-b text-center space-x-2">
-                  
-                  
+                  <td class="py-2 px-4 border-b text-center">
+                    <div class="flex items-center justify-center gap-2">
+                      <!-- Edit Button -->
+                      <a href="{% url 'shipments:edit_shipment_item' item.id %}" class="text-indigo-600 hover:text-indigo-800" title="Edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="lucide lucide-pencil-icon lucide-pencil">
+                          <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                          <path d="m15 5 4 4"/>
+                        </svg>
+                      </a>
+                      <!-- Delete Button -->
+                      <button 
+                        type="button"
+                        onclick="openConfirmModal(this)" 
+                        data-id="{{ item.id }}"
+                        data-name="{{ item.product.name|escapejs }}"
+                        class="text-red-600 hover:text-red-800"
+                        title="Delete"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-trash-icon lucide-trash">
+                          <path d="M3 6h18"/>
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                        </svg>                      
+                      </button>
+                    </div>
                   </td>
                 {% endif %}
               </tr>
@@ -76,6 +104,26 @@
       <p class="text-gray-600">No products added to this shipment yet.</p>
     {% endif %}
   </div>
-
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white p-6 rounded shadow-lg max-w-md w-full">
+    <h2 class="text-lg font-bold mb-3">Confirm Deletion</h2>
+    <p class="mb-6 text-gray-700">
+      Are you sure you want to remove <span id="productName" class="font-semibold"></span> from this shipment?
+    </p>
+    <form method="post" id="confirmDeleteForm" class="flex justify-end gap-2">
+      {% csrf_token %}
+      <button type="button" onclick="closeConfirmModal()" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">
+        Cancel
+      </button>
+      <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+        Delete
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="{% static 'js/confirm_delete_item.js' %}"></script>
 {% endblock %}
