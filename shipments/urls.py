@@ -7,6 +7,15 @@ urlpatterns = [
     path("", views.ShipmentListView.as_view(), name="list_shipments"),
     path("create/", views.CreateShipmentView.as_view(), name="create_shipment"),
     path("factories/create/", views.CreateFactoryView.as_view(), name="create_factory"),
+    path("<int:pk>/", views.ShipmentDetailsView.as_view(), name="shipment_details"),
+    path(
+        "<int:pk>/add-item/",
+        views.add_product_to_shipment,
+        name="add_shipment_item",
+    ),
+    path(
+        "api/products/", views.get_products_by_category, name="get_products_by_category"
+    ),
 ]
 
 # # shipment_list
@@ -19,4 +28,3 @@ urlpatterns = [
 # delete_shipment
 # mark_shipment_as_loaded
 # mark_shipment_as_received
-

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Shipment {{ shipment.id }} | Stockify{% endblock %}
+
+{% block sidebar %}
+  {% include 'components/sidebar.html' with active='shipments' %}
+{% endblock sidebar %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10 fade-in-down">
+
+  <!-- Top Section: Shipment Info -->
+  <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+    <h1 class="text-2xl font-bold mb-2 text-center">Shipment #{{ shipment.id }}</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-800 mt-4">
+      <p><strong>Factory:</strong> {{ shipment.factory.name }}</p>
+      <p><strong>Location:</strong> {{ shipment.factory.location }}</p>
+      <p><strong>Created:</strong> {{ shipment.created_at }}</p>
+      <p>
+        <strong>Status:</strong>
+        {% if shipment.is_loaded %}
+          <span class="text-green-600 font-semibold">Loaded</span>
+        {% elif shipment.is_received %}
+          <span class="text-blue-600 font-semibold">Received</span>
+        {% else %}
+          <span class="text-yellow-500 font-semibold">Pending</span>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+
+  <!-- Add Product Button (only if not loaded) -->
+  {% if shipment.is_pending %}
+    <div class="text-right mb-4">
+      <a href="{% url 'shipments:add_shipment_item' shipment.pk %}"
+         class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow">
+        + Add Product
+      </a>
+    </div>
+  {% endif %}
+
+  <!-- Products Table -->
+  <div class="bg-white shadow rounded-lg p-6">
+    <h2 class="text-xl font-semibold mb-4">Products in Shipment</h2>
+    
+    {% if shipment.items.exists %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-200">
+          <thead class="bg-gray-100 text-left">
+            <tr>
+              <th class="py-2 px-4 border-b">Product</th>
+              <th class="py-2 px-4 border-b">Category</th>
+              <th class="py-2 px-4 border-b">Quantity</th>
+              {% if shipment.is_pending %}
+                <th class="py-2 px-4 border-b text-center">Actions</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in shipment.items.all %}
+              <tr class="hover:bg-gray-50">
+                <td class="py-2 px-4 border-b">{{ item.product.name }}</td>
+                <td class="py-2 px-4 border-b">{{ item.product.category.name }}</td>
+                <td class="py-2 px-4 border-b">{{ item.quantity }}</td>
+                {% if shipment.is_pending %}
+                  <td class="py-2 px-4 border-b text-center space-x-2">
+                    <a href="{% url 'shipments:edit_shipment_item' shipment.pk item.pk %}" class="text-indigo-600 hover:underline">Edit</a>
+                    <a href="{% url 'shipments:delete_shipment_item' shipment.pk item.pk %}" class="text-red-600 hover:underline">Delete</a>
+                  </td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-gray-600">No products added to this shipment yet.</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

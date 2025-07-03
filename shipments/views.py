@@ -1,35 +1,90 @@
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_GET
+from django.http import JsonResponse
 from django.views.generic import TemplateView, CreateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
-from django.urls import reverse
-from inventory.models import Factory
-from .models import Shipment
-from .forms import ShipmentForm, FactoryForm
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
+from .decorators import shipment_is_not_loaded
+from django.urls import reverse, reverse_lazy
+from inventory.models import Factory, Product
+from .models import Shipment, ShipmentItem
+from .forms import AddShipmentItemForm, ShipmentForm, FactoryForm
 
 
-class ShipmentListView(TemplateView):
+class ShipmentListView(
+    TemplateView
+    #    , LoginRequiredMixin
+):
     template_name = "shipments/shipments.html"
 
 
-class CreateShipmentView(CreateView):
+class CreateShipmentView(
+    CreateView
+    #  , LoginRequiredMixin
+):
     model = Shipment
     form_class = ShipmentForm
     template_name = "shipments/create_shipment.html"
 
     def form_valid(self, form):
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        return response
 
     def get_success_url(self):
-        return reverse("shipment_detail", kwargs={"pk": self.get_object().pk})
+        return reverse("shipments:shipment_details", kwargs={"pk": self.object.pk})  # type: ignore
 
 
-class CreateFactoryView(CreateView):
+class CreateFactoryView(
+    CreateView
+    # , LoginRequiredMixin
+):
     model = Factory
     form_class = FactoryForm
     template_name = "shipments/create_factory.html"
     success_url = reverse_lazy("shipments:create_shipment")
 
 
-# class ShipmentDetailView(DetailView):
-#     model = Shipment
-#     template_name = "shipments/shipment_detail.html"
+class ShipmentDetailsView(
+    DetailView
+    #   , LoginRequiredMixin
+):
+    model = Shipment
+    template_name = "shipments/shipment_details.html"
+    context_object_name = "shipment"
+
+# @login_required
+@shipment_is_not_loaded
+def add_product_to_shipment(request, pk):
+    shipment = get_object_or_404(Shipment, pk=pk)
+
+    if request.method == "POST":
+        form = AddShipmentItemForm(request.POST)
+        if form.is_valid():
+            product = form.cleaned_data["product"]
+            quantity = form.cleaned_data["quantity"]
+            ShipmentItem.objects.create(
+                shipment=shipment, product=product, quantity=quantity
+            )
+            return redirect("shipments:shipment_detail", pk=shipment.pk)
+    else:
+        form = AddShipmentItemForm()
+
+    return render(request, "shipments/add_product_to_shipment.html", {
+        "form": form,
+        "shipment": shipment
+    })
+
+
+
+
+@login_required
+@require_GET
+def get_products_by_category(request):
+    category_id = request.GET.get("category_id")
+    if not category_id:
+        return JsonResponse({"error": "Missing category_id"}, status=400)
+
+    products = Product.objects.filter(category_id=category_id).values("id", "name")
+    return JsonResponse(list(products), safe=False)
+
