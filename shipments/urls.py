@@ -5,9 +5,10 @@ app_name = "shipments"
 
 urlpatterns = [
     path("", views.ShipmentListView.as_view(), name="shipment_list"),
+    path("<int:pk>/delete/", views.delete_shipment, name="delete_shipment"),
+    path("<int:pk>/", views.ShipmentDetailsView.as_view(), name="shipment_details"),
     path("create/", views.CreateShipmentView.as_view(), name="create_shipment"),
     path("factories/create/", views.CreateFactoryView.as_view(), name="create_factory"),
-    path("<int:pk>/", views.ShipmentDetailsView.as_view(), name="shipment_details"),
     path(
         "<int:pk>/add-item/",
         views.add_item_to_shipment,

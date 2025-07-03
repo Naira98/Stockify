@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %} Shipments | Stockify {% endblock title %}
 
@@ -23,8 +24,9 @@
   <div class="bg-white rounded-lg shadow overflow-x-auto">
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
-        <tr class="text-left text-sm font-semibold text-gray-700">
+        <tr class="text-sm font-semibold text-gray-700 text-center">
           <th class="px-6 py-3">#</th>
+          <th class="px-6 py-3">Factory</th> 
           <th class="px-6 py-3">Received At</th>
           <th class="px-6 py-3">Received By</th>
           <th class="px-6 py-3">Status</th>
@@ -34,10 +36,11 @@
       <tbody class="bg-white divide-y divide-gray-100 text-sm">
         {% for shipment in shipments %}
         <tr>
-          <td class="px-6 py-4 font-medium text-gray-900">{{ shipment.id }}</td>
-          <td class="px-6 py-4">{{ shipment.received_at|date:"Y-m-d H:i" }}</td>
-          <td class="px-6 py-4">{{ shipment.received_by }}</td>
-          <td class="px-6 py-4">
+          <td class="px-6 py-4 font-medium text-gray-900 text-center">{{ shipment.id }}</td>
+          <td class="px-6 py-4 font-medium text-gray-900 text-center">{{ shipment.factory.name }}</td>
+          <td class="px-6 py-4 text-center">{{ shipment.received_at|date:"Y-m-d H:i" }}</td>
+          <td class="px-6 py-4 text-center">{{ shipment.received_by }}</td>
+          <td class="px-6 py-4 text-center">
             <span class="px-2 py-1 rounded-full text-xs font-semibold
               {% if shipment.status == 'pending' %}bg-yellow-100 text-yellow-700
               {% elif shipment.status == 'loaded' %}bg-blue-100 text-blue-700
@@ -46,13 +49,41 @@
               {{ shipment.status|title }}
             </span>
           </td>
-          <td class="px-6 py-4 flex gap-2">
-            <a href="{% url 'edit_shipment' shipment.id %}" class="text-indigo-600 hover:underline">Edit</a>
-            <form action="{% url 'delete_shipment' shipment.id %}" method="post" onsubmit="return confirm('Are you sure?');">
-              {% csrf_token %}
-              <button type="submit" class="text-red-600 hover:underline">Delete</button>
-            </form>
+          <td class="px-6 py-4 flex gap-3 items-center justify-center">
+            <!-- Info Icon (View Details) -->
+            <a href="{% url 'shipments:shipment_details' shipment.id %}" 
+              title="View Shipment"
+              class="text-blue-600 hover:text-blue-800">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                  class="lucide lucide-info-icon lucide-info">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+              </svg>
+            </a>
+
+            {% if shipment.status == "pending" %}
+              <!-- Trash Icon (Delete Shipment) -->
+              <button type="button"
+                      onclick="openConfirmModal(this)"
+                      data-id="{{ shipment.id }}"
+                      data-name="Shipment #{{ shipment.id }}"
+                      class="text-red-600 hover:text-red-800"
+                      title="Delete Shipment">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-trash-icon lucide-trash">
+                  <path d="M3 6h18"/>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                </svg>
+              </button>
+            {% endif %}
           </td>
+
         </tr>
         {% empty %}
         <tr>
@@ -63,5 +94,27 @@
     </table>
   </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white p-6 rounded shadow-lg max-w-md w-full">
+    <h2 class="text-lg font-bold mb-3">Confirm Deletion</h2>
+    <p class="mb-6 text-gray-700">
+      Are you sure you want to delete <span id="productName" class="font-semibold"></span>?
+    </p>
+    <form method="post" id="confirmDeleteForm" class="flex justify-end gap-2">
+      {% csrf_token %}
+      <button type="button" onclick="closeConfirmModal()" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">
+        Cancel
+      </button>
+      <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+        Delete
+      </button>
+    </form>
+  </div>
+</div>
+
+
+<script src="{% static 'js/confirm_delete_shipment.js' %}"></script>
 
 {% endblock content %}

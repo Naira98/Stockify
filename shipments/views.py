@@ -1,14 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse
-from django.views.generic import TemplateView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from typing import cast
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db import transaction
-
-
 from accounts.models import User
 from .decorators import shipment_is_pending, shipment_is_loaded, shipment_is_received
 from django.urls import reverse, reverse_lazy
@@ -17,8 +15,26 @@ from .models import Shipment, ShipmentItem
 from .forms import AddShipmentItemForm, ShipmentForm, FactoryForm, EditShipmentItemForm
 
 
-class ShipmentListView(LoginRequiredMixin, TemplateView):
+class ShipmentListView(LoginRequiredMixin, ListView):
+    model = Shipment
     template_name = "shipments/shipments.html"
+    context_object_name = "shipments"
+    ordering = ["-created_at"]  # Optional: sort by newest first
+
+    def get_queryset(self):
+        return (
+            Shipment.objects.select_related("factory").prefetch_related("items").all()
+        )
+
+
+@login_required
+@shipment_is_pending
+def delete_shipment(request, pk):
+    shipment = get_object_or_404(Shipment, pk=pk)
+    if request.method == "POST":
+        shipment.delete()
+        return redirect("shipments:shipment_list")
+    return redirect("shipments:shipment_details", pk=pk)
 
 
 class CreateShipmentView(CreateView, LoginRequiredMixin):
