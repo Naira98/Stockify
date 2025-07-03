@@ -1,27 +1,95 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     <link rel="icon" type="image/png" href="{% static 'images/logo.svg' %}" />
-    <title>{% block title %} Stockify {% endblock title %}</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.svg' %}" />
+    <title>
+      {% block title %}
+        Stockify
+      {% endblock %}
+    </title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              indigo: {
+                50: '#f0f9ff',
+                100: '#e0f2fe',
+                200: '#bae6fd',
+                300: '#7dd3fc',
+                400: '#38bdf8',
+                500: '#0ea5e9',
+                600: '#0284c7',
+                700: '#0369a1',
+                800: '#075985',
+                900: '#0c4a6e'
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f9fafb;
+      }
+      
+      .profile-card {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+      
+      .input-icon {
+        transition: all 0.3s ease;
+      }
+      
+      input:focus + .input-icon,
+      textarea:focus + .input-icon {
+        color: #0ea5e9;
+      }
+      
+      .file-upload {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+      }
+      
+      .file-upload-input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+    </style>
   </head>
-  <body class="bg-gray-100 font-sans">
+  <body class="bg-gray-50">
     <div class="flex h-screen overflow-hidden">
       <!-- Sidebar -->
-     {% include 'components/sidebar.html' %}
+      {% block sidebar %}
+        {% include 'components/sidebar.html' %}
+      {% endblock %}
 
       <!-- Main Content -->
       <div class="flex-1 flex flex-col">
         <!-- Top Navbar -->
-        {% include 'components/navbar.html' %}
+        {% block navbar %}
+          {% include 'components/navbar.html' %}
+        {% endblock %}
 
-        <main class="flex-1 p-6 overflow-y-auto">
-          {% block content %} {% endblock content %}
+        <!-- Page Content -->
+        <main class="flex-1 overflow-y-auto">
+          {% block content %}
+
+          {% endblock %}
         </main>
       </div>
     </div>

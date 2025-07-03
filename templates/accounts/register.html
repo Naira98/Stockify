@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% block title %}
+  Register | Stockify
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
+      <!-- Header Section -->
+      <div class="bg-indigo-700 py-6 px-8">
+        <div class="flex items-center justify-center mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+          <h1 class="text-2xl font-bold text-white ml-2">STOCKIFY</h1>
+        </div>
+        <p class="text-center text-indigo-200 text-sm">Create your account</p>
+      </div>
+
+      <!-- Form Section -->
+      <div class="py-8 px-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-1 text-center">Create Account</h2>
+        <p class="text-gray-600 text-center mb-6">Join our inventory management community</p>
+
+        <!-- Error Messages -->
+        {% if form.errors %}
+          <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+            <p class="font-medium">Please fix the following errors:</p>
+            <ul class="mt-2 list-disc list-inside text-sm">
+              {% for field in form %}
+                {% for error in field.errors %}
+                  <li>{{ field.label }}: {{ error }}</li>
+                {% endfor %}
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <!-- Username Field -->
+          <div class="mb-5">
+            <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <input type="text" name="username" id="id_username" class="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Choose a username" required autofocus value="{{ form.username.value|default_if_none:'' }}" />
+            </div>
+            {% if form.username.help_text %}
+              <p class="mt-1 text-xs text-gray-500">{{ form.username.help_text }}</p>
+            {% endif %}
+          </div>
+
+          <!-- Email Field -->
+          <div class="mb-5">
+            <label for="id_email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                </svg>
+              </div>
+              <input type="email" name="email" id="id_email" class="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Enter your email" required value="{{ form.email.value|default_if_none:'' }}" />
+            </div>
+          </div>
+
+          <!-- Password1 Field -->
+          <div class="mb-5">
+            <label for="id_password1" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <input type="password" name="password1" id="id_password1" class="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Create a password" required />
+            </div>
+            {% if form.password1.help_text %}
+              <p class="mt-1 text-xs text-gray-500">{{ form.password1.help_text }}</p>
+            {% endif %}
+          </div>
+
+          <!-- Password2 Field -->
+          <div class="mb-5">
+            <label for="id_password2" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <input type="password" name="password2" id="id_password2" class="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Confirm your password" required />
+            </div>
+            <p class="mt-1 text-xs text-gray-500">Enter the same password as before, for verification.</p>
+          </div>
+
+          <!-- Profile Image Field -->
+          <div class="mb-6">
+            <label for="id_image" class="block text-sm font-medium text-gray-700 mb-1">Profile Image (Optional)</label>
+            <div class="flex items-center">
+              <div class="mr-4">
+                <div class="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 flex items-center justify-center">
+                  <svg class="h-8 w-8 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="flex-1">
+                <input type="file" name="image" id="id_image" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" accept="image/*" />
+              </div>
+            </div>
+            <p class="mt-1 text-xs text-gray-500">Upload a profile picture (JPEG, PNG, GIF)</p>
+          </div>
+
+          <!-- Admin Registration Field (only in development) -->
+          {% if DEBUG %}
+            <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-yellow-800">Development Mode</h3>
+                  <div class="mt-2 text-sm text-yellow-700">
+                    <div class="flex items-center">
+                      <input id="is_admin" name="is_admin" type="checkbox" class="focus:ring-yellow-500 h-4 w-4 text-yellow-600 border-gray-300 rounded" {% if form.is_admin.value %}checked{% endif %} />
+                      <label for="is_admin" class="ml-2 block text-sm text-gray-700">Register as Administrator</label>
+                    </div>
+                    <p class="mt-1 text-xs">This option is only available in development environment</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- Terms & Conditions -->
+          <div class="flex items-start mb-6">
+            <div class="flex items-center h-5">
+              <input id="terms" name="terms" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" required {% if form.terms.value %}checked{% endif %} />
+            </div>
+            <div class="ml-3 text-sm">
+              <label for="terms" class="font-medium text-gray-700">I agree to the</label>
+              <a href="#" class="text-indigo-600 hover:text-indigo-500">Terms and Conditions</a>
+            </div>
+          </div>
+          {% if form.terms.errors %}
+            <div class="text-red-500 text-sm mb-4">
+              {% for error in form.terms.errors %}
+                {{ error }}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <!-- Submit Button -->
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Create Account</button>
+        </form>
+
+        <!-- Login Link -->
+        <div class="mt-8 text-center">
+          <p class="text-sm text-gray-600">
+            Already have an account?
+            <a href="{% url 'login' %}" class="font-semibold text-indigo-600 hover:text-indigo-500">Sign in</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
