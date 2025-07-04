@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "accounts",
     "inventory",
     "shipments",
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -82,7 +83,7 @@ DATABASES = {
         "USER": "stockify_user",
         "PASSWORD": "mypassword",
         "HOST": "localhost",
-        "PORT": "5433",
+        "PORT": "5432",
     }
 }
 
