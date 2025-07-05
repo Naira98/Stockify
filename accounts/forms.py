@@ -10,27 +10,49 @@ class CustomUserCreationForm(UserCreationForm):
         required=False,
         widget=forms.ClearableFileInput(attrs={'accept': 'image/*'})
     )
-    terms = forms.BooleanField(
-        required=True,
-        label='I agree to the Terms and Conditions',
-        error_messages={
-            'required': 'You must agree to the terms and conditions to register.'
-        }
+
+    
+    ROLE_CHOICES = (
+        ('admin', 'Manager'),
+        ('user', 'Employee'),
     )
     
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        required=True,
+        label='Register as',
+        widget=forms.RadioSelect(attrs={'class': 'flex space-x-4'}),
+        initial='user'
+    )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if 'is_admin' in self.fields:
+            del self.fields['is_admin']
         
         if settings.DEBUG:
-            self.fields['is_admin'] = forms.BooleanField(
-                required=False,
-                label='Register as Administrator',
-                help_text='(Only available in development mode)'
-            )
+            self.fields['role'].help_text = '(Only available in development mode)'
+        else:
+            self.fields['role'].widget = forms.HiddenInput()
+            self.fields['role'].initial = 'user'
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'image']
+        fields = ['username', 'email', 'password1', 'password2', 'image', 'role']
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        role = self.cleaned_data.get('role')
+        
+        if role == 'admin':
+            user.is_superuser = True
+            user.is_staff = True
+        else:
+            user.is_user = True
+        
+        if commit:
+            user.save()
+        return user
     
     def clean_email(self):
         email = self.cleaned_data.get('email').lower()

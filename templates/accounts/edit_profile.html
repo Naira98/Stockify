@@ -4,9 +4,9 @@
   Edit Profile | Stockify
 {% endblock %}
 
-{% block sidebar %} 
-    {% include 'components/sidebar.html' with active='profile' %}
-{% endblock sidebar %} 
+{% block sidebar %}
+  {% include 'components/sidebar.html' with active='profile' %}
+{% endblock %}
 
 {% block content %}
   <div class="min-h-screen bg-gray-100">
@@ -30,9 +30,13 @@
           <div class="mb-6">
             {% for message in messages %}
               <div class="p-4 rounded-lg {% if message.tags == 'error' %}
+                  
                   bg-red-50 text-red-700
+
                 {% else %}
+                  
                   bg-green-50 text-green-700
+
                 {% endif %}">{{ message }}</div>
             {% endfor %}
           </div>
