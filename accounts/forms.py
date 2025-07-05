@@ -1,10 +1,103 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from .models import User
+from django.contrib.auth import get_user_model
 
-class CustomUserCreationForm(UserCreationForm):
+
+
+User = get_user_model()
+
+
+class AdminUserEditForm(forms.ModelForm):
+    ROLE_CHOICES = (
+        ('admin', 'Admin'),
+        ('employee', 'Employee'),
+    )
+    
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        required=True,
+        label='User Role',
+        widget=forms.RadioSelect(attrs={'class': 'flex space-x-4'}),
+        initial='employee'
+    )
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name', 'role']
+        
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        role = self.cleaned_data.get('role')
+        
+        if role == 'admin':
+            user.is_superuser = True
+            user.is_staff = True
+            user.is_user = False
+        else:
+            user.is_superuser = False
+            user.is_staff = False
+            user.is_user = True
+            
+        if commit:
+            user.save()
+        return user
+
+# forms.py (add this to the end)
+class AdminUserCreationForm(forms.ModelForm):
+    password1 = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput,
+        required=True
+    )
+    password2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput,
+        required=True
+    )
+    
+    ROLE_CHOICES = (
+        ('admin', 'Admin'),
+        ('employee', 'Employee'),
+    )
+    
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        required=True,
+        label='User Role',
+        widget=forms.RadioSelect(attrs={'class': 'flex space-x-4'}),
+        initial='employee'
+    )
+    
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
+        
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Passwords don't match")
+        return password2
+    
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password1'])
+        role = self.cleaned_data.get('role')
+        
+        if role == 'admin':
+            user.is_superuser = True
+            user.is_staff = True
+            user.is_user = False
+        else:
+            user.is_superuser = False
+            user.is_staff = False
+            user.is_user = True
+            
+        if commit:
+            user.save()
+        return user
     email = forms.EmailField()
     image = forms.ImageField(
         required=False,
@@ -90,3 +183,9 @@ class ProfileEditForm(forms.ModelForm):
             'type': 'email',
             'required': 'required'
         })
+        
+    def clean_email(self):
+        email = self.cleaned_data.get('email').lower()
+        if User.objects.exclude(id=self.instance.id).filter(email__iexact=email).exists():
+            raise forms.ValidationError("This email address is already in use.")
+        return email   
