@@ -168,7 +168,7 @@ class ProfileEditForm(forms.ModelForm):
     
     class Meta:
         model = User
-        fields = ['username', 'email', 'image', 'first_name', 'last_name', 'bio']
+        fields = [ 'image', 'bio']
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -178,11 +178,11 @@ class ProfileEditForm(forms.ModelForm):
                 'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent'
             })
         
-        # Add specific attributes to email field
-        self.fields['email'].widget.attrs.update({
-            'type': 'email',
-            'required': 'required'
-        })
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if commit:
+            user.save()
+        return user
         
     def clean_email(self):
         email = self.cleaned_data.get('email').lower()
