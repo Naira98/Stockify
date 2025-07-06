@@ -123,7 +123,7 @@ def edit_profile_view(request):
         form = ProfileEditForm(instance=request.user)
     
     return render(request, 'accounts/edit_profile.html', {'form': form})
-
+@login_required
 def home_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
