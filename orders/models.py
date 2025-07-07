@@ -30,3 +30,6 @@ class Order(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_orders')
     products = models.ManyToManyField(Product, through='OrderItem')
     notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"Order #{self.id} to {self.supermarket.name}"
