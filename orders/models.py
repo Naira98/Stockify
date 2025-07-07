@@ -76,5 +76,30 @@ class Order(models.Model):
             product=product,
             defaults={'quantity': quantity}
         )
-            
+        if not created:
+            # Product already exists, update quantity
+            old_quantity = order_item.quantity
+            order_item.quantity += quantity
+            order_item.save()    
+
+            if self.status == 'confirmed':
+                # Check if we have enough stock for the additional quantity
+                if product.current_quantity < quantity:
+                    # Rollback the quantity change
+                    order_item.quantity = old_quantity
+                    order_item.save()
+                    raise ValidationError(
+                        f"Insufficient stock to add {quantity} more {product.name}. "
+                        f"Available: {product.current_quantity}"
+                    )
+                product.current_quantity -= quantity
+                product.save()
+        else:
+            # New product added, update inventory if order is confirmed
+            if self.status == 'confirmed':
+                product.current_quantity -= quantity
+                product.save()
+        
+        return order_item, created
+                
          
