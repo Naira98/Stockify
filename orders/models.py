@@ -63,4 +63,12 @@ class Order(models.Model):
             ValidationError: If quantity is invalid or insufficient stock for confirmed orders
         """          
         if quantity <= 0:
-            raise ValidationError("Quantity must be greater than 0")      
+            raise ValidationError("Quantity must be greater than 0")     
+
+        if self.status == 'confirmed':
+            if product.current_quantity < quantity:
+                raise ValidationError(
+                    f"Insufficient stock for {product.name}. "
+                    f"Available: {product.current_quantity}, Requested: {quantity}"
+                )
+         
