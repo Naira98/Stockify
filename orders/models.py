@@ -60,4 +60,6 @@ class Order(models.Model):
             
         Raises:
             ValidationError: If quantity is invalid or insufficient stock for confirmed orders
-        """                
+        """          
+        if quantity <= 0:
+            raise ValidationError("Quantity must be greater than 0")      
