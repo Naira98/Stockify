@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 class Supermarket(models.Model):
@@ -10,5 +11,5 @@ class Supermarket(models.Model):
 
     def __str__(self):
         return self.name
-    
-    
+
+
