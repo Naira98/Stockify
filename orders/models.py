@@ -12,4 +12,11 @@ class Supermarket(models.Model):
     def __str__(self):
         return self.name
 
-
+class Order(models.Model):
+    """Order model for outgoing products to supermarkets"""
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Confirmed', 'Confirmed'),
+         ('Delivered', 'Delivered'),
+    ]
+    
