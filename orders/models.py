@@ -95,4 +95,9 @@ class Order(models.Model):
         if not created:
                order_item.quantity += quantity
                order_item.save()
+
+               product.current_quantity -= quantity
+               product.save()
+    
+        return None
    
