@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from inventory.models import Product, Category
 # Create your models here.
 
 User = get_user_model()
@@ -24,3 +24,4 @@ class Order(models.Model):
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_orders')
+    products = models.ManyToManyField(Product, through='OrderItem')
