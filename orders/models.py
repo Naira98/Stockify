@@ -34,3 +34,7 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} to {self.supermarket.name}"
+    
+
+    def get_absolute_url(self):
+        return reverse('warehouse:order_detail', kwargs={'pk': self.pk})
