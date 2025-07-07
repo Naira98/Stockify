@@ -20,3 +20,4 @@ class Order(models.Model):
          ('Delivered', 'Delivered'),
     ]
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
