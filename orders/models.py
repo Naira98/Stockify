@@ -71,4 +71,10 @@ class Order(models.Model):
                     f"Insufficient stock for {product.name}. "
                     f"Available: {product.current_quantity}, Requested: {quantity}"
                 )
+        order_item, created = OrderItem.objects.get_or_create(
+            order=self,
+            product=product,
+            defaults={'quantity': quantity}
+        )
+            
          
