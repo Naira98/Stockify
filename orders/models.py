@@ -1,3 +1,36 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+from inventory.models import Product, Category
+# from accounts.models import User
 
 # Create your models here.
+
+User = get_user_model()
+
+class Supermarket(models.Model):
+    """Supermarket model for customers"""
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    # location = models.CharField(max_length=100, help_text="E.g. Supermarket branch name or city")
+
+    def __str__(self):
+        return self.name
+
+
+class Order(models.Model):
+    """Order model for outgoing products to supermarkets"""
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Confirmed', 'Confirmed'),
+         ('Delivered', 'Delivered'),
+    ]
+    supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_orders')
+    confirmed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='confirmed_orders')
+    products = models.ManyToManyField(Product, through='OrderItem')
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"Order #{self.id} to {self.supermarket.name}"
