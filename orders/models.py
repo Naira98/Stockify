@@ -19,4 +19,4 @@ class Order(models.Model):
         ('Confirmed', 'Confirmed'),
          ('Delivered', 'Delivered'),
     ]
-    
+    supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
