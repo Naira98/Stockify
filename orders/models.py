@@ -21,3 +21,4 @@ class Order(models.Model):
     ]
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_orders')
