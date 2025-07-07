@@ -17,8 +17,7 @@
   </div>
 
   <!-- Filters -->
-  {% include 'shipments/components/filter.html' %}
-
+    {% include 'shipments/components/filter.html' with previous_status=previous_status %}
 
   <!-- Shipments Table -->
   <div class="bg-white rounded-lg shadow overflow-x-auto">

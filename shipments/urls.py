@@ -4,7 +4,7 @@ from shipments import views
 app_name = "shipments"
 
 urlpatterns = [
-    path("", views.ShipmentListView.as_view(), name="shipment_list"),
+    path("", views.list_shipments, name="list_shipments"),
     path("<int:pk>/delete/", views.delete_shipment, name="delete_shipment"),
     path("<int:pk>/", views.ShipmentDetailsView.as_view(), name="shipment_details"),
     path("create/", views.CreateShipmentView.as_view(), name="create_shipment"),
@@ -25,7 +25,7 @@ urlpatterns = [
     ),
 ]
 
-# # shipment_list
+# # list_shipments
 # create_shipment
 # create_factory
 # shipment_detail

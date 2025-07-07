@@ -1,7 +1,8 @@
 from django import forms
-from inventory.models import Factory, Product, Category
+from inventory.models import Factory, Category
 from .models import Shipment, ShipmentItem
 from django.core.exceptions import ValidationError
+from .models import Factory
 
 
 class ShipmentForm(forms.ModelForm):
@@ -19,6 +20,20 @@ class ShipmentForm(forms.ModelForm):
                 }
             ),
         }
+
+
+class ShipmentFilterForm(forms.Form):
+    factory = forms.ModelChoiceField(
+        queryset=Factory.objects.all(),
+        required=False,
+        label="Factory",
+        widget=forms.Select(
+            attrs={
+                "class": "px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500",
+                "onchange": "this.form.submit()",
+            }
+        ),
+    )
 
 
 class FactoryForm(forms.ModelForm):

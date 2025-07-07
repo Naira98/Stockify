@@ -1,30 +1,59 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse
-from django.views.generic import ListView, CreateView, DetailView, DeleteView
+from django.views.generic import CreateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from typing import cast
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db import transaction
 from accounts.models import User
-from .decorators import shipment_is_pending, shipment_is_loaded, shipment_is_received
+from .decorators import shipment_is_pending, shipment_is_loaded
 from django.urls import reverse, reverse_lazy
 from inventory.models import Factory, Product
 from .models import Shipment, ShipmentItem
-from .forms import AddShipmentItemForm, ShipmentForm, FactoryForm, EditShipmentItemForm
+from .forms import (
+    AddShipmentItemForm,
+    ShipmentForm,
+    FactoryForm,
+    EditShipmentItemForm,
+    ShipmentFilterForm,
+)
 
 
-class ShipmentListView(LoginRequiredMixin, ListView):
-    model = Shipment
-    template_name = "shipments/shipments.html"
-    context_object_name = "shipments"
-    ordering = ["-created_at"]  # Optional: sort by newest first
+@login_required
+def list_shipments(request):
+    form = ShipmentFilterForm(request.GET or None)
+    shipments = Shipment.objects.select_related("factory").all()
 
-    def get_queryset(self):
-        return (
-            Shipment.objects.select_related("factory").prefetch_related("items").all()
-        )
+    # Get the raw GET value to use in template
+    selected_factory_id = request.GET.get("factory", "")
+    status = request.GET.get("status", "")
+
+    if selected_factory_id:
+        shipments = shipments.filter(factory__id=selected_factory_id)
+
+    if status:
+        shipments = shipments.filter(status=status)
+
+    statuses = [
+        ("", "All"),
+        ("pending", "Pending"),
+        ("loaded", "Loaded"),
+        ("received", "Received"),
+    ]
+
+    return render(
+        request,
+        "shipments/shipments.html",
+        {
+            "shipments": shipments,
+            "form": form,
+            "statuses": statuses,
+            "previous_status": status,
+            "selected_factory_id": selected_factory_id,
+        },
+    )
 
 
 @login_required
@@ -33,7 +62,7 @@ def delete_shipment(request, pk):
     shipment = get_object_or_404(Shipment, pk=pk)
     if request.method == "POST":
         shipment.delete()
-        return redirect("shipments:shipment_list")
+        return redirect("shipments:list_shipments")
     return redirect("shipments:shipment_details", pk=pk)
 
 
