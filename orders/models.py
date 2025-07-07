@@ -50,3 +50,14 @@ class Order(models.Model):
                 if item.product.current_quantity >= item.quantity:
                     item.product.current_quantity -= item.quantity
                     item.product.save()
+
+    def add_product(self, product, quantity):
+        """
+        Add a product to the order or update quantity if it already exists
+            
+        Returns:
+            tuple: (OrderItem instance, created_boolean)
+            
+        Raises:
+            ValidationError: If quantity is invalid or insufficient stock for confirmed orders
+        """                
