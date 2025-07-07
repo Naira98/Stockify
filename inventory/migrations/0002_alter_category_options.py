@@ -13,5 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterModelOptions(
             name='category',
             options={'ordering': ['-created_at'], 'verbose_name_plural': 'Categories'},
+
         ),
     ]
