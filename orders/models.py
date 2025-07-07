@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from inventory.models import Product, Category
+from django.urls import reverse
 # from accounts.models import User
 
 # Create your models here.
