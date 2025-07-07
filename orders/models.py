@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from inventory.models import Product, Category
+from django.utils import timezone
 # from accounts.models import User
 
 # Create your models here.
@@ -36,3 +37,16 @@ class Order(models.Model):
         return f"Order #{self.id} to {self.supermarket.name}"
     
 
+    def confirm_order(self, confirmed_by):
+        """Confirm order and update product quantities"""
+        if self.status == 'pending':
+            self.status = 'confirmed'
+            self.confirmed_by = confirmed_by
+            self.confirmed_at = timezone.now()
+            self.save()
+            
+            # Update product quantities
+            for item in self.orderitem_set.all():
+                if item.product.current_quantity >= item.quantity:
+                    item.product.current_quantity -= item.quantity
+                    item.product.save()
