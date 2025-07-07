@@ -1,8 +1,8 @@
 from django import forms
-from typing import cast
-from django.forms import ModelChoiceField
-from inventory.models import Factory, Product, Category
+from inventory.models import Factory, Category
 from .models import Shipment, ShipmentItem
+from django.core.exceptions import ValidationError
+from .models import Factory
 
 
 class ShipmentForm(forms.ModelForm):
@@ -20,6 +20,20 @@ class ShipmentForm(forms.ModelForm):
                 }
             ),
         }
+
+
+class ShipmentFilterForm(forms.Form):
+    factory = forms.ModelChoiceField(
+        queryset=Factory.objects.all(),
+        required=False,
+        label="Factory",
+        widget=forms.Select(
+            attrs={
+                "class": "px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500",
+                "onchange": "this.form.submit()",
+            }
+        ),
+    )
 
 
 class FactoryForm(forms.ModelForm):
@@ -83,7 +97,40 @@ class AddShipmentItemForm(forms.ModelForm):
                         "block w-full mt-1 text-base py-3 px-2 "
                         "border border-gray-300 rounded-md shadow-sm "
                         "focus:ring-indigo-500 focus:border-indigo-500"
-                    )
+                    ),
                 }
             ),
         }
+
+    def clean_quantity(self):
+        quantity = self.cleaned_data.get("quantity")
+
+        if quantity is not None and quantity < 1:
+            raise ValidationError("Quantity must be at least 1.")
+
+        return quantity
+
+
+class EditShipmentItemForm(forms.ModelForm):
+    class Meta:
+        model = ShipmentItem
+        fields = ["quantity"]
+        widgets = {
+            "quantity": forms.NumberInput(
+                attrs={
+                    "class": (
+                        "block w-full mt-1 text-base py-3 px-2 "
+                        "border border-gray-300 rounded-md shadow-sm "
+                        "focus:ring-indigo-500 focus:border-indigo-500"
+                    ),
+                }
+            ),
+        }
+
+    def clean_quantity(self):
+        quantity = self.cleaned_data.get("quantity")
+
+        if quantity and quantity < 1:
+            raise ValidationError("Quantity must be at least 1.")
+
+        return quantity

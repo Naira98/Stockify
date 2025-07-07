@@ -10,77 +10,107 @@
 
 
 {% block content %}
-<div class="min-h-[calc(100vh-4rem)] flex items-center justify-center fade-in-down px-4">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
-      <!-- Header -->
-      <div class="bg-indigo-700 py-6 px-8">
-        <div class="flex items-center justify-center mb-3 gap-1">
-            <div
-            class="text-white"
-            data-icon="Truck"
-            data-size="24px"
-            data-weight="fill"
-            >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-truck-icon lucide-truck"
-            >
-                <path
-                d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"
-                />
-                <path d="M15 18H9" />
-                <path
-                d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"
-                />
-                <circle cx="17" cy="18" r="2" />
-                <circle cx="7" cy="18" r="2" />
-            </svg>
-            </div>
-          <h1 class="text-2xl font-bold text-white ml-2">Create a new shimpment</h1>
+<div class="mb-4">
+  <a
+    href="{% url 'shipments:list_shipments' %}"
+    class="inline-block bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded shadow"
+  >
+    ← Back to Shipments
+  </a>
+</div>
+
+<div
+  class="min-h-[calc(100vh-4rem)] flex items-center justify-center fade-in-down px-4"
+>
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
+    <!-- Header -->
+    <div class="bg-indigo-700 py-6 px-8">
+      <div class="flex items-center justify-center mb-3 gap-1">
+        <div
+          class="text-white"
+          data-icon="Truck"
+          data-size="24px"
+          data-weight="fill"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-truck-icon lucide-truck"
+          >
+            <path
+              d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"
+            />
+            <path d="M15 18H9" />
+            <path
+              d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"
+            />
+            <circle cx="17" cy="18" r="2" />
+            <circle cx="7" cy="18" r="2" />
+          </svg>
         </div>
-      </div>
-
-      <!-- Form Section -->
-      <div class="py-8 px-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-1 text-center">New Shipment</h2>
-        <p class="text-gray-600 text-center mb-6">Select a factory to create shipment</p>
-
-        {% if form.non_field_errors %}
-          <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
-            {% for error in form.non_field_errors %}
-              <p class="font-medium">{{ error }}</p>
-            {% endfor %}
-          </div>
-        {% endif %}
-
-        <form method="post">
-          {% csrf_token %}
-
-          <!-- Factory Select -->
-          <div class="mb-5">
-            <label for="id_factory" class="block text-sm font-medium text-gray-700 mb-1">Select Factory</label>
-            {{ form.factory }}
-          </div>
-
-          <!-- Add Factory Link -->
-          <div class="mb-6 text-right">
-            <a href="{% url 'shipments:create_factory' %}" class="text-sm text-indigo-600 hover:text-indigo-500 font-medium">+ Add Factory</a>
-          </div>
-
-          <!-- Submit Button -->
-          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            Create Shipment
-          </button>
-        </form>
+        <h1 class="text-2xl font-bold text-white ml-2">
+          Create a new shimpment
+        </h1>
       </div>
     </div>
+
+    <!-- Form Section -->
+    <div class="py-8 px-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-1 text-center">
+        New Shipment
+      </h2>
+      <p class="text-gray-600 text-center mb-6">
+        Select a factory to create shipment
+      </p>
+
+      {% if form.non_field_errors %}
+      <div
+        class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded"
+      >
+        {% for error in form.non_field_errors %}
+        <p class="font-medium">{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+
+        <!-- Factory Select -->
+        <div class="mb-5">
+          <label
+            for="id_factory"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Select Factory</label
+          >
+          {{ form.factory }}
+        </div>
+
+        <!-- Add Factory Link -->
+        <div class="mb-6 text-right">
+          <a
+            href="{% url 'shipments:create_factory' %}"
+            class="text-sm text-indigo-600 hover:text-indigo-500 font-medium"
+            >+ Add Factory</a
+          >
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Create Shipment
+        </button>
+      </form>
+    </div>
   </div>
+</div>
 {% endblock %}

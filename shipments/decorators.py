@@ -19,5 +19,3 @@ def shipment_status_required(check_func, redirect_view_name="shipments:shipment_
 # Specific decorators
 shipment_is_pending = shipment_status_required(lambda s: s.is_pending())
 shipment_is_loaded = shipment_status_required(lambda s: s.is_loaded())
-shipment_is_received = shipment_status_required(lambda s: s.is_received())
-shipment_is_not_loaded = shipment_status_required(lambda s: not s.is_loaded())

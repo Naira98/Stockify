@@ -1,16 +1,26 @@
-{% extends "base.html" %}
-{% block title %}Shipment {{ shipment.id }} | Stockify{% endblock %}
+{% extends "base.html" %} 
+{% load static %} 
+{% block title %}Shipment {{shipment.id }} | Stockify{% endblock title %} 
 
-{% block sidebar %}
-  {% include 'components/sidebar.html' with active='shipments' %}
-{% endblock sidebar %}
+{% block sidebar %} 
+{% include 'components/sidebar.html' with active='shipments' %} {% endblock sidebar %} 
 
 {% block content %}
-<div class="max-w-4xl mx-auto py-10 fade-in-down">
+<div class="mb-4">
+  <a
+    href="{% url 'shipments:list_shipments' %}"
+    class="inline-block bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded shadow"
+  >
+    ← Back to Shipments
+  </a>
+</div>
 
+<div class="max-w-4xl mx-auto py-10 fade-in-down">
   <!-- Top Section: Shipment Info -->
   <div class="bg-white shadow-md rounded-lg p-6 mb-8">
-    <h1 class="text-2xl font-bold mb-2 text-center">Shipment #{{ shipment.id }}</h1>
+    <h1 class="text-2xl font-bold mb-2 text-center">
+      Shipment #{{ shipment.id }}
+    </h1>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-800 mt-4">
       <p><strong>Factory:</strong> {{ shipment.factory.name }}</p>
       <p><strong>Location:</strong> {{ shipment.factory.location }}</p>
@@ -18,64 +28,261 @@
       <p>
         <strong>Status:</strong>
         {% if shipment.is_loaded %}
-          <span class="text-green-600 font-semibold">Loaded</span>
+        <span class="text-blue-600 font-semibold">Loaded</span>
         {% elif shipment.is_received %}
-          <span class="text-blue-600 font-semibold">Received</span>
+        <span class="text-green-600 font-semibold">Received</span>
         {% else %}
-          <span class="text-yellow-500 font-semibold">Pending</span>
+        <span class="text-yellow-500 font-semibold">Pending</span>
         {% endif %}
+      </p>
+      <p>
+        <strong>Received by:</strong>
+        {% if shipment.is_received %} {{ received_user }} {% else %} -- {% endif %}
+      </p>
+      <p>
+        <strong>Received at:</strong>
+        {% if shipment.is_received %} {{ shipment.received_at|date:"Y-m-d H:i" }} {% else %} -- {% endif %}
       </p>
     </div>
   </div>
 
   <!-- Add Product Button (only if not loaded) -->
   {% if shipment.is_pending %}
-    <div class="text-right mb-4">
-      <a href="{% url 'shipments:add_shipment_item' shipment.pk %}"
-         class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow">
-        + Add Product
-      </a>
-    </div>
+  <div class="text-right mb-4">
+    <a
+      href="{% url 'shipments:add_shipment_item' shipment.pk %}"
+      class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-package-plus-icon lucide-package-plus"
+      >
+        <path d="M16 16h6" />
+        <path d="M19 13v6" />
+        <path
+          d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"
+        />
+        <path d="m7.5 4.27 9 5.15" />
+        <polyline points="3.29 7 12 12 20.71 7" />
+        <line x1="12" x2="12" y1="22" y2="12" />
+      </svg>
+      Add Product
+    </a>
+  </div>
   {% endif %}
 
   <!-- Products Table -->
   <div class="bg-white shadow rounded-lg p-6">
     <h2 class="text-xl font-semibold mb-4">Products in Shipment</h2>
-    
+
     {% if shipment.items.exists %}
-      <div class="overflow-x-auto">
-        <table class="min-w-full border border-gray-200">
-          <thead class="bg-gray-100 text-left">
-            <tr>
-              <th class="py-2 px-4 border-b">Product</th>
-              <th class="py-2 px-4 border-b">Category</th>
-              <th class="py-2 px-4 border-b">Quantity</th>
-              {% if shipment.is_pending %}
-                <th class="py-2 px-4 border-b text-center">Actions</th>
-              {% endif %}
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in shipment.items.all %}
-              <tr class="hover:bg-gray-50">
-                <td class="py-2 px-4 border-b">{{ item.product.name }}</td>
-                <td class="py-2 px-4 border-b">{{ item.product.category.name }}</td>
-                <td class="py-2 px-4 border-b">{{ item.quantity }}</td>
-                {% if shipment.is_pending %}
-                  <td class="py-2 px-4 border-b text-center space-x-2">
-                  
-                  
-                  </td>
-                {% endif %}
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    {% else %}
-      <p class="text-gray-600">No products added to this shipment yet.</p>
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-200">
+        <thead class="bg-gray-100 text-left">
+          <tr>
+            <th class="py-2 px-4 border-b text-center">Product</th>
+            <th class="py-2 px-4 border-b text-center">Category</th>
+            <th class="py-2 px-4 border-b text-center">Quantity</th>
+            {% if shipment.is_pending %}
+            <th class="py-2 px-4 border-b text-center">Actions</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in shipment.items.all %}
+          <tr class="hover:bg-gray-50">
+            <td class="py-2 px-4 border-b text-center">
+              {{ item.product.name }}
+            </td>
+            <td class="py-2 px-4 border-b text-center">
+              {{ item.product.category.name }}
+            </td>
+            <td class="py-2 px-4 border-b text-center">{{ item.quantity }}</td>
+            {% if shipment.is_pending %}
+            <td class="py-2 px-4 border-b text-center">
+              <div class="flex items-center justify-center gap-2">
+                <!-- Edit Button -->
+                <a
+                  href="{% url 'shipments:edit_shipment_item' item.id %}"
+                  class="text-indigo-600 hover:text-indigo-800"
+                  title="Edit"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-pencil-icon lucide-pencil"
+                  >
+                    <path
+                      d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+                    />
+                    <path d="m15 5 4 4" />
+                  </svg>
+                </a>
+                <!-- Delete Button -->
+                <button
+                  type="button"
+                  onclick="openConfirmModal(this)"
+                  data-id="{{ item.id }}"
+                  data-name="{{ item.product.name|escapejs }}"
+                  class="text-red-600 hover:text-red-800"
+                  title="Delete"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-trash-icon lucide-trash"
+                  >
+                    <path d="M3 6h18" />
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                  </svg>
+                </button>
+              </div>
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Shipment Status Actions -->
+    {% if shipment.items.exists %}
+    <div class="mt-6 text-center">
+      {% if shipment.is_pending and user.is_staff %}
+      <!-- Mark as Loaded Button -->
+      <form
+        method="post"
+        action="{% url 'shipments:mark_loaded' shipment.pk %}"
+      >
+        {% csrf_token %}
+        <button
+          type="submit"
+          class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded shadow"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-truck-electric-icon lucide-truck-electric"
+          >
+            <path d="M14 19V7a2 2 0 0 0-2-2H9" />
+            <path d="M15 19H9" />
+            <path
+              d="M19 19h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62L18.3 9.38a1 1 0 0 0-.78-.38H14"
+            />
+            <path d="M2 13v5a1 1 0 0 0 1 1h2" />
+            <path
+              d="M4 3 2.15 5.15a.495.495 0 0 0 .35.86h2.15a.47.47 0 0 1 .35.86L3 9.02"
+            />
+            <circle cx="17" cy="19" r="2" />
+            <circle cx="7" cy="19" r="2" />
+          </svg>
+          Confirm Shipment to be loaded
+        </button>
+      </form>
+
+      {% elif shipment.is_loaded %}
+      <!-- Mark as Received Button -->
+      <form
+        method="post"
+        action="{% url 'shipments:mark_received' shipment.pk %}"
+      >
+        {% csrf_token %}
+        <button
+          type="submit"
+          class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded shadow"
+        >
+          <!-- Package Check Icon -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-package-check-icon lucide-package-check"
+          >
+            <path d="m16 16 2 2 4-4" />
+            <path
+              d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"
+            />
+            <path d="m7.5 4.27 9 5.15" />
+            <polyline points="3.29 7 12 12 20.71 7" />
+            <line x1="12" x2="12" y1="22" y2="12" />
+          </svg>
+          Mark as Received Shipment
+        </button>
+      </form>
+
+      {% endif %}
+    </div>
+    {% endif %} {% else %}
+    <p class="text-gray-600">No products added to this shipment yet.</p>
     {% endif %}
   </div>
-
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div
+  id="confirmModal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50"
+>
+  <div class="bg-white p-6 rounded shadow-lg max-w-md w-full">
+    <h2 class="text-lg font-bold mb-3">Confirm Deletion</h2>
+    <p class="mb-6 text-gray-700">
+      Are you sure you want to remove
+      <span id="productName" class="font-semibold"></span> from this shipment?
+    </p>
+    <form method="post" id="confirmDeleteForm" class="flex justify-end gap-2">
+      {% csrf_token %}
+      <button
+        type="button"
+        onclick="closeConfirmModal()"
+        class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+      >
+        Delete
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="{% static 'js/confirm_delete_item.js' %}"></script>
 {% endblock %}

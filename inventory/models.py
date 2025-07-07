@@ -9,8 +9,8 @@ class Category(TimestampModel):
         blank=False,
         unique=True,
     )
-    class Meta:
-        verbose_name_plural = "Categories" 
+    class Meta(TimestampModel.Meta):
+        verbose_name_plural = "Categories"
 
     def __str__(self):
         return self.name
@@ -50,7 +50,7 @@ class Product(TimestampModel):
     )
 
     def __str__(self):
-        return f"{self.name} (ID: {self.pk})"
+        return f"{self.name}"
 
     def is_low_stock(self):
         return self.quantity <= self.critical_amount
@@ -73,7 +73,7 @@ class Factory(TimestampModel):
     )
 
     def __str__(self):
-        return f"{self.name} | {self.location}"
+        return f"{self.name}  ({self.location})"
 
     class Meta(TimestampModel.Meta):
         verbose_name_plural = "Factories"
@@ -98,4 +98,4 @@ class Supermarket(TimestampModel):
     )
 
     def __str__(self):
-        return f"{self.name} | {self.location}"
+        return f"{self.name} ({self.location})"
