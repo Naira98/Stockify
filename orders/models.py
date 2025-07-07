@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from inventory.models import Product, Category
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 # from accounts.models import User
 
 # Create your models here.
