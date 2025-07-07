@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from inventory.models import Product, Category
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.db import transaction
 # from accounts.models import User
 
 # Create your models here.
@@ -63,7 +64,22 @@ class Order(models.Model):
             ValidationError: If quantity is invalid or insufficient stock for confirmed orders
         """          
         if quantity <= 0:
-            raise ValidationError("Quantity must be greater than 0")     
+            return "Quantity must be greater than zero."
+    
+    # Order status validation
+        if self.status != 'pending':
+            return "Products can only be added to pending orders."   
+        
+        if quantity > product.current_quantity:
+            return f"Insufficient stock. Available: {product.current_quantity}"
+        
+        with transaction.atomic():
+        # Get or create order item
+            order_item, created = OrderItem.objects.get_or_create(
+            order=self,
+            product=product,
+            defaults={'quantity': quantity}
+        )
 
         if self.status == 'confirmed':
             if product.current_quantity < quantity:
@@ -77,29 +93,6 @@ class Order(models.Model):
             defaults={'quantity': quantity}
         )
         if not created:
-            # Product already exists, update quantity
-            old_quantity = order_item.quantity
-            order_item.quantity += quantity
-            order_item.save()    
-
-            if self.status == 'confirmed':
-                # Check if we have enough stock for the additional quantity
-                if product.current_quantity < quantity:
-                    # Rollback the quantity change
-                    order_item.quantity = old_quantity
-                    order_item.save()
-                    raise ValidationError(
-                        f"Insufficient stock to add {quantity} more {product.name}. "
-                        f"Available: {product.current_quantity}"
-                    )
-                product.current_quantity -= quantity
-                product.save()
-        else:
-            # New product added, update inventory if order is confirmed
-            if self.status == 'confirmed':
-                product.current_quantity -= quantity
-                product.save()
-        
-        return order_item, created
-                
-         
+               order_item.quantity += quantity
+               order_item.save()
+   
