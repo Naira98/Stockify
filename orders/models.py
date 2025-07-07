@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from inventory.models import Product, Category
-from django.urls import reverse
 # from accounts.models import User
 
 # Create your models here.
@@ -37,5 +36,3 @@ class Order(models.Model):
         return f"Order #{self.id} to {self.supermarket.name}"
     
 
-    def get_absolute_url(self):
-        return reverse('warehouse:order_detail', kwargs={'pk': self.pk})
