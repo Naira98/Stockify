@@ -149,3 +149,7 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - {self.quantity}"
+    
+    def delete(self, *args, **kwargs):
+        product = self.product
+        quantity_to_restore = self.quantity
