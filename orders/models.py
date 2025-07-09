@@ -143,3 +143,6 @@ class Order(models.Model):
         return f"Removed {order_item.quantity} of {product.name} from order"
 
 class OrderItem(models.Model):        
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
