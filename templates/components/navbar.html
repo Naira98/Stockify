@@ -1,8 +1,9 @@
+{% load static %}
 <header class="h-20 bg-white flex items-center justify-between px-6 shadow-md">
   <!-- Left Section -->
   <div class="flex items-center space-x-4">
     <!-- Logo/Brand -->
-    <a href="{% url 'home' %}" class="flex items-center">
+    <a href="{% url 'dashboard' %}" class="flex items-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
       </svg>
@@ -25,7 +26,7 @@
     {% if user.is_authenticated %}
       <!-- User Management Link (Only for Managers) -->
       {% if user.is_superuser %}
-        <a href="{% url 'user_management' %}" class="hidden md:flex items-center px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors">
+        <a href="{% url 'accounts:user_management' %}" class="hidden md:flex items-center px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>Users
@@ -74,9 +75,9 @@
 
         <!-- Dropdown Menu -->
         <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50" id="profile-dropdown">
-          <a href="{% url 'profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+          <a href="{% url 'accounts:profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
           <div class="border-t border-gray-200"></div>
-          <form method="post" action="{% url 'logout' %}">
+          <form method="post" action="{% url 'accounts:logout' %}">
             {% csrf_token %}
             <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</button>
           </form>
@@ -84,27 +85,11 @@
       </div>
     {% else %}
       <!-- Login Button -->
-      <a href="{% url 'login' %}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">Login</a>
+      <a href="{% url 'accounts:login' %}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">Login</a>
     {% endif %}
   </div>
 </header>
 
-{% block script %}
-  <script>
-    // Handle profile dropdown toggle
-    document.getElementById('profile-dropdown-trigger').addEventListener('click', function () {
-      const dropdown = document.getElementById('profile-dropdown')
-      dropdown.classList.toggle('hidden')
-    })
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function (event) {
-      const dropdown = document.getElementById('profile-dropdown')
-      const trigger = document.getElementById('profile-dropdown-trigger')
-    
-      if (!trigger.contains(event.target) && !dropdown.contains(event.target)) {
-        dropdown.classList.add('hidden')
-      }
-    })
-  </script>
-{% endblock %}
+
+  <script src="{% static 'js/navbar.js' %}"></script>
+

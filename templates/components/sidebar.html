@@ -13,7 +13,7 @@
     <!-- Nav Tabs -->
     <div class="flex flex-col gap-2">
       <!-- Dashboard -->
-      <a href="{% url 'home' %}">
+      <a href="{% url 'dashboard' %}">
         <div
           class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full hover:bg-gray-100 {% if active == 'dashboard' %}active_nav {% endif %}"
         >
@@ -108,7 +108,7 @@
       </a>
 
       <!-- Orders -->
-      <a href="{% url 'home' %}">
+      <a href="{% url 'orders:order_list' %}">
         <div
           class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-full {% if active == 'orders' %}active_nav{% endif %}"
         >
@@ -141,7 +141,7 @@
       </a>
 
       <!-- Profile -->
-      <a href="{% url 'profile' %}">
+      <a href="{% url 'accounts:profile' %}">
         <div
           class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-full {% if active == 'profile' %}active_nav{% endif %}"
         >

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="{% static 'images/logo.svg' %}" />
     <title>{% block title %} Stockify {% endblock title %}</title>
+    {% block css %} {% endblock css %}
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   </head>
@@ -18,7 +19,7 @@
       <!-- Main Content -->
       <div class="flex-1 flex flex-col">
         <!-- Top Navbar -->
-          {% include 'components/navbar.html' %}
+        {% include 'components/navbar.html' %}
 
         <main class="flex-1 p-6 overflow-y-auto">
           {% block content %} {% endblock content %}

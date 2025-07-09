@@ -2,11 +2,6 @@ from django import forms
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from .models import User
-from django.contrib.auth import get_user_model
-
-
-
-User = get_user_model()
 
 
 class AdminUserEditForm(forms.ModelForm):
@@ -44,7 +39,7 @@ class AdminUserEditForm(forms.ModelForm):
             user.save()
         return user
 
-# forms.py (add this to the end)
+
 class AdminUserCreationForm(forms.ModelForm):
     password1 = forms.CharField(
         label="Password",
