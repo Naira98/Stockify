@@ -113,19 +113,27 @@
   <div class="bg-white overflow-hidden shadow rounded-lg">
     <div class="px-4 py-5 sm:p-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h2 class="text-lg font-medium text-gray-900">Inventory Overview</h2>
-        <div class="w-full sm:w-auto">
-          <select
-            id="chartRange"
-            onchange="location.href = '?days=' + this.value"
-            class="w-full sm:w-48 appearance-none bg-gray-50 border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-indigo-500 text-sm"
-          >
-            <option value="7" {% if selected_days == 7 %}selected{% endif %}>Last 7 days</option>
-            <option value="30" {% if selected_days == 30 %}selected{% endif %}>Last 30 days</option>
-            <option value="90" {% if selected_days == 90 %}selected{% endif %}>Last 90 days</option>
-          </select>
+      <h2 class="text-lg font-medium text-gray-900">Inventory Overview</h2>
+      <div class="w-full sm:w-auto relative">
+        <select
+          id="chartRange"
+          onchange="location.href = '?days=' + this.value"
+          class="w-full sm:w-48 appearance-none bg-gray-50 border border-gray-300 text-gray-700 py-2 px-4 pr-10 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-indigo-500 text-sm"
+        >
+          <option value="7" {% if selected_days == 7 %}selected{% endif %}>Last 7 days</option>
+          <option value="30" {% if selected_days == 30 %}selected{% endif %}>Last 30 days</option>
+          <option value="90" {% if selected_days == 90 %}selected{% endif %}>Last 90 days</option>
+        </select>
+
+        <!-- SVG Icon -->
+        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
+          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.314l3.71-4.084a.75.75 0 111.1 1.02l-4.25 4.687a.75.75 0 01-1.1 0L5.21 8.29a.75.75 0 01.02-1.08z" />
+          </svg>
         </div>
       </div>
+    </div>
+
       
       <!-- Equal Height Chart Grid -->
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
