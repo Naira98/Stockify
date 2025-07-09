@@ -43,7 +43,6 @@ def list_shipments(request):
     if to_date:
         shipments = shipments.filter(created_at__date__lte=to_date)
 
-    # 📌 Add pagination
     paginator = Paginator(shipments, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -222,8 +221,11 @@ def mark_shipment_received(request, pk):
 @require_GET
 def get_products_by_category(request):
     category_id = request.GET.get("category_id")
-    if not category_id:
-        return JsonResponse({"error": "Missing category_id"}, status=400)
 
-    products = Product.objects.filter(category_id=category_id).values("id", "name")
+    if category_id:
+        products = Product.objects.filter(category_id=category_id)
+    else:
+        products = Product.objects.all()
+
+    products = products.values("id", "name")
     return JsonResponse(list(products), safe=False)
