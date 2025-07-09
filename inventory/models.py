@@ -57,45 +57,4 @@ class Product(TimestampModel):
 
     def is_out_of_stock(self):
         return self.quantity == 0
-
-
-class Factory(TimestampModel):
-    name = models.CharField(
-        max_length=255,
-        null=False,
-        blank=False,
-        unique=True,
-    )
-    location = models.CharField(
-        max_length=255,
-        null=False,
-        blank=False,
-    )
-
-    def __str__(self):
-        return f"{self.name}  ({self.location})"
-
-    class Meta(TimestampModel.Meta):
-        verbose_name_plural = "Factories"
-
-
-class Supermarket(TimestampModel):
-    name = models.CharField(
-        max_length=255,
-        null=False,
-        blank=False,
-        unique=True,
-    )
-    location = models.CharField(
-        max_length=255,
-        null=False,
-        blank=False,
-    )
-    contact = models.CharField(
-        max_length=255,
-        null=False,
-        blank=False,
-    )
-
-    def __str__(self):
-        return f"{self.name} ({self.location})"
+    
