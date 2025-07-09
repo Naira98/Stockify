@@ -153,3 +153,10 @@ class OrderItem(models.Model):
     def delete(self, *args, **kwargs):
         product = self.product
         quantity_to_restore = self.quantity
+
+        # Restore stock
+        product.quantity = product.quantity + quantity_to_restore
+        product.save(update_fields=["quantity"])
+
+        # Proceed with deletion
+        return super(OrderItem, self).delete(*args, **kwargs)
