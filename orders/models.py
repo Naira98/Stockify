@@ -1,14 +1,15 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from accounts.models import User
 from inventory.models import Product, Category
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from stockify.models import TimestampModel
 # from accounts.models import User
 
 # Create your models here.
 
-User = get_user_model()
+
 
 class Supermarket(models.Model):
     """Supermarket model for customers"""
