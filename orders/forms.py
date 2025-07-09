@@ -14,3 +14,10 @@ class SupermarketForm(forms.ModelForm):
                     "class": "border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 }
             ),
+             "location": forms.Textarea(
+                attrs={
+                    "class": "border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500",
+                    "rows": 3,
+                }
+            ),
+        }
