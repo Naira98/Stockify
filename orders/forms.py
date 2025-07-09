@@ -26,10 +26,15 @@ class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ["supermarket"]    
-         widgets = {
+        widgets = {
             "supermarket": forms.Select(
                 attrs={
                     "class": "border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 }
             ),
-        }    
+        }
+
+class OrderItemForm(forms.ModelForm):
+    class Meta:
+        model = OrderItem
+        fields = ["product", "quantity"]           
