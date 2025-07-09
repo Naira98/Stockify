@@ -51,3 +51,8 @@ class OrderItemForm(forms.ModelForm):
                 }
             ),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        product = cleaned_data.get("product")
+        quantity = cleaned_data.get("quantity")
