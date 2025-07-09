@@ -142,4 +142,4 @@ class Order(models.Model):
 
         return f"Removed {order_item.quantity} of {product.name} from order"
 
-
+class OrderItem(models.Model):        
