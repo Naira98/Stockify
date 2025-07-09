@@ -56,3 +56,12 @@ class OrderItemForm(forms.ModelForm):
         cleaned_data = super().clean()
         product = cleaned_data.get("product")
         quantity = cleaned_data.get("quantity")
+
+        if product and quantity:
+            if quantity > product.quantity:
+                self.add_error(
+                    "quantity",
+                    f"Cannot order more than available stock ({product.quantity} available)",
+                )
+
+        return cleaned_data
