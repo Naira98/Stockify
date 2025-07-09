@@ -1,6 +1,6 @@
 from django import forms
-from inventory.models import Factory, Category
-from .models import Shipment, ShipmentItem
+from inventory.models import Category
+from .models import Factory, Shipment, ShipmentItem
 from django.core.exceptions import ValidationError
 from .models import Factory
 
