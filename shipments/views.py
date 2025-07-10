@@ -46,7 +46,7 @@ def list_shipments(request):
     if to_date:
         shipments = shipments.filter(created_at__date__lte=to_date)
 
-    # Order by newest first
+    # Shipments by newest first
     shipments = shipments.order_by("-created_at")
 
     paginator = Paginator(shipments, 10)

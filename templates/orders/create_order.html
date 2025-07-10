@@ -1,144 +1,193 @@
 {% extends 'base.html' %}
 {% load static %}
- 
-{% block title %}Create New Order{% endblock %}
+
+{% block title %}Create New Order | Stockify{% endblock %}
 
 {% block sidebar %}
 {% include 'components/sidebar.html' with active='orders' %}
 {% endblock sidebar %}
- 
+
 {% block content %}
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
-      <div class="flex justify-between items-start mb-6">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-800">Create New Order</h1>
-          <p class="text-gray-600 mt-2">Fill in the details below to create a new order.</p>
-      </div>
-          <a href="{% url 'orders:order_list' %}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-chevron-left-icon lucide-circle-chevron-left"><circle cx="12" cy="12" r="10"/><path d="m14 16-4-4 4-4"/></svg>
-              Back to Orders
-          </a>
+<main class="bg-white py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-2xl font-bold text-cyan-400 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package">
+          <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/>
+          <path d="M12 22V12"/>
+          <polyline points="3.29 7 12 12 20.71 7"/>
+          <path d="m7.5 4.27 9 5.15"/>
+        </svg>
+        Create New Order
+      </h1>
+      <a href="{% url 'orders:order_list' %}" class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover: transition">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left">
+          <path d="m12 19-7-7 7-7"/>
+          <path d="M19 12H5"/>
+        </svg>
+        Back to Orders
+      </a>
     </div>
- 
+
+    <div class="bg-white border-2 border-dashed border-cyan-200 rounded-lg shadow p-6">
+      <p class="text-gray-600 mb-6">Fill in the details below to create a new order.</p>
+
       <form method="post" id="order-form" class="space-y-6">
         {% csrf_token %}
- 
-      <!-- Form Errors -->
+
+        <!-- Form Errors -->
         {% if form.errors %}
-    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded">
-      <div class="flex">
-          <div class="flex-shrink-0">
-            <span class="material-icons text-red-400">error</span>
+        <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded">
+          <div class="flex">
+            <div class="ml-3">
+              <p class="text-sm text-red-700">Please correct the errors below.</p>
+            </div>
+          </div>
         </div>
-    <div class="ml-3">
-    <p class="text-sm text-red-700">Please correct the errors below.</p>
-    </div>
-</div>
-</div>
-      {% endif %}
- 
-      <!-- Order Information -->
-    <div class="space-y-4">
-        <h2 class="text-xl font-semibold text-gray-800">Order Information</h2>
-        <div class="bg-gray-50 p-5 rounded-lg space-y-4">
-<!-- Supermarket Field -->
-        <div>
-      <label for="{{ form.supermarket.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-              {{ form.supermarket.label }}
-        </label>
-      <div class="relative">
-              {{ form.supermarket }}
-              {% if form.supermarket.errors %}
-<div class="mt-1 text-sm text-red-600">
+        {% endif %}
+
+        <!-- Order Information -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-cyan-600 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4"/>
+              <path d="M12 8h.01"/>
+            </svg>
+            Order Information
+          </h2>
+          
+          <div class="p-5 rounded-lg space-y-4">
+            <!-- Supermarket Field -->
+            <div>
+              <label for="{{ form.supermarket.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.supermarket.label }}
+              </label>
+              <div class="relative">
+                {{ form.supermarket }}
+                {% if form.supermarket.errors %}
+                <div class="mt-1 text-sm text-red-600">
                   {{ form.supermarket.errors }}
-</div>
-              {% endif %}
-</div>
-<a href="{% url 'orders:create_supermarket' %}" class="mt-2 inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 gap-3">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-              Add new supermarket
-</a>
-</div>
- 
-          <!-- Notes Field -->
-<div>
-<label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-              {{ form.notes.label }}
-</label>
-            {{ form.notes }}
-</div>
-</div>
-</div>
- 
-      <!-- Order Items -->
-<div class="space-y-4">
-<h2 class="text-xl font-semibold text-gray-800">Order Items</h2>
-        {{ formset.management_form }}
-<div id="order-items" class="space-y-4">
-          {% for form in formset %}
-<div class="item-form bg-gray-50 p-4 rounded-lg grid grid-cols-12 gap-4 items-end">
-            {% for hidden in form.hidden_fields %}
-              {{ hidden }}
-            {% endfor %}
-<!-- Product Field -->
-<div class="col-span-8">
-<label class="block text-sm font-medium text-gray-700 mb-1">
-                Product
-</label>
-<div class="relative">
-                {{ form.product }}
-                {% if form.product.errors %}
-<div class="mt-1 text-sm text-red-600">
+                </div>
+                {% endif %}
+              </div>
+              <a href="{% url 'orders:create_supermarket' %}" class="mt-2 inline-flex items-center text-sm text-cyan-600 hover:text-cyan-800 gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus">
+                  <path d="M5 12h14"/>
+                  <path d="M12 5v14"/>
+                </svg>
+                Add new supermarket
+              </a>
+            </div>
+
+            <!-- Notes Field -->
+            <div>
+              <label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                {{ form.notes.label }}
+              </label>
+              {{ form.notes }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="space-y-4">
+          <h2 class="text-lg font-bold text-cyan-600 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list">
+              <line x1="8" x2="21" y1="6" y2="6"/>
+              <line x1="8" x2="21" y1="12" y2="12"/>
+              <line x1="8" x2="21" y1="18" y2="18"/>
+              <line x1="3" x2="3.01" y1="6" y2="6"/>
+              <line x1="3" x2="3.01" y1="12" y2="12"/>
+              <line x1="3" x2="3.01" y1="18" y2="18"/>
+            </svg>
+            Order Items
+          </h2>
+          
+          {{ formset.management_form }}
+          <div id="order-items" class="space-y-4">
+            {% for form in formset %}
+            <div class="item-form p-4 rounded-lg grid grid-cols-12 gap-4 items-end">
+              {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+              {% endfor %}
+              
+              <!-- Product Field -->
+              <div class="col-span-8">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Product
+                </label>
+                <div class="relative">
+                  <select name="{{ form.product.html_name }}" id="{{ form.product.id_for_label }}" 
+                    class="w-full px-0 py-2 border-0 border-b border-gray-300 focus:border-cyan-500 focus:ring-0">
+                    {% for value, label in form.product.field.choices %}
+                      <option value="{{ value }}" {% if form.product.value == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                  {% if form.product.errors %}
+                  <div class="mt-1 text-sm text-red-600">
                     {{ form.product.errors }}
-</div>
-                {% endif %}
-</div>
-</div>
-<!-- Quantity Field -->
-<div class="col-span-3">
-<label class="block text-sm font-medium text-gray-700 mb-1">
-                Quantity
-</label>
-<div class="relative">
-                {{ form.quantity }}
-                {% if form.quantity.errors %}
-<div class="mt-1 text-sm text-red-600">
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <!-- Quantity Field -->
+              <div class="col-span-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                  Quantity
+                </label>
+                <div class="relative">
+                  <input type="number" name="{{ form.quantity.html_name }}" id="{{ form.quantity.id_for_label }}" 
+                    value="{{ form.quantity.value|default:'' }}" min="1"
+                    class="w-full px-0 py-2 border-0 border-b border-gray-300 focus:border-cyan-500 focus:ring-0">
+                  {% if form.quantity.errors %}
+                  <div class="mt-1 text-sm text-red-600">
                     {{ form.quantity.errors }}
-</div>
-                {% endif %}
-</div>
-</div>
-<!-- Remove Button -->
-<div class="col-span-1 flex justify-end">
-<button type="button" class="remove-item bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-colors" title="Remove item">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-</button>
-</div>
-</div>
-          {% endfor %}
-</div>
- 
-        <!-- Add Item Button -->
-<button type="button" id="add-item" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 gap-3">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-          Add Item
-</button>
-</div>
- 
-      <!-- Form Actions -->
-<div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-<a href="{% url 'orders:order_list' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          Cancel
-</a>
-<button type="submit" id="submit-order" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          Create Order
-</button>
-</div>
-</form>
-</div>
-</div>
- 
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              
+              <!-- Remove Button -->
+              <div class="col-span-1 flex justify-end">
+                <button type="button" class="remove-item bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-colors" title="Remove item">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash">
+                    <path d="M3 6h18"/>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Add Item Button -->
+          <button type="button" id="add-item" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus">
+              <path d="M5 12h14"/>
+              <path d="M12 5v14"/>
+            </svg>
+            Add Item
+          </button>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <a href="{% url 'orders:order_list' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+            Cancel
+          </a>
+          <button type="submit" id="submit-order" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500">
+            Create Order
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   let formsetPrefix = '{{ formset.prefix }}';
@@ -167,86 +216,25 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   document.getElementById('add-item').addEventListener('click', function() {
-  let forms = document.querySelectorAll('.item-form');
-  let lastForm = forms[forms.length - 1];
+    let forms = document.querySelectorAll('.item-form');
+    let lastForm = forms[forms.length - 1];
 
-  let productSelect = lastForm.querySelector('select');
-  let quantityInput = lastForm.querySelector('input[type="number"], input[type="text"]');
-
-  let productValue = productSelect.value.trim();
-  let quantityValue = quantityInput.value.trim();
-
-
-  lastForm.querySelectorAll('.product-error, .quantity-error').forEach(e => e.remove());
-
-  let hasError = false;
-
-
-  if (!productValue) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'text-red-600 text-sm mt-1 product-error';
-    errorDiv.textContent = 'Please select a product.';
-    productSelect.parentElement.appendChild(errorDiv);
-    hasError = true;
-  }
-
-
-  if (!quantityValue || isNaN(quantityValue) || parseInt(quantityValue) <= 0) {
-    let errorDiv = document.createElement('div');
-    errorDiv.className = 'text-red-600 text-sm mt-1 quantity-error';
-    errorDiv.textContent = 'Please enter a valid quantity.';
-    quantityInput.parentElement.appendChild(errorDiv);
-    hasError = true;
-  }
-
-  if (hasError) return;
-
-  let formCount = parseInt(totalForms.value);
-  let template = document.querySelector('.item-form');
-  let newForm = template.cloneNode(true);
-
-  newForm.innerHTML = newForm.innerHTML.replace(
-    new RegExp(`${formsetPrefix}-\\d+-`, 'g'),
-    `${formsetPrefix}-${formCount}-`
-  );
-
-  newForm.querySelectorAll('input:not([type=hidden]), select').forEach(el => {
-    if (el.type !== 'checkbox') el.value = '';
-  });
-
-  let removeBtn = newForm.querySelector('.remove-item');
-  removeBtn.addEventListener('click', function() {
-    newForm.remove();
-    updateFormIndices();
-  });
-
-  container.appendChild(newForm);
-  totalForms.value = formCount + 1;
-  });
-document.getElementById('submit-order').addEventListener('click', function(e) {
-  let hasErrors = false;
-
-  // إزالة أي رسائل خطأ سابقة
-  document.querySelectorAll('.product-error, .quantity-error').forEach(el => el.remove());
-
-  let forms = document.querySelectorAll('.item-form');
-  let atLeastOneValid = false;
-
-  forms.forEach(form => {
-    let productSelect = form.querySelector('select');
-    let quantityInput = form.querySelector('input[type="number"], input[type="text"]');
+    let productSelect = lastForm.querySelector('select');
+    let quantityInput = lastForm.querySelector('input[type="number"]');
 
     let productValue = productSelect.value.trim();
     let quantityValue = quantityInput.value.trim();
 
-    let thisFormHasError = false;
+    lastForm.querySelectorAll('.product-error, .quantity-error').forEach(e => e.remove());
+
+    let hasError = false;
 
     if (!productValue) {
-      let errorDiv = document.createElement('div');
+      const errorDiv = document.createElement('div');
       errorDiv.className = 'text-red-600 text-sm mt-1 product-error';
       errorDiv.textContent = 'Please select a product.';
       productSelect.parentElement.appendChild(errorDiv);
-      thisFormHasError = true;
+      hasError = true;
     }
 
     if (!quantityValue || isNaN(quantityValue) || parseInt(quantityValue) <= 0) {
@@ -254,24 +242,80 @@ document.getElementById('submit-order').addEventListener('click', function(e) {
       errorDiv.className = 'text-red-600 text-sm mt-1 quantity-error';
       errorDiv.textContent = 'Please enter a valid quantity.';
       quantityInput.parentElement.appendChild(errorDiv);
-      thisFormHasError = true;
+      hasError = true;
     }
 
-    if (!thisFormHasError) {
-      atLeastOneValid = true;
-    } else {
-      hasErrors = true;
-    }
+    if (hasError) return;
+
+    let formCount = parseInt(totalForms.value);
+    let template = document.querySelector('.item-form');
+    let newForm = template.cloneNode(true);
+
+    newForm.innerHTML = newForm.innerHTML.replace(
+      new RegExp(`${formsetPrefix}-\\d+-`, 'g'),
+      `${formsetPrefix}-${formCount}-`
+    );
+
+    newForm.querySelectorAll('input:not([type=hidden]), select').forEach(el => {
+      if (el.type !== 'checkbox') el.value = '';
+    });
+
+    let removeBtn = newForm.querySelector('.remove-item');
+    removeBtn.addEventListener('click', function() {
+      newForm.remove();
+      updateFormIndices();
+    });
+
+    container.appendChild(newForm);
+    totalForms.value = formCount + 1;
   });
 
+  document.getElementById('submit-order').addEventListener('click', function(e) {
+    let hasErrors = false;
+    document.querySelectorAll('.product-error, .quantity-error').forEach(el => el.remove());
 
-  if (!atLeastOneValid) {
-    hasErrors = true;
-  }
+    let forms = document.querySelectorAll('.item-form');
+    let atLeastOneValid = false;
 
-  if (hasErrors) {
-    e.preventDefault(); 
-  }
+    forms.forEach(form => {
+      let productSelect = form.querySelector('select');
+      let quantityInput = form.querySelector('input[type="number"]');
+
+      let productValue = productSelect.value.trim();
+      let quantityValue = quantityInput.value.trim();
+
+      let thisFormHasError = false;
+
+      if (!productValue) {
+        let errorDiv = document.createElement('div');
+        errorDiv.className = 'text-red-600 text-sm mt-1 product-error';
+        errorDiv.textContent = 'Please select a product.';
+        productSelect.parentElement.appendChild(errorDiv);
+        thisFormHasError = true;
+      }
+
+      if (!quantityValue || isNaN(quantityValue) || parseInt(quantityValue) <= 0) {
+        let errorDiv = document.createElement('div');
+        errorDiv.className = 'text-red-600 text-sm mt-1 quantity-error';
+        errorDiv.textContent = 'Please enter a valid quantity.';
+        quantityInput.parentElement.appendChild(errorDiv);
+        thisFormHasError = true;
+      }
+
+      if (!thisFormHasError) {
+        atLeastOneValid = true;
+      } else {
+        hasErrors = true;
+      }
+    });
+
+    if (!atLeastOneValid) {
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      e.preventDefault(); 
+    }
   });
 });
 </script>
