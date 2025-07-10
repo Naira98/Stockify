@@ -1,8 +1,9 @@
+from pyexpat.errors import messages
 from django.shortcuts import render,redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, DetailView,DeleteView,TemplateView
+from django.views.generic import ListView, CreateView, DetailView,DeleteView,TemplateView,UpdateView
 from django.db.models import Q, F
-from inventory.forms import Addcategory, Addproduct,DeleteCategoryForm
+from inventory.forms import Addcategory, Addproduct,DeleteCategoryForm, ProductUpdateForm
 from .models import Category, Product
 from django.http import JsonResponse
 
@@ -131,3 +132,18 @@ class ProductDeleteView(DeleteView):
     model = Product
     template_name ='inventory/delete_product.html'  
     success_url = reverse_lazy('inventory:inventory') 
+
+
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductUpdateForm
+    template_name = 'inventory/edit_product.html'
+    success_url = reverse_lazy('inventory:inventory')
+
+    def form_valid(self, form):
+        # Save the form without modifying timestamps
+        self.object = form.save(commit=False)
+        self.object.save()
+        return super().form_valid(form)
