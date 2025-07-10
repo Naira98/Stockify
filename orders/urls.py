@@ -31,5 +31,6 @@ urlpatterns = [
         name="delete_supermarket",
     ),
      path('<int:pk>/', ConfirmOrderView.as_view(), name='order_details'),
-     
+      path("<int:pk>/delete/", OrderDeleteView.as_view(), name="order_delete"),
+      
 ]
