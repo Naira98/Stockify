@@ -7,8 +7,6 @@ categorySelect.addEventListener("change", async function () {
   // Reset the product dropdown
   productSelect.innerHTML = '<option value="">Select product</option>';
 
-  if (!categoryId) return;
-
   try {
     const response = await fetch(
       `/shipments/api/products/?category_id=${categoryId}`

@@ -28,17 +28,20 @@
           <th class="px-6 py-3">Factory</th> 
           <th class="px-6 py-3">Received At</th>
           <th class="px-6 py-3">Received By</th>
+          <th class="px-6 py-3">Created At</th>
           <th class="px-6 py-3">Status</th>
-          <th class="px-6 py-3">Actions</th>
+          <th class="px-6 py-3">Details</th>
+          <th class="px-6 py-3">Delete</th>        
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-100 text-sm">
         {% for shipment in shipments %}
-        <tr>
-          <td class="px-6 py-4 font-medium text-gray-900 text-center">{{ shipment.id }}</td>
-          <td class="px-6 py-4 font-medium text-gray-900 text-center">{{ shipment.factory.name }}</td>
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-6 py-4 text-center font-medium text-gray-900">{{ shipment.id }}</td>
+          <td class="px-6 py-4 text-center">{{ shipment.factory.name }}</td>
           <td class="px-6 py-4 text-center">{{ shipment.received_at|date:"Y-m-d H:i" }}</td>
           <td class="px-6 py-4 text-center">{{ shipment.received_by }}</td>
+          <td class="px-6 py-4 text-center">{{ shipment.created_at|date:"Y-m-d H:i" }}</td>
           <td class="px-6 py-4 text-center">
             <span class="px-2 py-1 rounded-full text-xs font-semibold
               {% if shipment.status == 'pending' %}bg-yellow-100 text-yellow-700
@@ -48,48 +51,50 @@
               {{ shipment.status|title }}
             </span>
           </td>
-          <td class="px-6 py-4 flex gap-3 items-center justify-center">
-            <!-- Info Icon (View Details) -->
+
+          <!-- View Column -->
+          <td class="px-6 py-4 text-center">
             <a href="{% url 'shipments:shipment_details' shipment.id %}" 
-              title="View Shipment"
-              class="text-blue-600 hover:text-blue-800">
+              class="text-blue-600 hover:text-blue-800 inline-flex justify-center items-center" 
+              title="View Shipment">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
                   viewBox="0 0 24 24" fill="none" stroke="currentColor" 
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-                  class="lucide lucide-info-icon lucide-info">
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"/>
                 <path d="M12 16v-4"/>
                 <path d="M12 8h.01"/>
               </svg>
             </a>
-
-            {% if shipment.status == "pending" %}
-              <!-- Trash Icon (Delete Shipment) -->
-              <button type="button"
-                      onclick="openConfirmModal(this)"
-                      data-id="{{ shipment.id }}"
-                      data-name="Shipment #{{ shipment.id }}"
-                      class="text-red-600 hover:text-red-800"
-                      title="Delete Shipment">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" 
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-trash-icon lucide-trash">
-                  <path d="M3 6h18"/>
-                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                </svg>
-              </button>
-            {% endif %}
           </td>
 
+
+          <!-- Delete Column -->
+          <td class="px-6 py-4 text-center">
+            {% if shipment.status == "pending" %}
+            <button type="button"
+                    onclick="openConfirmModal(this)"
+                    data-id="{{ shipment.id }}"
+                    data-name="Shipment #{{ shipment.id }}"
+                    class="text-red-600 hover:text-red-800"
+                    title="Delete Shipment">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"/>
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+            </button>
+            {% endif %}
+          </td>
         </tr>
         {% empty %}
         <tr>
-          <td colspan="5" class="px-6 py-4 text-center text-gray-500">No shipments found.</td>
+          <td colspan="7" class="px-6 py-4 text-center text-gray-500">No shipments found.</td>
         </tr>
         {% endfor %}
       </tbody>
+
     </table>
   </div>
 </div>
@@ -112,6 +117,39 @@
     </form>
   </div>
 </div>
+
+{% if page_obj.has_other_pages %}
+<div class="flex justify-center mt-6">
+  <nav class="inline-flex space-x-1 rounded-md shadow-sm" aria-label="Pagination">
+    {% if page_obj.has_previous %}
+      <a href="?{% if request.GET.factory %}factory={{ request.GET.factory }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}page={{ page_obj.previous_page_number }}" class="px-3 py-2 rounded-l-md bg-white border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100">
+        Previous
+      </a>
+    {% else %}
+      <span class="px-3 py-2 rounded-l-md bg-gray-100 border border-gray-300 text-sm text-gray-400 cursor-not-allowed">Previous</span>
+    {% endif %}
+
+    <!-- Page numbers -->
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+        <span class="px-3 py-2 bg-indigo-600 text-white text-sm font-medium">{{ num }}</span>
+      {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+        <a href="?{% if request.GET.factory %}factory={{ request.GET.factory }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}page={{ num }}"
+           class="px-3 py-2 bg-white border border-gray-300 text-sm text-gray-700 hover:bg-gray-100">{{ num }}</a>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <a href="?{% if request.GET.factory %}factory={{ request.GET.factory }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}page={{ page_obj.next_page_number }}" class="px-3 py-2 rounded-r-md bg-white border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100">
+        Next
+      </a>
+    {% else %}
+      <span class="px-3 py-2 rounded-r-md bg-gray-100 border border-gray-300 text-sm text-gray-400 cursor-not-allowed">Next</span>
+    {% endif %}
+  </nav>
+</div>
+{% endif %}
+
 
 
 <script src="{% static 'js/confirm_delete_shipment.js' %}"></script>

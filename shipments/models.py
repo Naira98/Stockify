@@ -1,10 +1,28 @@
-from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
-
 from stockify.models import TimestampModel
-from inventory.models import Product, Factory
+from inventory.models import Product
 from accounts.models import User
+
+
+class Factory(TimestampModel):
+    name = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False,
+        unique=True,
+    )
+    location = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False,
+    )
+
+    def __str__(self):
+        return f"{self.name}  ({self.location})"
+
+    class Meta(TimestampModel.Meta):
+        verbose_name_plural = "Factories"
 
 
 class Shipment(TimestampModel):
@@ -52,9 +70,7 @@ class Shipment(TimestampModel):
 
 class ShipmentItem(models.Model):
     shipment = models.ForeignKey(
-        Shipment,
-        on_delete=models.CASCADE,
-        related_name="items"
+        Shipment, on_delete=models.CASCADE, related_name="items"
     )
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()

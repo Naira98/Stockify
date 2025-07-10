@@ -6,12 +6,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from typing import cast
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.paginator import Paginator
 from django.db import transaction
 from accounts.models import User
 from .decorators import shipment_is_pending, shipment_is_loaded
 from django.urls import reverse, reverse_lazy
-from inventory.models import Factory, Product
-from .models import Shipment, ShipmentItem
+from inventory.models import Product
+from .models import Factory, Shipment, ShipmentItem
 from .forms import (
     AddShipmentItemForm,
     ShipmentForm,
@@ -26,9 +27,10 @@ def list_shipments(request):
     form = ShipmentFilterForm(request.GET or None)
     shipments = Shipment.objects.select_related("factory").all()
 
-    # Get the raw GET value to use in template
     selected_factory_id = request.GET.get("factory", "")
     status = request.GET.get("status", "")
+    from_date = request.GET.get("from_date")
+    to_date = request.GET.get("to_date")
 
     if selected_factory_id:
         shipments = shipments.filter(factory__id=selected_factory_id)
@@ -36,8 +38,16 @@ def list_shipments(request):
     if status:
         shipments = shipments.filter(status=status)
 
+    if from_date:
+        shipments = shipments.filter(created_at__date__gte=from_date)
+    if to_date:
+        shipments = shipments.filter(created_at__date__lte=to_date)
+
+    paginator = Paginator(shipments, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     statuses = [
-        ("", "All"),
         ("pending", "Pending"),
         ("loaded", "Loaded"),
         ("received", "Received"),
@@ -47,13 +57,15 @@ def list_shipments(request):
         request,
         "shipments/shipments.html",
         {
-            "shipments": shipments,
+            "page_obj": page_obj,
+            "shipments": page_obj.object_list,
             "form": form,
             "statuses": statuses,
             "previous_status": status,
             "selected_factory_id": selected_factory_id,
         },
     )
+
 
 
 @login_required
@@ -66,7 +78,7 @@ def delete_shipment(request, pk):
     return redirect("shipments:shipment_details", pk=pk)
 
 
-class CreateShipmentView(CreateView, LoginRequiredMixin):
+class CreateShipmentView(LoginRequiredMixin, CreateView):
     model = Shipment
     form_class = ShipmentForm
     template_name = "shipments/create_shipment.html"
@@ -209,8 +221,11 @@ def mark_shipment_received(request, pk):
 @require_GET
 def get_products_by_category(request):
     category_id = request.GET.get("category_id")
-    if not category_id:
-        return JsonResponse({"error": "Missing category_id"}, status=400)
 
-    products = Product.objects.filter(category_id=category_id).values("id", "name")
+    if category_id:
+        products = Product.objects.filter(category_id=category_id)
+    else:
+        products = Product.objects.all()
+
+    products = products.values("id", "name")
     return JsonResponse(list(products), safe=False)
