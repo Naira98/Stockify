@@ -154,3 +154,43 @@ class SupermarketListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Supermarket.objects.annotate(order_count=Count("order"))
+    
+@method_decorator(login_required, name="dispatch")
+class ConfirmOrderView(View):
+    def post(self, request, pk):
+        order = get_object_or_404(Order, pk=pk)
+
+        if not request.user.is_manager():
+            messages.error(request, "Only managers can confirm orders.")
+            return redirect("orders:order_detail", pk=pk)
+
+        if order.status != "pending":
+            messages.error(request, "Only pending orders can be confirmed.")
+            return redirect("orders:order_detail", pk=pk)
+
+        order_items = OrderItem.objects.filter(order=order).select_related("product")
+        insufficient_stock = []
+
+        for item in order_items:
+            if item.product.current_quantity < item.quantity:  # type: ignore
+                insufficient_stock.append(
+                    f"{item.product.name} (Available: {item.product.current_quantity}, Required: {item.quantity})"  # type: ignore
+                )
+
+        if insufficient_stock:
+            messages.error(
+                request, f"Insufficient stock for: {', '.join(insufficient_stock)}"
+            )
+            return redirect("orders:order_detail", pk=pk)
+
+        with transaction.atomic():
+            for item in order_items:
+                item.product.current_quantity -= item.quantity  # type: ignore
+                item.product.save()
+
+            order.status = "confirmed"
+            order.confirmed_by = request.user
+            order.save()
+
+        messages.success(request, "Order confirmed successfully.")
+        return redirect("orders:order_detail", pk=pk)
