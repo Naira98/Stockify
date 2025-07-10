@@ -66,7 +66,7 @@ def dashboard(request):
     ).count()
     zero_stock_products = Product.objects.filter(quantity=0).count()
     total_categories = Category.objects.count()
-
+    
     context = {
         "selected_days": days,
         "category_labels": json.dumps(category_labels),

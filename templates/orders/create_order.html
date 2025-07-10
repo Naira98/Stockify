@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+ 
+{% block title %}Create New Order{% endblock %}
+
+{% block sidebar %}
+{% include 'components/sidebar.html' with active='orders' %}
+{% endblock sidebar %}
+ 
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+<div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h1 class="text-3xl font-bold text-gray-800">Create New Order</h1>
+<p class="text-gray-600 mt-2">Fill in the details below to create a new order.</p>
+</div>
+<a href="{% url 'orders:order_list' %}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium gap-3">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-chevron-left-icon lucide-circle-chevron-left"><circle cx="12" cy="12" r="10"/><path d="m14 16-4-4 4-4"/></svg>
+        Back to Orders
+</a>
+</div>
+ 
+    <form method="post" id="order-form" class="space-y-6">
+      {% csrf_token %}
+ 
+      <!-- Form Errors -->
+      {% if form.errors %}
+<div class="bg-red-50 border-l-4 border-red-400 p-4 rounded">
+<div class="flex">
+<div class="flex-shrink-0">
+<span class="material-icons text-red-400">error</span>
+</div>
+<div class="ml-3">
+<p class="text-sm text-red-700">Please correct the errors below.</p>
+</div>
+</div>
+</div>
+      {% endif %}
+ 
+      <!-- Order Information -->
+<div class="space-y-4">
+<h2 class="text-xl font-semibold text-gray-800">Order Information</h2>
+<div class="bg-gray-50 p-5 rounded-lg space-y-4">
+<!-- Supermarket Field -->
+<div>
+<label for="{{ form.supermarket.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+              {{ form.supermarket.label }}
+</label>
+<div class="relative">
+              {{ form.supermarket }}
+              {% if form.supermarket.errors %}
+<div class="mt-1 text-sm text-red-600">
+                  {{ form.supermarket.errors }}
+</div>
+              {% endif %}
+</div>
+<a href="{% url 'orders:create_supermarket' %}" class="mt-2 inline-flex items-center text-sm text-indigo-600 hover:text-indigo-800 gap-3">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+              Add new supermarket
+</a>
+</div>
+ 
+          <!-- Notes Field -->
+<div>
+<label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+              {{ form.notes.label }}
+</label>
+            {{ form.notes }}
+</div>
+</div>
+</div>
+ 
+      <!-- Order Items -->
+<div class="space-y-4">
+<h2 class="text-xl font-semibold text-gray-800">Order Items</h2>
+        {{ formset.management_form }}
+<div id="order-items" class="space-y-4">
+          {% for form in formset %}
+<div class="item-form bg-gray-50 p-4 rounded-lg grid grid-cols-12 gap-4 items-end">
+            {% for hidden in form.hidden_fields %}
+              {{ hidden }}
+            {% endfor %}
+<!-- Product Field -->
+<div class="col-span-8">
+<label class="block text-sm font-medium text-gray-700 mb-1">
+                Product
+</label>
+<div class="relative">
+                {{ form.product }}
+                {% if form.product.errors %}
+<div class="mt-1 text-sm text-red-600">
+                    {{ form.product.errors }}
+</div>
+                {% endif %}
+</div>
+</div>
+<!-- Quantity Field -->
+<div class="col-span-3">
+<label class="block text-sm font-medium text-gray-700 mb-1">
+                Quantity
+</label>
+<div class="relative">
+                {{ form.quantity }}
+                {% if form.quantity.errors %}
+<div class="mt-1 text-sm text-red-600">
+                    {{ form.quantity.errors }}
+</div>
+                {% endif %}
+</div>
+</div>
+<!-- Remove Button -->
+<div class="col-span-1 flex justify-end">
+<button type="button" class="remove-item bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-colors">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+</button>
+</div>
+</div>
+          {% endfor %}
+</div>
+ 
+        <!-- Add Item Button -->
+<button type="button" id="add-item" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 gap-3">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          Add Item
+</button>
+</div>
+ 
+      <!-- Form Actions -->
+<div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+<a href="{% url 'orders:order_list' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Cancel
+</a>
+<button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Create Order
+</button>
+</div>
+</form>
+</div>
+</div>
+ 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const formsetPrefix = '{{ formset.prefix }}';
+  const totalForms = document.getElementById(`id_${formsetPrefix}-TOTAL_FORMS`);
+  const container = document.getElementById('order-items');
+  // Function to update form indices
+  function updateFormIndices() {
+    const forms = document.querySelectorAll('.item-form');
+    totalForms.value = forms.length;
+    forms.forEach((form, index) => {
+      form.querySelectorAll('input, select').forEach(el => {
+        if (el.name) {
+          el.name = el.name.replace(
+            new RegExp(`${formsetPrefix}-\\d+-`),
+            `${formsetPrefix}-${index}-`
+          );
+        }
+        if (el.id) {
+          el.id = el.id.replace(
+            new RegExp(`${formsetPrefix}-\\d+-`),
+            `${formsetPrefix}-${index}-`
+          );
+        }
+      });
+    });
+  }
+  // Add new item form
+  document.getElementById('add-item').addEventListener('click', function() {
+    const formCount = parseInt(totalForms.value);
+    const template = document.querySelector('.item-form');
+    const newForm = template.cloneNode(true);
+    // Update all input names/ids
+    newForm.innerHTML = newForm.innerHTML.replace(
+      new RegExp(`${formsetPrefix}-\\d+-`, 'g'),
+      `${formsetPrefix}-${formCount}-`
+    );
+    // Clear values
+    newForm.querySelectorAll('input:not([type=hidden]), select').forEach(el => {
+      if (el.type !== 'checkbox') el.value = '';
+    });
+    // Add delete handler
+    const removeBtn = newForm.querySelector('.remove-item');
+    removeBtn.addEventListener('click', function() {
+      newForm.remove();
+      updateFormIndices();
+    });
+    container.appendChild(newForm);
+    totalForms.value = formCount + 1;
+  });
+  // Initialize remove buttons for existing items
+  document.querySelectorAll('.remove-item').forEach(btn => {
+    btn.addEventListener('click', function() {
+      this.closest('.item-form').remove();
+      updateFormIndices();
+    });
+  });
+});
+</script>
+{% endblock %}

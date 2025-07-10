@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+ Create Supermarket
+{% endblock title %}
+{% block sidebar %}
+{% include 'components/sidebar.html' with active='orders' %}
+{% endblock sidebar %}
+{% block content %}
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Messages Display -->
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="px-4 py-3 rounded-md shadow-sm {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="bg-white p-8 rounded-lg shadow-md">
+            <h1 class="text-4xl font-bold text-gray-800 mb-6">Add Supermarket</h1>
+
+            <div class="mb-8">
+                <a class="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-300 gap-3" href="{% url 'orders:supermarket_list' %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-chevron-left-icon lucide-circle-chevron-left"><circle cx="12" cy="12" r="10"/><path d="m14 16-4-4 4-4"/></svg>
+                    Back to Supermarkets List
+                </a>
+            </div>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <!-- Render form fields manually to apply styling -->
+                <div class="mb-6">
+                    <label for="{{ form.name.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Name:</label>
+                    {{ form.name }}
+                    {% for error in form.name.errors %}
+                        <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-6">
+                    <label for="{{ form.location.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Location:</label>
+                    {{ form.location }}
+                    {% for error in form.location.errors %}
+                        <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button class="flex items-center justify-center bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300 shadow-sm gap-3"
+                            type="submit"
+                            name="_save">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save-icon lucide-save"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
+                        Save
+                    </button>
+
+                    <button class="flex items-center justify-center bg-teal-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-400 transition-colors duration-300 shadow-sm gap-3"
+                            type="submit"
+                            name="_addanother">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        Save and Add Another
+                    </button>
+
+                    <a href="{% url 'orders:create_order' %}" class="flex items-center justify-center bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-300 shadow-sm gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-x-icon lucide-circle-x"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
