@@ -115,12 +115,6 @@ class Order(models.Model):
         return None
         
     def remove_product_alternative(self, product):
-        """
-            Removes a product from the order and restores its stock (alternative approach).
-            - Uses transaction for atomicity
-        - Checks product validity before processing
-        - More verbose error handling
-        """
         with transaction.atomic():  # Ensure all operations succeed or fail together
             # Check if product exists in the order (alternative query style)
             if not OrderItem.objects.filter(order=self, product=product).exists():
