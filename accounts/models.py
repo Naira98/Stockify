@@ -7,7 +7,7 @@ class User(AbstractUser):
         size=[300, 300],
         quality=75,
         upload_to='profile_images/',
-        default='profile_images/default.jpg',
+        default='profile_images/default.png',
         blank=True,
         null=True
     )
