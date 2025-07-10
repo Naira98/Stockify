@@ -24,5 +24,5 @@ urlpatterns = [
         SupermarketCreateView.as_view(),
         name="create_supermarket",
     ),
-    
+    path("supermarket/list/", SupermarketListView.as_view(), name="supermarket_list"),
 ]
