@@ -7,9 +7,9 @@ from django.views import View
 from django.db import transaction
 from .models import Order, OrderItem, Supermarket
 from collections import defaultdict
-from inventory.models import Product
+from inventory.models import Product , Category
 from django.db.models import Count
-from .forms import OrderForm, OrderItemForm
+from .forms import OrderForm, OrderItemFormSet, SupermarketForm
 from .forms import SupermarketForm
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -19,6 +19,7 @@ from django.forms import inlineformset_factory
 from django.contrib.admin.views.decorators import staff_member_required
 
 # Create your views here.
+
 class OrderListView(LoginRequiredMixin, ListView):
     model = Order
     context_object_name = "page_obj"
@@ -63,3 +64,16 @@ class SupermarketCreateView(LoginRequiredMixin, CreateView):
 
         return response
     
+class OrderDetailView(LoginRequiredMixin, DetailView):
+    model = Order
+    template_name = "orders/order_details.html"
+    context_object_name = "order"
+    pk_url_kwarg = "order_id"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        products = Product.objects.all()
+        categories = set(product.category for product in products)
+        context["products"] = products
+        context["categories"] = categories
+        return context
