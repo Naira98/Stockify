@@ -37,4 +37,10 @@ urlpatterns = [
         DeleteProductFromOrderView.as_view(),
         name="delete_product",
     ),
+    path(
+        "<int:order_id>/add-product/",
+        AddProductToOrderView.as_view(),
+        name="add_product_to_order",
+    ),
+    
 ]
