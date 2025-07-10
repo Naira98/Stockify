@@ -146,3 +146,11 @@ def create_order(request):
     return render(
         request, "orders/create_order.html", {"form": form, "formset": formset}
     )
+
+class SupermarketListView(LoginRequiredMixin, ListView):
+    model = Supermarket
+    template_name = "orders/supermarket_list.html"
+    context_object_name = "supermarkets"
+
+    def get_queryset(self):
+        return Supermarket.objects.annotate(order_count=Count("order"))
