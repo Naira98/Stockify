@@ -61,3 +61,45 @@ class InventoryListView(ListView):
             return JsonResponse({'products': products})
         return super().render_to_response(context, **response_kwargs)
 
+class Addcategoryview(CreateView):
+    model = Category
+    form_class = Addcategory
+    template_name = 'inventory/add_category.html'
+    success_url = reverse_lazy('inventory:inventory')
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add New category'
+        return context
+    
+class DeleteCategoryView(TemplateView):
+    template_name = 'inventory/delete_category.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = DeleteCategoryForm()
+        context['categories'] = Category.objects.all()
+        return context
+        
+    def post(self, request, *args, **kwargs):
+        form = DeleteCategoryForm(request.POST)
+        if form.is_valid():
+            category = form.cleaned_data['category']
+            # Pass the category's ID (pk) instead of the object
+            return redirect('inventory:deletecategoryconfirm', pk=category.id)
+        return self.render_to_response(self.get_context_data(form=form))
+
+class DeleteCategoryConfirmView(DeleteView):
+    model = Category
+    template_name = 'inventory/delete_category_confirm.html'
+    success_url = reverse_lazy('inventory:inventory')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = self.get_object()
+        return context
+    
+
