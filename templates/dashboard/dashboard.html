@@ -1,119 +1,15 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="{% static 'images/logo.svg' %}" />
-    <title>Home | Stockify</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-  </head>
-  <body>
-    <div class="flex h-screen bg-gray-50">
+{% block title %} Home | Stockify {% endblock title %}
 
-    <!-- Sidebar -->
-    <aside class="w-20 md:w-64 bg-slate-800 text-slate-100 flex flex-col justify-between shadow-md transition-all duration-300">
-      <div class="p-4 md:p-6 flex flex-col flex-grow">
+{% block sidebar %} 
+    {% include 'components/sidebar.html' with active='dashboard' %}
+{% endblock sidebar %} 
 
-        <!-- Logo -->
-        <div class="flex justify-center mt-4 mb-10">
-          <img src="{% static 'images/logo.png' %}" alt="Logo" />
-        </div>
-
-        <!-- Navigation -->
-        <nav class="flex flex-col gap-1.5 flex-grow">
-
-          <!-- Dashboard -->
-          <a href="{% url 'dashboard' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
-              {% if active == 'dashboard' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
-              <div class="{% if active == 'dashboard' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
-                {% include "icons/dashboard.svg" %}
-              </div>
-              <p class="text-sm font-medium hidden md:block text-slate-100">Dashboard</p>
-            </div>
-          </a>
-
-          <!-- Inventory -->
-          <a href="{% url 'inventory:inventory' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
-              {% if active == 'inventory' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
-              <div class="{% if active == 'inventory' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
-                {% include "icons/inventory.svg" %}
-              </div>
-              <p class="text-sm font-medium hidden md:block text-slate-100">Inventory</p>
-            </div>
-          </a>
-
-          <!-- Shipments -->
-          <a href="{% url 'shipments:list_shipments' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
-              {% if active == 'shipments' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
-              <div class="{% if active == 'shipments' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
-                {% include "icons/truck.svg" %}
-              </div>
-              <p class="text-sm font-medium hidden md:block text-slate-100">Shipments</p>
-            </div>
-          </a>
-
-          <!-- Orders -->
-          <a href="#">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
-              {% if active == 'orders' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
-              <div class="{% if active == 'orders' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
-                {% include "icons/orders.svg" %}
-              </div>
-              <p class="text-sm font-medium hidden md:block text-slate-100">Orders</p>
-            </div>
-          </a>
-
-          <!-- Users (only for staff) -->
-          {% if request.user.is_staff %}
-          <a href="{% url 'accounts:user_management' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
-              {% if active == 'user_management' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
-              <div class="{% if active == 'user_management' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
-                {% include "icons/users.svg" %}
-              </div>
-              <p class="text-sm font-medium hidden md:block text-slate-100">Users</p>
-            </div>
-          </a>
-          {% endif %}
-        </nav>
-
-        <!-- Divider -->
-        <hr class="border-t border-slate-700 my-4" />
-
-        <!-- Bottom Links -->
-        <div class="flex flex-col gap-1.5">
-          <!-- Profile -->
-          <a href="{% url 'accounts:profile' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 hover:bg-slate-800">
-              <div class="text-slate-400 hover:text-cyan-300 transition-colors duration-200">
-                {% include "icons/profile.svg" %}
-              </div>
-              <p class="text-sm font-medium hidden md:block text-slate-100">Profile</p>
-            </div>
-          </a>
-
-          <!-- Logout -->
-          <a href="{% url 'accounts:logout' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 hover:bg-slate-800">
-              <div class="text-slate-400 hover:text-cyan-300 transition-colors duration-200">
-                {% include "icons/logout.svg" %}
-              </div>
-              <p class="text-sm font-medium hidden md:block text-slate-100">Logout</p>
-            </div>
-          </a>
-        </div>
-      </div>
-    </aside>
-
-
+{% block content %}
   <!-- Main Content Area -->
-  <main class="flex-1 flex flex-col relative overflow-y-auto">
+  <main class="flex-1 flex flex-col relative overflow-y-auto -p-6">
 
     <!-- Dashboard Header -->
     <div class=" top-0 bg-slate-100 py-6 px-6 shadow-md">
@@ -213,7 +109,7 @@
     </div>
   
     <!-- Main Content Area -->
-    <main class="bg-white py-10">
+    <main class="bg-white py-10 mt-7">
       <!-- Charts Section -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white shadow rounded-lg">
@@ -331,5 +227,4 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/dashboard.js' %}"></script>
-  </body>
-</html>
+{% endblock content %}
