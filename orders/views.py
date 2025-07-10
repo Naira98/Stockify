@@ -240,3 +240,27 @@ def manager_required(view_func):
         return view_func(request, *args, **kwargs)
 
     return _wrapped_view
+
+@method_decorator([login_required, manager_required], name="dispatch")
+class DeleteSupermarketView(View):
+    def post(self, request, supermarket_id):
+        supermarket = get_object_or_404(Supermarket, id=supermarket_id)
+
+        with transaction.atomic():
+            orders = Order.objects.filter(supermarket=supermarket)
+
+            for order in orders:
+                if order.status in ["Pending", "Loaded"]:
+                    for item in order.items.all():  # type: ignore
+                        item.product.quantity += item.quantity
+                        item.product.save()
+
+            orders.delete()
+            supermarket.delete()
+
+            messages.success(
+                request, "Supermarket and related orders have been deleted."
+            )
+
+        return redirect("orders:supermarket_list")
+    
