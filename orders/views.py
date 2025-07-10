@@ -288,3 +288,22 @@ class DeleteProductFromOrderView(View):
         )
         return redirect("orders:order_details", order_id=order.pk)
 
+@method_decorator([login_required, manager_required], name="dispatch")
+class ChangeOrderStatusView(View):
+    def post(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        status_flow = ["Pending", "Confirmed", "Delivered"]
+
+        if order.status == "Delivered":
+            messages.error(request, "Delivered orders cannot be modified.")
+        else:
+            try:
+                current_index = status_flow.index(order.status)
+                new_status = status_flow[current_index + 1]
+                order.status = new_status
+                order.save()
+                messages.success(request, f"Order status updated to {new_status}.")
+            except (ValueError, IndexError):
+                messages.error(request, "Invalid status transition.")
+
+        return redirect("orders:order_details", order_id=order.pk)
