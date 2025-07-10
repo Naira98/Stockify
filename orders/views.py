@@ -54,3 +54,12 @@ class SupermarketCreateView(LoginRequiredMixin, CreateView):
     form_class = SupermarketForm
     template_name = "orders/create_supermarket.html"
     success_url = reverse_lazy("orders:create_order")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        if "_addanother" in self.request.POST:
+            return redirect("orders:create_supermarket")
+
+        return response
+    
