@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "accounts",
     "inventory",
     "shipments",
-    'orders',
+    "orders",
 ]
 
 MIDDLEWARE = [
@@ -83,14 +83,14 @@ DATABASES = {
         "USER": "stockify_user",
         "PASSWORD": "mypassword",
         "HOST": "localhost",
-        "PORT": "5432",
+        "PORT": "5433",
     }
 }
 
-AUTH_USER_MODEL = 'accounts.User'
-LOGIN_URL = '/accounts/login/'  
-LOGIN_REDIRECT_URL = '/accounts/profile/'  
-LOGOUT_REDIRECT_URL = '/accounts/login/' 
+AUTH_USER_MODEL = "accounts.User"
+LOGIN_URL = "/accounts/login"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/accounts/login"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -136,8 +136,6 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-AUTH_USER_MODEL = "accounts.User"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"

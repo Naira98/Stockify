@@ -19,11 +19,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from . import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # path("inventory/", include("inventory.urls")),
+    path("", views.dashboard, name="dashboard"),
+    path("accounts/", include("accounts.urls", namespace="accounts")),
+    path("inventory/", include("inventory.urls")),
     path("shipments/", include("shipments.urls")),
-    path("accounts/", include("accounts.urls")),
-    path("", include("django.contrib.auth.urls")),
+    path("orders/", include("orders.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

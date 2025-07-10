@@ -1,54 +1,95 @@
+{% load static %}
 <header class="h-20 bg-white flex items-center justify-between px-6 shadow-md">
-  <!-- Search -->
-  <div class="relative w-64">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
-      width="20"
-      height="20"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      stroke-width="2"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
-      />
-    </svg>
-    <input
-      type="text"
-      placeholder="Search..."
-      class="w-full pl-11 pr-4 py-2.5 text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    />
+  <!-- Left Section -->
+  <div class="flex items-center space-x-4">
+    <!-- Logo/Brand -->
+    <a href="{% url 'dashboard' %}" class="flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+      </svg>
+      <span class="ml-2 text-xl font-bold text-gray-800 hidden md:inline">STOCKIFY</span>
+    </a>
+
+    <!-- Search (Only shown for authenticated users) -->
+    {% if user.is_authenticated %}
+      <div class="relative w-64 hidden md:block">
+        <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+        </svg>
+        <input type="text" placeholder="Search..." class="w-full pl-11 pr-4 py-2.5 text-base border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
+    {% endif %}
   </div>
 
-  <!-- Profile -->
+  <!-- Right Section -->
   <div class="flex items-center space-x-4">
-    <span class="text-gray-700 font-medium">username</span>
-    <img
-      src="https://i.pravatar.cc/40"
-      alt="Profile"
-      class="w-10 h-10 rounded-full object-cover"
-    />
-    <a href="#">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#615fff"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="lucide lucide-log-out-icon lucide-log-out"
-      >
-        <path d="m16 17 5-5-5-5" />
-        <path d="M21 12H9" />
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-      </svg>
-    </a>
+    {% if user.is_authenticated %}
+      <!-- User Management Link (Only for Managers) -->
+      {% if user.is_superuser %}
+        <a href="{% url 'accounts:user_management' %}" class="hidden md:flex items-center px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg hover:bg-indigo-100 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>Users
+        </a>
+      {% endif %}
+
+      <!-- Mobile Menu Button (Hamburger) -->
+      <button class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <!-- User Profile Section -->
+      <div class="hidden md:flex items-center space-x-2">
+        <!-- User Badges -->
+        {% if user.is_superuser %}
+          <span class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+            </svg>Manager
+          </span>
+        {% elif user.is_user %}
+          <span class="inline-flex items-center bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 005 10a6 6 0 0012 0c0-.35-.03-.693-.083-1.027A5 5 0 0010 11z" clip-rule="evenodd" />
+            </svg>Employee
+          </span>
+        {% endif %}
+
+        <!-- Username -->
+        <span class="text-gray-700 font-medium hidden lg:inline">{{ user.username }}</span>
+      </div>
+
+      <!-- Profile Image -->
+      <div class="relative">
+        {% if user.image %}
+          <img src="{{ user.image.url }}" alt="Profile" class="w-10 h-10 rounded-full object-cover cursor-pointer" id="profile-dropdown-trigger" />
+        {% else %}
+          <div class="bg-gray-200 border-2 border-dashed rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer" id="profile-dropdown-trigger">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+        {% endif %}
+
+        <!-- Dropdown Menu -->
+        <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50" id="profile-dropdown">
+          <a href="{% url 'accounts:profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+          <div class="border-t border-gray-200"></div>
+          <form method="post" action="{% url 'accounts:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <!-- Login Button -->
+      <a href="{% url 'accounts:login' %}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">Login</a>
+    {% endif %}
   </div>
 </header>
+
+
+  <script src="{% static 'js/navbar.js' %}"></script>
+
