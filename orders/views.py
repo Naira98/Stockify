@@ -344,3 +344,41 @@ class EditProductInOrderView(View):
 
         return redirect("orders:order_details", order_id=order.pk)
 
+@method_decorator(login_required, name="dispatch")
+class AddProductToOrderView(View):
+    def post(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+
+        if order.status in ["Confirmed", "Delivered"]:
+            messages.error(
+                request,
+                "You cannot add the product as the order has already been confirmed or delivered.",
+            )
+            return redirect("orders:order_details", order_id=order.pk)
+
+        product_id = request.POST.get("product")
+        quantity = request.POST.get("quantity")
+
+        if not product_id or not quantity:
+            messages.error(request, "Please select a product and enter a quantity.")
+            return redirect("orders:order_details", order_id=order.pk)
+
+        try:
+            quantity = int(quantity)
+            if quantity <= 0:
+                messages.error(request, "Quantity must be greater than zero.")
+                return redirect("orders:order_details", order_id=order.pk)
+        except (ValueError, TypeError):
+            messages.error(request, "Invalid quantity.")
+            return redirect("orders:order_details", order_id=order.pk)
+
+        product = get_object_or_404(Product, id=product_id)
+
+        error_message = order.add_product(product, quantity)
+
+        if error_message:
+            messages.error(request, error_message)
+        else:
+            messages.success(request, f"{quantity}x {product.name} added to the order.")
+
+        return redirect("orders:order_details", order_id=order.pk)
