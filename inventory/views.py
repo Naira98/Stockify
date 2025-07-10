@@ -102,4 +102,32 @@ class DeleteCategoryConfirmView(DeleteView):
         context['category'] = self.get_object()
         return context
     
+class AddProductView(CreateView):
+    model = Product
+    form_class = Addproduct
+    template_name = 'inventory/add_product.html'
+    success_url = reverse_lazy('inventory:inventory')
 
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add New Product'
+        return context
+
+class Productdetailview(DetailView):
+    model = Product
+    template_name = 'inventory/details.html'
+    context_object_name = 'product'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.get_object()
+        context['is_low_stock'] = product.quantity > 0 and product.quantity <= product.critical_amount
+        context['is_out_of_stock'] = product.quantity == 0
+        return context
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name ='inventory/delete_product.html'  
+    success_url = reverse_lazy('inventory:inventory') 
