@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from stockify.models import TimestampModel
+from django.db import transaction
 
 
 # Create your models here.
