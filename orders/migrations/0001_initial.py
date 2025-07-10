@@ -10,7 +10,9 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+
         ('inventory', '0002_alter_category_options'),
+
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -39,7 +41,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.PositiveIntegerField()),
+
                 ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='orders.order')),
+
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventory.product')),
             ],
         ),
