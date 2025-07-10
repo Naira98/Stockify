@@ -83,3 +83,66 @@ OrderItemFormSet = inlineformset_factory(
     Order, OrderItem, form=OrderItemForm, extra=1, can_delete=True
 ) 
 
+@login_required
+def create_order(request):
+    if request.method == "POST":
+        form = OrderForm(request.POST)
+        formset = OrderItemFormSet(request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            with transaction.atomic():
+                order = form.save(commit=False)
+                order.created_by = request.user
+                order.status = "confirmed"
+                order.save()
+
+                insufficient_stock = []
+                product_quantities = defaultdict(int)
+
+                # Collect product quantities
+                for form_item in formset:
+                    if form_item.cleaned_data and not form_item.cleaned_data.get(
+                        "DELETE", False
+                    ):
+                        product = form_item.cleaned_data["product"]
+                        quantity = form_item.cleaned_data["quantity"]
+                        product_quantities[product] += quantity
+
+                # Check stock
+                for product, total_quantity in product_quantities.items():
+                    if total_quantity > product.quantity:
+                        insufficient_stock.append(
+                            f"{product.name} (Available: {product.quantity})"
+                        )
+
+                if insufficient_stock:
+                    messages.error(
+                        request,
+                        f"Not enough stock for: {', '.join(insufficient_stock)}.",
+                    )
+                    return render(
+                        request,
+                        "orders/create_order.html",
+                        {"form": form, "formset": formset},
+                    )
+
+                # Deduct stock & create OrderItems
+                for product, total_quantity in product_quantities.items():
+                    product.quantity -= total_quantity
+                    product.save()
+
+                    OrderItem.objects.create(
+                        order=order, product=product, quantity=total_quantity
+                    )
+
+                messages.success(request, "Order created successfully.")
+                return redirect("orders:order_list")
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = OrderForm()
+        formset = OrderItemFormSet()
+
+    return render(
+        request, "orders/create_order.html", {"form": form, "formset": formset}
+    )
