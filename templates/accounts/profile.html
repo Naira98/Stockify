@@ -19,9 +19,11 @@
             <div class="inline-block relative">
               <img src="{{ user.image.url|default:'https://i.pravatar.cc/150' }}" alt="Profile Image" class="w-24 h-24 rounded-full object-cover border-4 border-white mx-auto" />
               <div class="absolute bottom-0 right-0 bg-white rounded-full p-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                </svg>
+                <a href="{% url 'accounts:edit_profile' %}">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                </a>
               </div>
             </div>
             <h2 class="text-xl font-bold text-white mt-3">{{ user.username }}</h2>
@@ -29,25 +31,15 @@
           </div>
 
           <div class="py-4">
-            <a href="{% url 'profile' %}" class="flex items-center px-6 py-3 text-indigo-600 bg-indigo-50 font-medium">
+            <a href="{% url 'accounts:profile' %}" class="flex items-center px-6 py-3 text-indigo-600 bg-indigo-50 font-medium">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
               </svg>Profile Overview
             </a>
-            <a href="{% url 'edit_profile' %}" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 font-medium">
+            <a href="{% url 'accounts:edit_profile' %}" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 font-medium">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
               </svg>Edit Profile
-            </a>
-            <a href="#" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 font-medium">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-              </svg>Security Settings
-            </a>
-            <a href="#" class="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 font-medium">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
-              </svg>Notifications
             </a>
           </div>
         </div>
@@ -62,7 +54,13 @@
             </div>
             <div class="flex justify-between items-center">
               <span class="text-gray-600">Last login</span>
-              <span class="font-medium">{{ user.last_login|date:'M d, Y' }}</span>
+              <span class="font-medium">
+                {% if user.last_login %}
+                  {{ user.last_login|date:'M d, Y' }}
+                {% else %}
+                  Never
+                {% endif %}
+              </span>
             </div>
             <div class="flex justify-between items-center">
               <span class="text-gray-600">Status</span>
@@ -139,11 +137,11 @@
             <div class="mb-8">
               <div class="flex justify-between items-center mb-3">
                 <h3 class="text-sm font-medium text-gray-500">About Me</h3>
-                <button class="text-indigo-600 text-sm font-medium flex items-center">
+                <a href="{% url 'accounts:edit_profile' %}" class="text-indigo-600 text-sm font-medium flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                   </svg>Edit
-                </button>
+                </a>
               </div>
               <div class="bg-gray-50 rounded-lg p-4 min-h-[120px]">
                 {% if user.bio %}
@@ -156,82 +154,15 @@
 
             <!-- Actions -->
             <div class="flex flex-wrap gap-4 border-t border-gray-200 pt-6">
-              <a href="{% url 'edit_profile' %}" class="px-5 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition flex items-center">
+              <a href="{% url 'accounts:edit_profile' %}" class="px-5 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                 </svg>Edit Profile
               </a>
-              <a href="#" class="px-5 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                </svg>Change Password
-              </a>
-              <a href="#" class="px-5 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>Get Help
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="mt-8 bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div class="border-b border-gray-200 px-6 py-4">
-            <h2 class="text-xl font-bold text-gray-800">Recent Activity</h2>
-          </div>
-          <div class="p-6">
-            <div class="flex items-start border-l-2 border-indigo-200 pl-4 pb-4">
-              <div class="bg-indigo-100 p-2 rounded-full mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                  <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              <div>
-                <p class="font-medium">Profile viewed</p>
-                <p class="text-gray-600 text-sm">You viewed your profile</p>
-                <p class="text-gray-400 text-xs mt-1">Just now</p>
-              </div>
-            </div>
-
-            <div class="flex items-start border-l-2 border-indigo-200 pl-4 pb-4">
-              <div class="bg-indigo-100 p-2 rounded-full mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              <div>
-                <p class="font-medium">Product added</p>
-                <p class="text-gray-600 text-sm">Added "Wireless Headphones" to inventory</p>
-                <p class="text-gray-400 text-xs mt-1">2 hours ago</p>
-              </div>
-            </div>
-
-            <div class="flex items-start border-l-2 border-indigo-200 pl-4">
-              <div class="bg-indigo-100 p-2 rounded-full mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                  <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              <div>
-                <p class="font-medium">Report generated</p>
-                <p class="text-gray-600 text-sm">Monthly inventory report</p>
-                <p class="text-gray-400 text-xs mt-1">Yesterday</p>
-              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-{% endblock %}
-
-{% block sidebar %}
-  {% include 'components/sidebar.html' with active='profile' %}
-{% endblock %}
-
-{% block navbar %}
-  {% include 'components/navbar.html' %}
 {% endblock %}

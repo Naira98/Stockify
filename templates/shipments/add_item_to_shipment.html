@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Add Product to Shipment{% endblock %}
+
+{% block sidebar %}
+  {% include 'components/sidebar.html' with active='shipments' %}
+{% endblock sidebar %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-10">
+  <h1 class="text-2xl font-bold mb-6 text-center">Add Product to Shipment</h1>
+
+  <form method="post" id="add-product-form">
+    {% csrf_token %}
+
+    <div class="mb-4">
+      <label for="id_category" class="block text-sm font-medium">Category</label>
+      {{ form.category }}
+      {% if form.category.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ form.category.errors.0 }}</p>
+      {% endif %}
+    </div>
+
+    <div class="mb-4">
+      <label for="id_product" class="block text-sm font-medium">Product</label>
+      {{ form.product }}
+      {% if form.product.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ form.product.errors.0 }}</p>
+      {% endif %}
+    </div>
+
+    <div class="mb-6">
+      <label for="id_quantity" class="block text-sm font-medium">Quantity</label>
+      {{ form.quantity }}
+      {% if form.quantity.errors %}
+        <p class="text-red-600 text-sm mt-1">{{ form.quantity.errors.0 }}</p>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+      Add
+    </button>
+  </form>
+</div>
+
+<script src="{% static 'js/add_item_to_shipment.js' %}"></script>
+{% endblock %}
