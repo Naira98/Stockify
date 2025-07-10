@@ -1,100 +1,63 @@
 from django.db import models
-from accounts.models import User
-from inventory.models import Product, Category
-from django.utils import timezone
 from django.core.exceptions import ValidationError
+from inventory.models import Product
 from django.db import transaction
+from accounts.models import User
 from stockify.models import TimestampModel
 
 
-# Create your models here.
-
-
-
-class Supermarket(models.Model):
-    """Supermarket model for customers"""
-    name = models.CharField(max_length=100)
-    location = models.CharField(max_length=100)
-
+class Supermarket(TimestampModel):
+    name = models.CharField(max_length=255, unique=True)
+    location = models.TextField()
 
     def __str__(self):
         return self.name
 
 
-class Order(models.Model):
-    """Order model for outgoing products to supermarkets"""
+class Order(TimestampModel):
     STATUS_CHOICES = [
-        ('Pending', 'Pending'),
-        ('Confirmed', 'Confirmed'),
-         ('Delivered', 'Delivered'),
+        ("pending", "Pending"),
+        ("confirmed", "Confirmed"),
+        ("delivered", "Delivered"),
     ]
+
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
     delivery_date = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_orders')
-    confirmed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='confirmed_orders')
-    products = models.ManyToManyField(Product, through='OrderItem')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="created_orders"
+    )
+    confirmed_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="confirmed_orders",
+    )
 
     def __str__(self):
-        return f"Order #{self.id} to {self.supermarket.name}"
-    
+        return f"Order for {self.supermarket.name}"
 
-    def confirm_order(self, confirmed_by):
-        """Confirm order and update product quantities"""
-        if self.status == 'pending':
-            self.status = 'confirmed'
-            self.confirmed_by = confirmed_by
-            self.confirmed_at = timezone.now()
-            self.save()
-            
-            # Update product quantities
-            for item in self.orderitem_set.all():
-                if item.product.current_quantity >= item.quantity:
-                    item.product.current_quantity -= item.quantity
-                    item.product.save()
+    def total_items(self):
+        return sum(item.quantity for item in self.order_items.all()) # type: ignore
 
-    def add_product(self, product, quantity):         
-        if quantity <= 0:
-            return "Quantity must be greater than zero."
-    
-    # Order status validation
-        if self.status != 'pending':
-            return "Products can only be added to pending orders."   
-        
-        if quantity > product.current_quantity:
-            return f"Insufficient stock. Available: {product.current_quantity}"
-        
-        with transaction.atomic():
-        # Get or create order item
-            order_item, created = OrderItem.objects.get_or_create(
-            order=self,
-            product=product,
-            defaults={'quantity': quantity}
-        )
+    def add_product(self, product, quantity):
+        if quantity > product.quantity:
+            return f"Limited stock: only {product.quantity} units left."
 
-        if self.status == 'confirmed':
-            if product.current_quantity < quantity:
-                raise ValidationError(
-                    f"Insufficient stock for {product.name}. "
-                    f"Available: {product.current_quantity}, Requested: {quantity}"
-                )
-        order_item, created = OrderItem.objects.get_or_create(
-            order=self,
-            product=product,
-            defaults={'quantity': quantity}
-        )
-        if not created:
-               order_item.quantity += quantity
-               order_item.save()
+        order = OrderItem.objects.filter(order=self, product=product).first()
 
-               product.current_quantity -= quantity
-               product.save()
-    
-        return None
+        if not order:
+            order = OrderItem(order=self, product=product, quantity=0)
+            order.save()
+            created = True
+        else:
+            created = False
 
     def update_product(self, product, new_quantity):
-       
+        """
+        Updates the quantity of a product in the order.
+        """
         try:
             order = OrderItem.objects.get(order=self, product=product)
         except OrderItem.DoesNotExist:
@@ -112,7 +75,7 @@ class Order(models.Model):
         order.save()
 
         return None
-        
+
     def remove_product_alternative(self, product):
         """
             Removes a product from the order and restores its stock (alternative approach).
@@ -142,14 +105,15 @@ class Order(models.Model):
 
         return f"Removed {order_item.quantity} of {product.name} from order"
 
-class OrderItem(models.Model):        
+
+class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
         return f"{self.product.name} - {self.quantity}"
-    
+
     def delete(self, *args, **kwargs):
         product = self.product
         quantity_to_restore = self.quantity

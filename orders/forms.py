@@ -12,7 +12,7 @@ class SupermarketForm(forms.ModelForm):
                     "class": "border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 }
             ),
-             "location": forms.Textarea(
+            "location": forms.Textarea(
                 attrs={
                     "class": "border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500",
                     "rows": 3,
@@ -20,10 +20,11 @@ class SupermarketForm(forms.ModelForm):
             ),
         }
 
+
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ["supermarket"]    
+        fields = ["supermarket"]
         widgets = {
             "supermarket": forms.Select(
                 attrs={
@@ -32,16 +33,17 @@ class OrderForm(forms.ModelForm):
             ),
         }
 
+
 class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem
-        fields = ["product", "quantity"]       
+        fields = ["product", "quantity"]
         widgets = {
             "product": forms.Select(
                 attrs={
                     "class": "border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                 }
-            ),    
+            ),
             "quantity": forms.NumberInput(
                 attrs={
                     "class": "border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500",
@@ -63,3 +65,14 @@ class OrderItemForm(forms.ModelForm):
                 )
 
         return cleaned_data
+
+
+OrderItemFormSet = forms.inlineformset_factory(
+    Order,
+    OrderItem,
+    form=OrderItemForm,
+    extra=0,
+    can_delete=True,
+    validate_min=True,
+    min_num=1,
+)
