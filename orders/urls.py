@@ -1,4 +1,4 @@
 from django.urls import path
-from . import views
+from accounts.models import User
 
 app_name = 'orders'
