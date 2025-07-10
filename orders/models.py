@@ -32,7 +32,7 @@ class Order(models.Model):
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     delivery_date = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_orders')
     confirmed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='confirmed_orders')
     products = models.ManyToManyField(Product, through='OrderItem')

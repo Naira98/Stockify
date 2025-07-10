@@ -13,6 +13,7 @@ from .views import (
     EditProductInOrderView,
     ChangeOrderStatusView,
     ConfirmOrderView,
+    OrderDetailView,
 )
 app_name = 'orders'
 
@@ -31,13 +32,10 @@ urlpatterns = [
         DeleteSupermarketView.as_view(),
         name="delete_supermarket",
     ),
-    path('<int:pk>/', ConfirmOrderView.as_view(), name='order_details'),
+    path('<int:order_id>/', OrderDetailView.as_view(), name='order_details'),
+    path('<int:pk>/confirm/', ConfirmOrderView.as_view(), name='confirm_order'),
     path("<int:pk>/delete/", OrderDeleteView.as_view(), name="order_delete"),
-    path(
-        "<int:order_id>/delete-product/<int:item_id>/",
-        DeleteProductFromOrderView.as_view(),
-        name="delete_product",
-    ),
+    path("<int:order_id>/delete-product/<int:item_id>/",DeleteProductFromOrderView.as_view(),name="delete_product"),
     path(
         "<int:order_id>/add-product/",
         AddProductToOrderView.as_view(),
