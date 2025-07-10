@@ -1,5 +1,6 @@
 from django.urls import path
 from accounts.models import User
+from django import forms
 from .views import (
     OrderListView,
     create_order,
@@ -53,3 +54,38 @@ urlpatterns = [
         name="change_order_status",
     ),
 ]
+
+class AdminUserEditForm(forms.ModelForm):
+    ROLE_CHOICES = (
+        ("admin", "Admin"),
+        ("employee", "Employee"),
+    )
+
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        required=True,
+        label="User Role",
+        widget=forms.RadioSelect(attrs={"class": "flex space-x-4"}),
+        initial="employee",
+    )
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "first_name", "last_name", "role"]
+
+        def save(self, commit=True):
+            user = super().save(commit=False)
+            role = self.cleaned_data.get("role")
+
+            if role == "admin":
+                user.is_superuser = True
+                user.is_staff = True
+                user.is_user = False
+            else:
+                user.is_superuser = False
+                user.is_staff = False
+                user.is_user = True
+
+            if commit:
+                user.save()
+            return user
