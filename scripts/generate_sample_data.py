@@ -265,7 +265,7 @@ for _ in range(15):
     supermarket = random.choice(supermarkets)
     created_by = random.choice(users)
     created_at = random_date_within(90)
-    status = random.choice(["pending", "confirmed", "delivered"])
+    status = random.choice(["Pending", "Confirmed", "Delivered"])
 
     order = Order.objects.create(
         supermarket=supermarket,
@@ -275,7 +275,7 @@ for _ in range(15):
         updated_at=created_at,
     )
 
-    if status in ["confirmed", "delivered"]:
+    if status in ["Confirmed", "Delivered"]:
         order.confirmed_by = random.choice(users)
         order.delivery_date = created_at + timedelta(days=random.randint(1, 5))
         order.save()
