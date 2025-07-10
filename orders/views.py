@@ -48,3 +48,9 @@ class OrderListView(LoginRequiredMixin, ListView):
         context["status_choices"] = Order.STATUS_CHOICES
         return context
     
+@method_decorator(staff_member_required, name="dispatch")
+class SupermarketCreateView(LoginRequiredMixin, CreateView):
+    model = Supermarket
+    form_class = SupermarketForm
+    template_name = "orders/create_supermarket.html"
+    success_url = reverse_lazy("orders:create_order")
