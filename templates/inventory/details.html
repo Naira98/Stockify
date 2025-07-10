@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="bg-gray-50 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+    <div class="md:flex">
+      <div class="md:flex-shrink-0">
+        <img class="h-48 w-full object-cover md:w-48" src="{{ product.image.url }}" alt="{{ product.name }}">
+      </div>
+      <div class="p-8">
+        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+          {{ product.category.name }}
+        </div>
+        <h1 class="block mt-1 text-lg leading-tight font-medium text-black">
+          {{ product.name }}
+        </h1>
+        <div class="mt-4">
+          <p class="text-gray-600">
+            <span class="font-semibold">Stock:</span> 
+            <span class="{% if product.is_low_stock %}text-red-500{% else %}text-gray-800{% endif %}">
+              {{ product.quantity }}
+            </span>
+            (Critical: {{ product.critical_amount }})
+          </p>
+          {% if product.is_low_stock %}
+            <p class="mt-2 text-red-500">⚠️ Low Stock Warning!</p>
+          {% endif %}
+          {% if product.is_out_of_stock %}
+            <p class="mt-2 text-red-500">🚫 Out of Stock!</p>
+          {% endif %}
+        </div>
+        <div class="mt-4">
+          <h2 class="text-sm font-semibold text-gray-700">Description</h2>
+          <p class="mt-2 text-gray-500">
+            {{ product.description|default:"No description available" }}
+          </p>
+        </div>
+        <div class="mt-6">
+          <a href="{% url 'inventory:inventory' %}" 
+             class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
+            Back to Inventory
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
