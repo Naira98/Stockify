@@ -194,3 +194,39 @@ class ConfirmOrderView(View):
 
         messages.success(request, "Order confirmed successfully.")
         return redirect("orders:order_detail", pk=pk)
+
+
+class OrderDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Order
+    template_name = "orders/order_confirm_delete.html"
+    success_url = reverse_lazy("orders:order_list")
+
+    def test_func(self):
+
+        order = self.get_object()
+        return order.status not in ["Confirmed", "Delivered"]  # type: ignore
+
+    def delete(self, request, *args, **kwargs):
+
+        order = self.get_object()
+
+        for item in order.items.all():  # type: ignore
+            product = item.product
+            product.quantity += item.quantity
+            product.save()
+
+        messages.success(
+            request, "Order has been successfully deleted and stock restored."
+        )
+        return super().delete(request, *args, **kwargs)
+
+    def handle_no_permission(self):  # type: ignore
+        """
+        If test_func fails (i.e., the order is confirmed or delivered)
+        """
+        order = self.get_object()
+        messages.error(
+            self.request,
+            "This order cannot be deleted because it is already confirmed or delivered.",
+        )
+        return redirect("orders:order_details", order_id=order.pk)
