@@ -9,6 +9,7 @@ from .models import Order, OrderItem, Supermarket
 from collections import defaultdict
 from inventory.models import Product , Category
 from django.db.models import Count
+from .forms import OrderForm, OrderItemForm
 from .forms import OrderForm, OrderItemFormSet, SupermarketForm
 from .forms import SupermarketForm
 from django.urls import reverse_lazy
@@ -77,3 +78,8 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         context["products"] = products
         context["categories"] = categories
         return context
+
+OrderItemFormSet = inlineformset_factory(
+    Order, OrderItem, form=OrderItemForm, extra=1, can_delete=True
+) 
+
