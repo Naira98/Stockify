@@ -1,78 +1,99 @@
-{% extends 'base.html' %}
-{% block title %}
-  Login | Stockify
-{% endblock %}
-
-{% block sidebar %}
-
-{% endblock %}
-{% block navbar %}
-
-{% endblock %}
-
-{% block content %}
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
-      <!-- Header Section -->
-      <div class="bg-indigo-700 py-6 px-8">
-        <div class="flex items-center justify-center mb-3">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
-          <h1 class="text-2xl font-bold text-white ml-2">STOCKIFY</h1>
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Stockify</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-100">
+    <!-- Top Navbar -->
+    <nav class="bg-slate-800 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img class="h-8 w-auto" src="{% static 'images/logo.png' %}" alt="Stockify Logo">
+                    </div>
+                </div>
+            </div>
         </div>
-        <p class="text-center text-indigo-200 text-sm">Inventory Management System</p>
-      </div>
+    </nav>
 
-      <!-- Form Section -->
-      <div class="py-8 px-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-1 text-center">Welcome Back</h2>
-        <p class="text-gray-600 text-center mb-6">Sign in to manage your inventory</p>
-
-        <!-- Error Messages -->
-        {% if form.non_field_errors %}
-          <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
-            {% for error in form.non_field_errors %}
-              <p class="font-medium">{{ error }}</p>
-            {% endfor %}
-          </div>
-        {% endif %}
-
-        <form method="post">
-          {% csrf_token %}
-
-          <!-- Username Field -->
-          <div class="mb-5">
-            <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              <input type="text" name="username" id="id_username" class="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Enter your username" autofocus required />
+    <!-- Main Content - Centered Form -->
+    <main class="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] pt-12 pb-12 bg-slate-100">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
+            <!-- Form Header -->
+            <div class="bg-cyan-600 py-6 px-8">
+                <div class="flex flex-col items-center justify-center gap-1 text-white">
+                    <i class="fas fa-boxes text-3xl mb-2"></i>
+                    <h1 class="text-2xl font-bold">STOCKIFY LOGIN</h1>
+                </div>
             </div>
-          </div>
 
-          <!-- Password Field -->
-          <div class="mb-6">
-            <label for="id_password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                </svg>
-              </div>
-              <input type="password" name="password" id="id_password" class="w-full pl-10 pr-3 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Enter your password" required />
+            <!-- Form Section -->
+            <div class="py-8 px-8">
+                <h2 class="text-xl font-semibold text-gray-800 mb-1 text-center">Welcome Back</h2>
+                <p class="text-gray-600 text-center mb-6">Sign in to manage your inventory</p>
+
+                {% if form.non_field_errors %}
+                <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+                    {% for error in form.non_field_errors %}
+                    <p class="font-medium">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- Username Field -->
+                    <div class="mb-5">
+                        <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input type="text" name="username" id="id_username" 
+                                   class="w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500" 
+                                   placeholder="Enter your username" 
+                                   autofocus required />
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-6">
+                        <label for="id_password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" name="password" id="id_password" 
+                                   class="w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-cyan-500" 
+                                   placeholder="Enter your password" 
+                                   required />
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                            class="w-full border border-cyan-400 text-cyan-700 bg-white font-semibold py-3 px-4 rounded-lg shadow hover:bg-cyan-50 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                </form>
             </div>
-          </div>
+        </div>
+    </main>
 
-          <!-- Submit Button -->
-          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Sign in</button>
-        </form>
-
-        <!-- Registration Link -->
-      </div>
-    </div>
-  </div>
-{% endblock %}
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-white py-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            &copy; {% now "Y" %} Stockify Inventory Management System
+        </div>
+    </footer>
+</body>
+</html>

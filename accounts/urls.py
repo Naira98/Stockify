@@ -1,10 +1,12 @@
 from django.urls import path, include
+from django.contrib.auth.views import LogoutView
 from . import views
 
 app_name = "accounts"
 
 urlpatterns = [
     path("", include("django.contrib.auth.urls")),
+    path("logout/", LogoutView.as_view(), name="logout"),
     path("profile/", views.profile_view, name="profile"),
     path("edit-profile/", views.edit_profile_view, name="edit_profile"),
 
