@@ -82,6 +82,7 @@
                         </button>
                         {% if request.GET.status or request.GET.search %}
                         <a href="{% url 'orders:order_list' %}" class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg shadow-sm transition-all">
+
                             Clear
                         </a>
                         {% endif %}
@@ -108,11 +109,14 @@
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="p-5 text-sm text-gray-800 align-middle text-center">
                             <div class="font-medium text-gray-900">{{ order.supermarket.name }}</div>
-                            <div class="text-sm text-gray-500">{{ order.supermarket.phone }}</div>
                         </td>
                         <td class="p-5 text-sm text-gray-800 align-middle text-center">{{ order.created_at|date:"M d, Y H:i" }}</td>
                         <td class="p-5 text-sm text-gray-800 align-middle text-center">
-                            <span class="px-3 py-1 text-sm font-semibold rounded-full status-{{ order.status|lower }}">{{ order.status }}</span>
+                            <span class="px-3 py-1 text-sm font-semibold rounded-full  {% if order.status|lower == 'pending' %}bg-yellow-100 text-yellow-700
+                                {% elif order.status|lower == 'confirmed' %}bg-blue-100 text-blue-700
+                                {% elif order.status|lower == 'delivered' %}bg-green-100 text-green-700
+                                {% else %}bg-gray-100 text-gray-700
+                                {% endif %}">{{ order.status|title }}</span>
                         </td>
                         <td class="p-5 text-sm text-gray-800 align-middle text-center">{{ order.created_by.get_full_name|default:order.created_by.username }}</td>
                         <td class="p-5 text-sm text-gray-800 align-middle text-center">
