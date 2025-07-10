@@ -64,3 +64,12 @@ class OrderItemForm(forms.ModelForm):
 
         return cleaned_data
 
+OrderItemFormSet = forms.inlineformset_factory(
+    Order,
+    OrderItem,
+    form=OrderItemForm,
+    extra=0,
+    can_delete=True,
+    validate_min=True,
+    min_num=1,
+)

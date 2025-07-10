@@ -115,6 +115,7 @@ class Order(models.Model):
         return None
         
     def remove_product_alternative(self, product):
+        """Remove a product from the order and restore its stock."""
         with transaction.atomic():  # Ensure all operations succeed or fail together
             # Check if product exists in the order (alternative query style)
             if not OrderItem.objects.filter(order=self, product=product).exists():
