@@ -42,5 +42,14 @@ urlpatterns = [
         AddProductToOrderView.as_view(),
         name="add_product_to_order",
     ),
-    
+    path(
+        "<int:order_id>/edit-product/<int:product_id>/",
+        EditProductInOrderView.as_view(),
+        name="edit_product_in_order",
+    ),
+    path(
+        "<int:order_id>/change-status/",
+        ChangeOrderStatusView.as_view(),
+        name="change_order_status",
+    ),
 ]
