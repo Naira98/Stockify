@@ -1,38 +1,55 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileEditForm, AdminUserEditForm
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
-from .forms import AdminUserCreationForm
+from .forms import CustomUserCreationForm
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import User
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.paginator import Paginator
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import CustomUserCreationForm
+from .models import User
+
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.paginator import Paginator
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import CustomUserCreationForm
+from .models import User
+
+def is_admin(user):
+    return user.is_authenticated and user.is_superuser
 
 @login_required
 @staff_member_required
 def user_management_view(request):
     users = User.objects.all().order_by("-date_joined")
-
+    
     # Pagination
     paginator = Paginator(users, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-
+    
+    # Handle form submission
     if request.method == "POST":
-        form = AdminUserCreationForm(request.POST, request.FILES)
+        form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             messages.success(request, f"User {user.username} created successfully!")
             return redirect("accounts:user_management")
     else:
-        form = AdminUserCreationForm()
-
+        form = CustomUserCreationForm()
+    
     return render(
         request,
         "accounts/user_management.html",
         {"users": page_obj, "form": form, "page_obj": page_obj},
     )
+
 
 
 @login_required

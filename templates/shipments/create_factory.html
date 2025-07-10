@@ -1,6 +1,11 @@
-{% extends 'base.html' %} {% block title %} Create Factory | Stockify {%
-endblock %} {% block sidebar %} {% include 'components/sidebar.html' with
-active='shipments' %} {% endblock sidebar %} {% block content %}
+{% extends 'base.html' %} 
+{% block title %} Create Factory | Stockify {% endblock %} 
+
+{% block sidebar %} 
+{% include 'components/sidebar.html' with active='shipments' %} 
+{ % endblock sidebar %} 
+
+{% block content %}
 <div class="mb-4">
   <a
     href="{% url 'shipments:create_shipment' %}"
