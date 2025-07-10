@@ -307,3 +307,40 @@ class ChangeOrderStatusView(View):
                 messages.error(request, "Invalid status transition.")
 
         return redirect("orders:order_details", order_id=order.pk)
+
+
+@method_decorator(login_required, name="dispatch")
+class EditProductInOrderView(View):
+    def post(self, request, order_id, product_id):
+        order = get_object_or_404(Order, id=order_id)
+
+        if order.status in ["Confirmed", "Delivered"]:
+            messages.error(
+                request,
+                "You cannot edit the order as it has been already confirmed or delivered.",
+            )
+            return redirect("orders:order_details", order_id=order.pk)
+
+        product = get_object_or_404(Product, id=product_id)
+        new_quantity = request.POST.get("quantity")
+
+        try:
+            new_quantity = int(new_quantity)
+            if new_quantity < 1:
+                messages.error(request, "Quantity must be at least 1.")
+                return redirect("orders:order_details", order_id=order.pk)
+        except (ValueError, TypeError):
+            messages.error(request, "Invalid quantity.")
+            return redirect("orders:order_details", order_id=order.pk)
+
+        error_message = order.update_product(product, new_quantity)
+
+        if error_message:
+            messages.error(request, error_message)
+        else:
+            messages.success(
+                request, f"Quantity updated to {new_quantity} for {product.name}."
+            )
+
+        return redirect("orders:order_details", order_id=order.pk)
+
