@@ -1,173 +1,99 @@
 {% load static %}
-<aside class="w-28 md:w-80 bg-white flex flex-col justify-between shadow-md">
-  <div class="p-6">
-    <!-- Logo & User Info -->
-    <div class="flex justify-center mt-6 mb-8">
-      <img
-        src="{% static 'images/logo.png' %}"
-        alt="Logo"
-        class="w-24 md:w-40 max-w-full object-contain"
-      />
-    </div>
 
-    <!-- Nav Tabs -->
-    <div class="flex flex-col gap-2">
-      <!-- Dashboard -->
-      <a href="{% url 'dashboard' %}">
-        <div
-          class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full hover:bg-gray-100 {% if active == 'dashboard' %}active_nav {% endif %}"
-        >
-          <div
-            class="{% if active == 'dashboard' %} text-brand {% else %} text-[#141414] {% endif %}"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M3 3v16a2 2 0 0 0 2 2h16" />
-              <path d="m19 9-5 5-4-4-3 3" />
-            </svg>
-          </div>
-          <p class="text-sm font-medium leading-normal hidden md:block">
-            Dashboard
-          </p>
-        </div>
-      </a>
+    <!-- Sidebar -->
+    <aside class="w-20 md:w-64 bg-slate-800 text-slate-100 flex flex-col justify-between shadow-md transition-all duration-300">
+      <div class="p-4 md:p-6 flex flex-col flex-grow">
 
-      <!-- Inventory -->
-      <a href="{% url 'inventory:inventory' %}">
-        <div
-          class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full hover:bg-gray-100 {% if active == 'inventory' %}active_nav{% endif %}"
-        >
-          <div
-            class="{% if active == 'inventory' %} text-brand {% else %} text-[#141414] {% endif %}"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24px"
-              height="24px"
-              fill="currentColor"
-              viewBox="0 0 256 256"
-            >
-              <path
-                d="M240,184h-8V57.9l9.67-2.08a8,8,0,1,0-3.35-15.64l-224,48A8,8,0,0,0,16,104a8.16,8.16,0,0,0,1.69-.18L24,102.47V184H16a8,8,0,0,0,0,16H240a8,8,0,0,0,0-16ZM40,99,216,61.33V184H192V128a8,8,0,0,0-8-8H72a8,8,0,0,0-8,8v56H40Zm136,53H80V136h96ZM80,168h96v16H80Z"
-              ></path>
-            </svg>
-          </div>
-          <p class="text-sm font-medium leading-normal hidden md:block">
-            Inventory
-          </p>
+        <!-- Logo -->
+        <div class="flex justify-center mt-4 mb-10">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" />
         </div>
-      </a>
 
-      <!-- Shipments -->
-      <a href="{% url 'shipments:list_shipments' %}">
-        <div
-          class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full hover:bg-gray-100 {%if active == 'shipments' %}active_nav{% endif %}"
-        >
-          <div
-            class="{% if active == 'shipments' %} text-brand {% else %} text-[#141414] {% endif %}"
-            data-icon="Truck"
-            data-size="24px"
-            data-weight="fill"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-truck-icon lucide-truck"
-            >
-              <path
-                d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"
-              />
-              <path d="M15 18H9" />
-              <path
-                d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"
-              />
-              <circle cx="17" cy="18" r="2" />
-              <circle cx="7" cy="18" r="2" />
-            </svg>
-          </div>
-          <p class="text-sm font-medium leading-normal hidden md:block">
-            Shipments
-          </p>
-        </div>
-      </a>
+        <!-- Navigation -->
+        <nav class="flex flex-col gap-1.5 flex-grow">
 
-      <!-- Orders -->
-      <a">
-        <div
-          class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-full {% if active == 'orders' %}active_nav{% endif %}"
-        >
-          <div
-            class="{% if active == 'orders' %} text-brand {% else %} text-[#141414] {% endif %}"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path
-                d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"
-              />
-              <path d="M12 22V12" />
-              <polyline points="3.29 7 12 12 20.71 7" />
-              <path d="m7.5 4.27 9 5.15" />
-            </svg>
-          </div>
-          <p class="text-sm font-medium leading-normal hidden md:block">
-            Orders
-          </p>
-        </div>
-      </a>
+          <!-- Dashboard -->
+          <a href="{% url 'dashboard' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
+              {% if active == 'dashboard' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
+              <div class="{% if active == 'dashboard' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+                {% include "icons/dashboard.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Dashboard</p>
+            </div>
+          </a>
 
-      <!-- Profile -->
-      <a href="{% url 'accounts:profile' %}">
-        <div
-          class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 hover:bg-gray-100 rounded-full {% if active == 'profile' %}active_nav{% endif %}"
-        >
-          <div
-            class="{% if active == 'profile' %} text-brand {% else %} text-[#141414] {% endif %}"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </div>
-          <p class="text-sm font-medium leading-normal hidden md:block">
-            Profile
-          </p>
+          <!-- Inventory -->
+          <a href="{% url 'inventory:inventory' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
+              {% if active == 'inventory' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
+              <div class="{% if active == 'inventory' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+                {% include "icons/inventory.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Inventory</p>
+            </div>
+          </a>
+
+          <!-- Shipments -->
+          <a href="{% url 'shipments:list_shipments' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
+              {% if active == 'shipments' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
+              <div class="{% if active == 'shipments' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+                {% include "icons/truck.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Shipments</p>
+            </div>
+          </a>
+
+          <!-- Orders -->
+          <a href="#">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
+              {% if active == 'orders' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
+              <div class="{% if active == 'orders' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+                {% include "icons/orders.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Orders</p>
+            </div>
+          </a>
+
+          <!-- Users (only for staff) -->
+          {% if request.user.is_staff %}
+          <a href="{% url 'accounts:user_management' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
+              {% if active == 'user_management' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
+              <div class="{% if active == 'user_management' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+                {% include "icons/users.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Users</p>
+            </div>
+          </a>
+          {% endif %}
+        </nav>
+
+        <!-- Divider -->
+        <hr class="border-t border-slate-700 my-4" />
+
+        <!-- Bottom Links -->
+        <div class="flex flex-col gap-1.5">
+          <!-- Profile -->
+          <a href="{% url 'accounts:profile' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 hover:bg-slate-800">
+              <div class="text-slate-400 hover:text-cyan-300 transition-colors duration-200">
+                {% include "icons/profile.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Profile</p>
+            </div>
+          </a>
+
+          <!-- Logout -->
+          <a href="{% url 'accounts:logout' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 hover:bg-slate-800">
+              <div class="text-slate-400 hover:text-cyan-300 transition-colors duration-200">
+                {% include "icons/logout.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Logout</p>
+            </div>
+          </a>
         </div>
-      </a>
-    </div>
-  </div>
-</aside>
+      </div>
+    </aside>

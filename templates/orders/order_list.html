@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+ Order
+{% endblock title %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+{% endblock css %}
+
+{% block sidebar %}
+{% include 'components/sidebar.html' with active='orders' %}
+{% endblock sidebar %}
+
+{% block content %}
+<body class="bg-gray-50">
+    <div class="container mx-auto p-8">
+        <!-- Messages Display -->
+        {% if messages %}
+        <div class="mb-6">
+            {% for message in messages %}
+            <div class="px-4 py-3 rounded-md shadow-sm {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+ 
+        <header class="flex justify-between items-center mb-8">
+            <div class="flex items-center space-x-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-icon lucide-package"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></svg>
+                <h1 class="text-4xl font-bold text-gray-800">Orders</h1>
+            </div>
+            <div class="flex space-x-4">
+
+                <a href="{% url 'orders:create_supermarket' %}" class="flex items-center bg-green-500 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                    Add Supermarket
+                </a>
+               
+                <a href="{% url 'orders:supermarket_list' %}" class="flex items-center bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold py-3 px-6 rounded-lg shadow-sm transition-all hover:shadow-md gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store-icon lucide-store"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg>
+                    Supermarkets
+                </a>
+
+               
+                <a href="{% url 'orders:create_order' %}" class="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-plus-icon lucide-circle-plus"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                    Create Order
+                </a>
+            </div>
+        </header>
+ 
+        <!-- Filter Section -->
+        <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <form method="get" action="{% url 'orders:order_list' %}">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="relative">
+                        <label for="status" class="sr-only">Filter by order status</label>
+                        <select id="status" name="status" class="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
+                            <option value="">All Statuses</option>
+                            <option value="Pending" {% if request.GET.status == "Pending" %}selected{% endif %}>Pending</option>
+                            <option value="Confirmed" {% if request.GET.status == "Confirmed" %}selected{% endif %}>Confirmed</option>
+                            <option value="Delivered" {% if request.GET.status == "Delivered" %}selected{% endif %}>Delivered</option>
+                            <option value="Cancelled" {% if request.GET.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                          
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 flex items-center space-x-4">
+                        <input class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                               placeholder="Search by supermarket name..."
+                               type="text"
+                               name="search"
+                               value="{{ request.GET.search }}"/>
+                        <button type="submit" class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105 gap-3">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-filter-icon lucide-list-filter"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
+                            Filter
+                        </button>
+                        {% if request.GET.status or request.GET.search %}
+                        <a href="{% url 'orders:order_list' %}" class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg shadow-sm transition-all">
+                            <span class="material-icons mr-2">clear</span>
+                            Clear
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+<!-- Orders Table -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-100 border-b-2 border-gray-200">
+                    <tr>
+                        <th class="p-5 text-center text-sm font-semibold text-gray-600 uppercase tracking-wider">Supermarket</th>
+                        <th class="p-5 text-center text-sm font-semibold text-gray-600 uppercase tracking-wider">Order Date</th>
+                        <th class="p-5 text-center text-sm font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th class="p-5 text-center text-sm font-semibold text-gray-600 uppercase tracking-wider">Created By</th>
+                        <th class="p-5 text-center text-sm font-semibold text-gray-600 uppercase tracking-wider">Total Items</th>
+                        <th class="p-5 text-center text-sm font-semibold text-gray-600 uppercase tracking-wider">Details</th>
+                        <th class="p-5 text-center text-sm font-semibold text-gray-600 uppercase tracking-wider">Delete</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for order in page_obj %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="p-5 text-sm text-gray-800 align-middle text-center">
+                            <div class="font-medium text-gray-900">{{ order.supermarket.name }}</div>
+                            <div class="text-sm text-gray-500">{{ order.supermarket.phone }}</div>
+                        </td>
+                        <td class="p-5 text-sm text-gray-800 align-middle text-center">{{ order.created_at|date:"M d, Y H:i" }}</td>
+                        <td class="p-5 text-sm text-gray-800 align-middle text-center">
+                            <span class="px-3 py-1 text-sm font-semibold rounded-full status-{{ order.status|lower }}">{{ order.status }}</span>
+                        </td>
+                        <td class="p-5 text-sm text-gray-800 align-middle text-center">{{ order.created_by.get_full_name|default:order.created_by.username }}</td>
+                        <td class="p-5 text-sm text-gray-800 align-middle text-center">
+                            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+                                {{ order.items.count }} Item {{ order.items.count|pluralize }}
+                            </span>
+                        </td>
+                        <!-- View Column -->
+                        <td class="p-5 text-center align-middle">
+                        <a href="{% url 'orders:order_details' pk=order.id %}" 
+                            class="text-blue-600 hover:text-blue-800 inline-flex justify-center items-center" 
+                            title="View Order">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 16v-4"/>
+                            <path d="M12 8h.01"/>
+                            </svg>
+                        </a>
+                        </td>
+
+                        <!-- Delete Column -->
+                        <td class="p-5 text-center align-middle">
+                        {% if order.status == "pending" and order.status != "confirmed" %}
+                        <a href="{% url 'orders:order_delete' pk=order.id %}" 
+                            class="text-red-600 hover:text-red-800 inline-flex justify-center items-center" 
+                            title="Delete Order">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"/>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                    </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="p-5 text-center text-gray-500">
+                            No orders found matching your criteria.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+ 
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="mt-6 flex justify-center">
+            <nav class="inline-flex rounded-md shadow">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="px-3 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
+                    <span class="material-icons">chevron_left</span>
+                </a>
+                {% endif %}
+               
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <span class="px-3 py-2 border-t border-b border-gray-300 bg-blue-500 text-white">{{ num }}</span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="px-3 py-2 border-t border-b border-gray-300 bg-white text-gray-500 hover:bg-gray-50">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+               
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
+                    <span class="material-icons">chevron_right</span>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</body>
+{% endblock %}
