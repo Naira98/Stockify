@@ -10,7 +10,9 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+
         ('inventory', '0002_alter_category_options'),
+
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -30,6 +32,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('status', models.CharField(choices=[('Pending', 'Pending'), ('Confirmed', 'Confirmed'), ('Delivered', 'Delivered')], default='pending', max_length=10)),
                 ('notes', models.TextField(blank=True)),
+
                 ('confirmed_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='confirmed_orders', to=settings.AUTH_USER_MODEL)),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='created_orders', to=settings.AUTH_USER_MODEL)),
             ],
@@ -39,7 +42,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.PositiveIntegerField()),
+
                 ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='orders.order')),
+
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='inventory.product')),
             ],
         ),
