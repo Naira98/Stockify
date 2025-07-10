@@ -32,7 +32,6 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('status', models.CharField(choices=[('Pending', 'Pending'), ('Confirmed', 'Confirmed'), ('Delivered', 'Delivered')], default='pending', max_length=10)),
                 ('notes', models.TextField(blank=True)),
-
                 ('confirmed_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='confirmed_orders', to=settings.AUTH_USER_MODEL)),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='created_orders', to=settings.AUTH_USER_MODEL)),
             ],
