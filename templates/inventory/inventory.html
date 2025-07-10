@@ -13,17 +13,16 @@
        class="w-60 px-4 py-2 rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400">
       Add new Product
     </a>
-   <div >
-  <select id="category-actions" 
-          class="w-60 px-4 py-2   rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400 "
-          onchange="window.location.href=this.value">
-       <option value="">Add new category</option>
-       <option value="{% url 'inventory:addcategory' %}">Add new category</option>
-    <option value="{% url 'inventory:deletecategory' %}">Delete category</option>
- 
-  </select>
+     <a href="{% url 'inventory:addcategory' %}" 
+       class="w-60 px-4 py-2 rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400">
+      Add new category
+    </a>
+      <a href="{% url 'inventory:deletecategory' %}" 
+       class="w-60 px-4 py-2 rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400">
+      delete category
+    </a>
 </div>
-  </div>
+
   <!-- Filter Controls -->
   <div class="mb-6 flex flex-wrap items-center gap-4 mt-4">
     <!-- Category Dropdown -->
@@ -91,7 +90,7 @@
             {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}bg-yellow-100 text-yellow-800
             {% else %}bg-green-100 text-green-800{% endif %}">
             {% if product.quantity == 0 %}Out of Stock
-            {% elif product.quantity > 0 and product.quantity < product.critical_amount %}Low Stock
+            {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}Low Stock
             {% else %}In Stock{% endif %}
           </span>
       
@@ -102,7 +101,7 @@
         <p class="text-sm text-gray-500 mt-1">Category: {{ product.category.name }}</p>
         <p class="text-sm mt-1">
           <span class="{% if product.quantity == 0 %}text-red-600
-                      {% elif product.quantity > 0 and product.quantity < product.critical_amount %}text-yellow-600
+                      {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}text-yellow-600
                       {% else %}text-gray-500{% endif %}">
             Stock: {{ product.quantity }}<span> | critical_amount:{{product.critical_amount}}</span>
           </span>
@@ -111,14 +110,18 @@
         <p class="text-sm text-gray-500 mt-2 line-clamp-2">{{ product.description }}</p>
         {% endif %}
       </div>
-      <div class="px-4 pb-4 flex justify-between">
+      <div class="px-4 pb-4 flex  justify-end gap-4">
         <a href="{% url 'inventory:details' pk=product.id %}" 
            class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-          View Details
+          <i class="fa-solid fa-circle-info"></i>
         </a>
          <a href="{% url 'inventory:deleteproduct' pk=product.id %}" 
            class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-          delete
+          <i class="fa-solid fa-trash-can"></i>
+        </a>
+         <a href="{% url 'inventory:editproduct' pk=product.id %}" 
+           class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+      <i class="fa-solid fa-pencil"></i>
         </a>
       </div>
     </div>
