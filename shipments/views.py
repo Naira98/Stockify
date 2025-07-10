@@ -20,12 +20,15 @@ from .forms import (
     EditShipmentItemForm,
     ShipmentFilterForm,
 )
-
+from django.db.models import Count
 
 @login_required
 def list_shipments(request):
     form = ShipmentFilterForm(request.GET or None)
-    shipments = Shipment.objects.select_related("factory").all()
+
+    shipments = Shipment.objects.select_related("factory").annotate(
+        total_items=Count("items")
+    )
 
     selected_factory_id = request.GET.get("factory", "")
     status = request.GET.get("status", "")
@@ -42,6 +45,9 @@ def list_shipments(request):
         shipments = shipments.filter(created_at__date__gte=from_date)
     if to_date:
         shipments = shipments.filter(created_at__date__lte=to_date)
+
+    # Order by newest first
+    shipments = shipments.order_by("-created_at")
 
     paginator = Paginator(shipments, 10)
     page_number = request.GET.get("page")
@@ -65,7 +71,6 @@ def list_shipments(request):
             "selected_factory_id": selected_factory_id,
         },
     )
-
 
 
 @login_required

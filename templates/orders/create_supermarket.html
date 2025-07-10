@@ -33,7 +33,7 @@
             <form method="post" novalidate>
                 {% csrf_token %}
                 
-                <!-- Render form fields manually to apply styling -->
+               
                 <div class="mb-6">
                     <label for="{{ form.name.id_for_label }}" class="block text-gray-700 text-sm font-medium mb-2">Name:</label>
                     {{ form.name }}
@@ -65,7 +65,7 @@
                         Save and Add Another
                     </button>
 
-                    <a href="{% url 'orders:create_order' %}" class="flex items-center justify-center bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-300 shadow-sm gap-3">
+                    <a href="{% url 'orders:order_list' %}" class="flex items-center justify-center bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-colors duration-300 shadow-sm gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-x-icon lucide-circle-x"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
                         Cancel
                     </a>

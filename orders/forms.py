@@ -66,7 +66,6 @@ class OrderItemForm(forms.ModelForm):
 
         return cleaned_data
 
-
 OrderItemFormSet = forms.inlineformset_factory(
     Order,
     OrderItem,
