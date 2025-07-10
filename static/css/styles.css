@@ -40,17 +40,3 @@
 .btn-secondary:hover {
   background-color: var(--color-gray-300);
 }
-
-@keyframes fadeInDown {
-  0% {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.fade-in-down {
-  animation: fadeInDown 0.4s ease-out;
-}

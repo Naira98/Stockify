@@ -5,29 +5,37 @@
       <div class="p-4 md:p-6 flex flex-col flex-grow">
 
         <!-- Logo -->
-        <div class="flex justify-center mt-4 mb-10">
-          <img src="{% static 'images/logo.png' %}" alt="Logo" />
-        </div>
+        <a href="{% url 'dashboard' %}">
+          <div class="flex justify-center mt-4 mb-10">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" />
+          </div>
+        </a>
 
         <!-- Navigation -->
         <nav class="flex flex-col gap-1.5 flex-grow">
 
           <!-- Dashboard -->
           <a href="{% url 'dashboard' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
-              {% if active == 'dashboard' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
-              <div class="{% if active == 'dashboard' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 
+              {% if active == 'dashboard' %}bg-slate-700{% else %}hover:bg-slate-700{% endif %}">
+              
+              <div class="transition-colors duration-200 
+                {% if active == 'dashboard' %}text-cyan-400{% else %}text-slate-400{% endif %}">
                 {% include "icons/dashboard.svg" %}
               </div>
-              <p class="text-sm font-medium hidden md:block text-slate-100">Dashboard</p>
+
+              <p class="text-sm font-medium hidden md:block text-slate-100">
+                Dashboard
+              </p>
             </div>
           </a>
 
           <!-- Inventory -->
           <a href="{% url 'inventory:inventory' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
-              {% if active == 'inventory' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
-              <div class="{% if active == 'inventory' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 
+              {% if active == 'inventory' %}bg-slate-700{% else %}hover:bg-slate-700{% endif %}">
+              <div class="transition-colors duration-200 
+                {% if active == 'inventory' %}text-cyan-400{% else %}text-slate-400{% endif %}">
                 {% include "icons/inventory.svg" %}
               </div>
               <p class="text-sm font-medium hidden md:block text-slate-100">Inventory</p>
@@ -36,9 +44,10 @@
 
           <!-- Shipments -->
           <a href="{% url 'shipments:list_shipments' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
-              {% if active == 'shipments' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
-              <div class="{% if active == 'shipments' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 
+              {% if active == 'shipments' %}bg-slate-700{% else %}hover:bg-slate-700{% endif %}">
+              <div class="transition-colors duration-200 
+                {% if active == 'shipments' %}text-cyan-400{% else %}text-slate-400{% endif %}">
                 {% include "icons/truck.svg" %}
               </div>
               <p class="text-sm font-medium hidden md:block text-slate-100">Shipments</p>
@@ -46,10 +55,11 @@
           </a>
 
           <!-- Orders -->
-          <a href="#">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
-              {% if active == 'orders' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
-              <div class="{% if active == 'orders' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+          <a href="{% url 'orders:order_list' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 
+              {% if active == 'orders' %}bg-slate-700{% else %}hover:bg-slate-700{% endif %}">
+              <div class="transition-colors duration-200 
+                {% if active == 'orders' %}text-cyan-400{% else %}text-slate-400{% endif %}">
                 {% include "icons/orders.svg" %}
               </div>
               <p class="text-sm font-medium hidden md:block text-slate-100">Orders</p>
@@ -59,9 +69,10 @@
           <!-- Users (only for staff) -->
           {% if request.user.is_staff %}
           <a href="{% url 'accounts:user_management' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
-              {% if active == 'user_management' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
-              <div class="{% if active == 'user_management' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 
+              {% if active == 'users_management' %}bg-slate-700{% else %}hover:bg-slate-700{% endif %}">
+              <div class="transition-colors duration-200 
+                {% if active == 'users_management' %}text-cyan-400{% else %}text-slate-400{% endif %}">
                 {% include "icons/users.svg" %}
               </div>
               <p class="text-sm font-medium hidden md:block text-slate-100">Users</p>
@@ -77,8 +88,10 @@
         <div class="flex flex-col gap-1.5">
           <!-- Profile -->
           <a href="{% url 'accounts:profile' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 hover:bg-slate-800">
-              <div class="text-slate-400 hover:text-cyan-300 transition-colors duration-200">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 
+              {% if active == 'profile' %}bg-slate-700{% else %}hover:bg-slate-700{% endif %}">
+              <div class="transition-colors duration-200 
+                {% if active == 'profile' %}text-cyan-400{% else %}text-slate-400{% endif %}">
                 {% include "icons/profile.svg" %}
               </div>
               <p class="text-sm font-medium hidden md:block text-slate-100">Profile</p>
@@ -87,8 +100,8 @@
 
           <!-- Logout -->
           <a href="{% url 'accounts:logout' %}">
-            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 hover:bg-slate-800">
-              <div class="text-slate-400 hover:text-cyan-300 transition-colors duration-200">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full hover:bg-slate-700">
+              <div class="text-slate-400">
                 {% include "icons/logout.svg" %}
               </div>
               <p class="text-sm font-medium hidden md:block text-slate-100">Logout</p>
