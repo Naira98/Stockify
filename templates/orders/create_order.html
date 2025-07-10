@@ -8,46 +8,46 @@
 {% endblock sidebar %}
  
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-8">
-<div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
-<div class="flex justify-between items-start mb-6">
-<div>
-<h1 class="text-3xl font-bold text-gray-800">Create New Order</h1>
-<p class="text-gray-600 mt-2">Fill in the details below to create a new order.</p>
-</div>
-<a href="{% url 'orders:order_list' %}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium gap-3">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-chevron-left-icon lucide-circle-chevron-left"><circle cx="12" cy="12" r="10"/><path d="m14 16-4-4 4-4"/></svg>
-        Back to Orders
-</a>
-</div>
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
+      <div class="flex justify-between items-start mb-6">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-800">Create New Order</h1>
+          <p class="text-gray-600 mt-2">Fill in the details below to create a new order.</p>
+      </div>
+          <a href="{% url 'orders:order_list' %}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-chevron-left-icon lucide-circle-chevron-left"><circle cx="12" cy="12" r="10"/><path d="m14 16-4-4 4-4"/></svg>
+              Back to Orders
+          </a>
+    </div>
  
-    <form method="post" id="order-form" class="space-y-6">
-      {% csrf_token %}
+      <form method="post" id="order-form" class="space-y-6">
+        {% csrf_token %}
  
       <!-- Form Errors -->
-      {% if form.errors %}
-<div class="bg-red-50 border-l-4 border-red-400 p-4 rounded">
-<div class="flex">
-<div class="flex-shrink-0">
-<span class="material-icons text-red-400">error</span>
-</div>
-<div class="ml-3">
-<p class="text-sm text-red-700">Please correct the errors below.</p>
-</div>
+        {% if form.errors %}
+    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded">
+      <div class="flex">
+          <div class="flex-shrink-0">
+            <span class="material-icons text-red-400">error</span>
+        </div>
+    <div class="ml-3">
+    <p class="text-sm text-red-700">Please correct the errors below.</p>
+    </div>
 </div>
 </div>
       {% endif %}
  
       <!-- Order Information -->
-<div class="space-y-4">
-<h2 class="text-xl font-semibold text-gray-800">Order Information</h2>
-<div class="bg-gray-50 p-5 rounded-lg space-y-4">
+    <div class="space-y-4">
+        <h2 class="text-xl font-semibold text-gray-800">Order Information</h2>
+        <div class="bg-gray-50 p-5 rounded-lg space-y-4">
 <!-- Supermarket Field -->
-<div>
-<label for="{{ form.supermarket.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+        <div>
+      <label for="{{ form.supermarket.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
               {{ form.supermarket.label }}
-</label>
-<div class="relative">
+        </label>
+      <div class="relative">
               {{ form.supermarket }}
               {% if form.supermarket.errors %}
 <div class="mt-1 text-sm text-red-600">
@@ -111,7 +111,7 @@
 </div>
 <!-- Remove Button -->
 <div class="col-span-1 flex justify-end">
-<button type="button" class="remove-item bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-colors">
+<button type="button" class="remove-item bg-red-500 hover:bg-red-600 text-white p-2 rounded-md transition-colors" title="Remove item">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
 </button>
 </div>
@@ -131,7 +131,7 @@
 <a href="{% url 'orders:order_list' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           Cancel
 </a>
-<button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+<button type="submit" id="submit-order" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           Create Order
 </button>
 </div>
@@ -141,12 +141,12 @@
  
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const formsetPrefix = '{{ formset.prefix }}';
-  const totalForms = document.getElementById(`id_${formsetPrefix}-TOTAL_FORMS`);
-  const container = document.getElementById('order-items');
-  // Function to update form indices
+  let formsetPrefix = '{{ formset.prefix }}';
+  let totalForms = document.getElementById(`id_${formsetPrefix}-TOTAL_FORMS`);
+  let container = document.getElementById('order-items');
+
   function updateFormIndices() {
-    const forms = document.querySelectorAll('.item-form');
+    let forms = document.querySelectorAll('.item-form');
     totalForms.value = forms.length;
     forms.forEach((form, index) => {
       form.querySelectorAll('input, select').forEach(el => {
@@ -165,35 +165,113 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-  // Add new item form
+
   document.getElementById('add-item').addEventListener('click', function() {
-    const formCount = parseInt(totalForms.value);
-    const template = document.querySelector('.item-form');
-    const newForm = template.cloneNode(true);
-    // Update all input names/ids
-    newForm.innerHTML = newForm.innerHTML.replace(
-      new RegExp(`${formsetPrefix}-\\d+-`, 'g'),
-      `${formsetPrefix}-${formCount}-`
-    );
-    // Clear values
-    newForm.querySelectorAll('input:not([type=hidden]), select').forEach(el => {
-      if (el.type !== 'checkbox') el.value = '';
-    });
-    // Add delete handler
-    const removeBtn = newForm.querySelector('.remove-item');
-    removeBtn.addEventListener('click', function() {
-      newForm.remove();
-      updateFormIndices();
-    });
-    container.appendChild(newForm);
-    totalForms.value = formCount + 1;
+  let forms = document.querySelectorAll('.item-form');
+  let lastForm = forms[forms.length - 1];
+
+  let productSelect = lastForm.querySelector('select');
+  let quantityInput = lastForm.querySelector('input[type="number"], input[type="text"]');
+
+  let productValue = productSelect.value.trim();
+  let quantityValue = quantityInput.value.trim();
+
+
+  lastForm.querySelectorAll('.product-error, .quantity-error').forEach(e => e.remove());
+
+  let hasError = false;
+
+
+  if (!productValue) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'text-red-600 text-sm mt-1 product-error';
+    errorDiv.textContent = 'Please select a product.';
+    productSelect.parentElement.appendChild(errorDiv);
+    hasError = true;
+  }
+
+
+  if (!quantityValue || isNaN(quantityValue) || parseInt(quantityValue) <= 0) {
+    let errorDiv = document.createElement('div');
+    errorDiv.className = 'text-red-600 text-sm mt-1 quantity-error';
+    errorDiv.textContent = 'Please enter a valid quantity.';
+    quantityInput.parentElement.appendChild(errorDiv);
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  let formCount = parseInt(totalForms.value);
+  let template = document.querySelector('.item-form');
+  let newForm = template.cloneNode(true);
+
+  newForm.innerHTML = newForm.innerHTML.replace(
+    new RegExp(`${formsetPrefix}-\\d+-`, 'g'),
+    `${formsetPrefix}-${formCount}-`
+  );
+
+  newForm.querySelectorAll('input:not([type=hidden]), select').forEach(el => {
+    if (el.type !== 'checkbox') el.value = '';
   });
-  // Initialize remove buttons for existing items
-  document.querySelectorAll('.remove-item').forEach(btn => {
-    btn.addEventListener('click', function() {
-      this.closest('.item-form').remove();
-      updateFormIndices();
-    });
+
+  let removeBtn = newForm.querySelector('.remove-item');
+  removeBtn.addEventListener('click', function() {
+    newForm.remove();
+    updateFormIndices();
+  });
+
+  container.appendChild(newForm);
+  totalForms.value = formCount + 1;
+  });
+document.getElementById('submit-order').addEventListener('click', function(e) {
+  let hasErrors = false;
+
+  // إزالة أي رسائل خطأ سابقة
+  document.querySelectorAll('.product-error, .quantity-error').forEach(el => el.remove());
+
+  let forms = document.querySelectorAll('.item-form');
+  let atLeastOneValid = false;
+
+  forms.forEach(form => {
+    let productSelect = form.querySelector('select');
+    let quantityInput = form.querySelector('input[type="number"], input[type="text"]');
+
+    let productValue = productSelect.value.trim();
+    let quantityValue = quantityInput.value.trim();
+
+    let thisFormHasError = false;
+
+    if (!productValue) {
+      let errorDiv = document.createElement('div');
+      errorDiv.className = 'text-red-600 text-sm mt-1 product-error';
+      errorDiv.textContent = 'Please select a product.';
+      productSelect.parentElement.appendChild(errorDiv);
+      thisFormHasError = true;
+    }
+
+    if (!quantityValue || isNaN(quantityValue) || parseInt(quantityValue) <= 0) {
+      let errorDiv = document.createElement('div');
+      errorDiv.className = 'text-red-600 text-sm mt-1 quantity-error';
+      errorDiv.textContent = 'Please enter a valid quantity.';
+      quantityInput.parentElement.appendChild(errorDiv);
+      thisFormHasError = true;
+    }
+
+    if (!thisFormHasError) {
+      atLeastOneValid = true;
+    } else {
+      hasErrors = true;
+    }
+  });
+
+
+  if (!atLeastOneValid) {
+    hasErrors = true;
+  }
+
+  if (hasErrors) {
+    e.preventDefault(); 
+  }
   });
 });
 </script>

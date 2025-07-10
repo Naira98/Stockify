@@ -31,7 +31,7 @@ class OrderListView(LoginRequiredMixin, ListView):
         queryset = Order.objects.select_related(
             "supermarket", "created_by", "confirmed_by"
         )
-        status = self.request.GET.get("status", "")
+        status = self.request.GET.get("status", "").lower()
         search = self.request.GET.get("search", "")
 
         if status:
@@ -39,7 +39,7 @@ class OrderListView(LoginRequiredMixin, ListView):
 
         if search:
             queryset = queryset.filter(
-                Q(supermarket__name__icontains=search) | Q(notes__icontains=search)
+                Q(supermarket__name__icontains=search) 
             )
 
         return queryset
@@ -69,7 +69,7 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     model = Order
     template_name = "orders/order_details.html"
     context_object_name = "order"
-    pk_url_kwarg = "order_id"
+    # pk_url_kwarg = "order_id"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -262,7 +262,7 @@ class DeleteSupermarketView(View):
                 request, "Supermarket and related orders have been deleted."
             )
 
-        return redirect("orders:supermarket_list")
+            return redirect("orders:supermarket_list")
     
 
 @method_decorator(login_required, name="dispatch")
