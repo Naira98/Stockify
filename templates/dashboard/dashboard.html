@@ -1,232 +1,335 @@
-{% extends 'base.html' %}
-{% block title %}
-  Home | Stockify
-{% endblock %}
-
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="{% static 'images/logo.svg' %}" />
+    <title>Home | Stockify</title>
 
-{% block sidebar %} 
-    {% include 'components/sidebar.html' with active='dashboard' %}
-{% endblock sidebar %} 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+  <body>
+    <div class="flex h-screen bg-gray-50">
 
-{% block content %}
-<div class="min-h-screen bg-gray-50">
-  <!-- Dashboard Header -->
-  <div class="bg-indigo-700 py-10 px-6 shadow-md">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div>
-          <h1 class="text-4xl font-extrabold text-white tracking-tight">
-            Welcome back, {{ user.username }}!
-          </h1>
-          <p class="text-indigo-200 mt-3 text-lg">
-            Here&apos;s what&apos;s happening with your inventory today.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
+    <!-- Sidebar -->
+    <aside class="w-20 md:w-64 bg-slate-800 text-slate-100 flex flex-col justify-between shadow-md transition-all duration-300">
+      <div class="p-4 md:p-6 flex flex-col flex-grow">
 
-
-<!-- Dashboard Stats -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
-  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-    <!-- Total Products -->
-    <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md">
-      <div class="px-4 py-5 sm:p-6">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 bg-indigo-100 rounded-md p-3">
-            <svg xmlns="http://www.w3.org/2000/svg" 
-                width="24" height="24" viewBox="0 0 24 24" fill="none" 
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" 
-                stroke-linejoin="round" class="h-6 w-6 text-indigo-600">
-              <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
-              <path d="m3.3 7 8.7 5 8.7-5"/>
-              <path d="M12 22V12"/>
-            </svg>
-          </div>
-          <div class="ml-5 w-0 flex-1">
-            <dl>
-              <dt class="text-sm font-medium text-gray-500 truncate">Total Products</dt>
-              <dd class="text-2xl font-semibold text-gray-900">{{ total_products }}</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- Low Stock Products -->
-    <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md">
-      <div class="px-4 py-5 sm:p-6">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 bg-yellow-100 rounded-md p-3">
-            <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert-icon lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-          </div>
-          <div class="ml-5 w-0 flex-1">
-            <dl>
-              <dt class="text-sm font-medium text-gray-500 truncate">Low Stock</dt>
-              <dd class="text-2xl font-semibold text-gray-900">{{ low_stock_products }}</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Zero Stock Products -->
-    <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md">
-      <div class="px-4 py-5 sm:p-6">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 bg-red-100 rounded-md p-3">
-            <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-open-icon lucide-package-open"><path d="M12 22v-9"/><path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/><path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/><path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/></svg>
-          </div>
-          <div class="ml-5 w-0 flex-1">
-            <dl>
-              <dt class="text-sm font-medium text-gray-500 truncate">Zero Stock</dt>
-              <dd class="text-2xl font-semibold text-gray-900">{{ zero_stock_products }}</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Total Categories -->
-    <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md">
-      <div class="px-4 py-5 sm:p-6">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 bg-purple-100 rounded-md p-3">
-            <svg class="h-6 w-6 text-purple-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-blocks-icon lucide-blocks"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect x="14" y="2" width="8" height="8" rx="1"/></svg>
-          </div>
-          <div class="ml-5 w-0 flex-1">
-            <dl>
-              <dt class="text-sm font-medium text-gray-500 truncate">Total Categories</dt>
-              <dd class="text-2xl font-semibold text-gray-900">{{ total_categories }}</dd>
-            </dl>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Charts Section -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-  <div class="bg-white overflow-hidden shadow rounded-lg">
-    <div class="px-4 py-5 sm:p-6">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-      <h2 class="text-lg font-medium text-gray-900">Inventory Overview</h2>
-      <div class="w-full sm:w-auto relative">
-        <select
-          id="chartRange"
-          onchange="location.href = '?days=' + this.value"
-          class="w-full sm:w-48 appearance-none bg-gray-50 border border-gray-300 text-gray-700 py-2 px-4 pr-10 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-indigo-500 text-sm"
-        >
-          <option value="7" {% if selected_days == 7 %}selected{% endif %}>Last 7 days</option>
-          <option value="30" {% if selected_days == 30 %}selected{% endif %}>Last 30 days</option>
-          <option value="90" {% if selected_days == 90 %}selected{% endif %}>Last 90 days</option>
-        </select>
-
-        <!-- SVG Icon -->
-        <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
-          <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.314l3.71-4.084a.75.75 0 111.1 1.02l-4.25 4.687a.75.75 0 01-1.1 0L5.21 8.29a.75.75 0 01.02-1.08z" />
-          </svg>
-        </div>
-      </div>
-    </div>
-
-      
-      <!-- Equal Height Chart Grid -->
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
-        <!-- Orders & Shipments Chart -->
-        <div class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col">
-          <h3 class="text-lg font-semibold mb-4 text-gray-700">Orders & Shipments</h3>
-          <div class="relative flex-1 min-h-[300px]">
-            <canvas id="ordersShipmentsChart" class="absolute inset-0 w-full h-full"></canvas>
-          </div>
+        <!-- Logo -->
+        <div class="flex justify-center mt-4 mb-10">
+          <img src="{% static 'images/logo.png' %}" alt="Logo" />
         </div>
 
-        <!-- Category Distribution Chart -->
-        <div class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-4 flex flex-col">
-          <h3 class="text-lg font-semibold mb-4 text-gray-700">Category Distribution</h3>
-          <div class="relative flex-1 min-h-[300px]">
-            <canvas id="categoryChart" class="absolute inset-0 w-full h-full"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+        <!-- Navigation -->
+        <nav class="flex flex-col gap-1.5 flex-grow">
 
-  <!-- Quick Actions -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-12">
-    <div class="bg-white overflow-hidden shadow rounded-lg">
-      <div class="px-4 py-5 sm:p-6">
-        <h2 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h2>
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-4">
-          <!-- Add Product -->
-          <a class="bg-white hover:bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-            <div class="mx-auto h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
-              <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6" />
-              </svg>
+          <!-- Dashboard -->
+          <a href="{% url 'dashboard' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
+              {% if active == 'dashboard' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
+              <div class="{% if active == 'dashboard' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+                {% include "icons/dashboard.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Dashboard</p>
             </div>
-            <h3 class="mt-4 text-sm font-medium text-gray-900">Add Product</h3>
-            <p class="mt-1 text-sm text-gray-500">Create a new product</p>
           </a>
 
-          <!-- New Shipment -->
-          <a href="{% url 'shipments:create_shipment' %}" class="bg-white hover:bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-            <div class="mx-auto h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center">
-              <svg class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-              </svg>
+          <!-- Inventory -->
+          <a href="{% url 'inventory:inventory' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
+              {% if active == 'inventory' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
+              <div class="{% if active == 'inventory' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+                {% include "icons/inventory.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Inventory</p>
             </div>
-            <h3 class="mt-4 text-sm font-medium text-gray-900">New Shipment</h3>
-            <p class="mt-1 text-sm text-gray-500">Create a shipment</p>
           </a>
 
-          <!-- Add Order -->
-          <a class="bg-white hover:bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-            <div class="mx-auto h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
-              <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
+          <!-- Shipments -->
+          <a href="{% url 'shipments:list_shipments' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
+              {% if active == 'shipments' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
+              <div class="{% if active == 'shipments' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+                {% include "icons/truck.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Shipments</p>
             </div>
-            <h3 class="mt-4 text-sm font-medium text-gray-900">Add Order</h3>
-            <p class="mt-1 text-sm text-gray-500">Process a new order</p>
           </a>
 
-          <!-- Add Category -->
-          <a class="bg-white hover:bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-            <div class="mx-auto h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
-              <svg class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6" />
-              </svg>
+          <!-- Orders -->
+          <a href="#">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
+              {% if active == 'orders' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
+              <div class="{% if active == 'orders' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+                {% include "icons/orders.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Orders</p>
             </div>
-            <h3 class="mt-4 text-sm font-medium text-gray-900">Add Category</h3>
-            <p class="mt-1 text-sm text-gray-500">Create a new category</p>
           </a>
 
-          
+          <!-- Users (only for staff) -->
+          {% if request.user.is_staff %}
+          <a href="{% url 'accounts:user_management' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200
+              {% if active == 'user_management' %}bg-slate-800{% else %}hover:bg-slate-800{% endif %}">
+              <div class="{% if active == 'user_management' %}text-cyan-400{% else %}text-slate-400 hover:text-cyan-300{% endif %}">
+                {% include "icons/users.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Users</p>
+            </div>
+          </a>
+          {% endif %}
+        </nav>
+
+        <!-- Divider -->
+        <hr class="border-t border-slate-700 my-4" />
+
+        <!-- Bottom Links -->
+        <div class="flex flex-col gap-1.5">
+          <!-- Profile -->
+          <a href="{% url 'accounts:profile' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 hover:bg-slate-800">
+              <div class="text-slate-400 hover:text-cyan-300 transition-colors duration-200">
+                {% include "icons/profile.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Profile</p>
+            </div>
+          </a>
+
+          <!-- Logout -->
+          <a href="{% url 'accounts:logout' %}">
+            <div class="flex items-center md:justify-start justify-center gap-3 px-3 py-2 rounded-full transition-all duration-200 hover:bg-slate-800">
+              <div class="text-slate-400 hover:text-cyan-300 transition-colors duration-200">
+                {% include "icons/logout.svg" %}
+              </div>
+              <p class="text-sm font-medium hidden md:block text-slate-100">Logout</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+
+  <!-- Main Content Area -->
+  <main class="flex-1 flex flex-col relative overflow-y-auto">
+
+    <!-- Dashboard Header -->
+    <div class=" top-0 bg-slate-100 py-6 px-6 shadow-md">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div>
+            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">
+              Welcome back, {{ user.username }}!
+            </h1>
+            <p class="text-slate-600 mt-3 text-lg">
+              Here's what&apos;s happening with your inventory today.
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-<script id="dashboard-data" type="application/json">
-  {
-    "labels": {{ chart_labels|safe }},
-    "orders": {{ order_data|safe }},
-    "shipments": {{ shipment_data|safe }}
-  }
-</script>
-<script id="category-data-script" type="application/json">
-  {
-    "labels": {{ category_labels|safe }},
-    "data": {{ category_data|safe }}
-  }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{% static 'js/dashboard.js' %}"></script>
+    <!-- Dashboard Stats -->
+    <div class="max-w-7xl px-4 sm:px-6 lg:px-8 -mt-4 z-10">
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Total Products -->
+        <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-indigo-100 rounded-md p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+                    stroke-linejoin="round" class="h-6 w-6 text-indigo-600">
+                  <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+                  <path d="m3.3 7 8.7 5 8.7-5"/>
+                  <path d="M12 22V12"/>
+                </svg>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Total Products</dt>
+                  <dd class="text-2xl font-semibold text-gray-900">{{ total_products }}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
 
-{% endblock %}
+
+        <!-- Low Stock Products -->
+        <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-yellow-100 rounded-md p-3">
+                <svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert-icon lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Low Stock</dt>
+                  <dd class="text-2xl font-semibold text-gray-900">{{ low_stock_products }}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zero Stock Products -->
+        <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-red-100 rounded-md p-3">
+                <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package-open-icon lucide-package-open"><path d="M12 22v-9"/><path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"/><path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"/><path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"/></svg>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Zero Stock</dt>
+                  <dd class="text-2xl font-semibold text-gray-900">{{ zero_stock_products }}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Categories -->
+        <div class="bg-white overflow-hidden shadow rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-md">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 bg-purple-100 rounded-md p-3">
+                <svg class="h-6 w-6 text-purple-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-blocks-icon lucide-blocks"><path d="M10 22V7a1 1 0 0 0-1-1H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5a1 1 0 0 0-1-1H2"/><rect x="14" y="2" width="8" height="8" rx="1"/></svg>
+              </div>
+              <div class="ml-5 w-0 flex-1">
+                <dl>
+                  <dt class="text-sm font-medium text-gray-500 truncate">Total Categories</dt>
+                  <dd class="text-2xl font-semibold text-gray-900">{{ total_categories }}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Main Content Area -->
+    <main class="bg-white py-10">
+      <!-- Charts Section -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white shadow rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+              <h2 class="text-lg font-bold text-cyan-400">Inventory Overview</h2>
+              <div class="w-full sm:w-auto relative">
+                <select
+                  id="chartRange"
+                  onchange="location.href = '?days=' + this.value"
+                  class="w-full sm:w-48 appearance-none bg-white border border-cyan-400 text-cyan-600 py-2 px-4 pr-10 rounded-lg leading-tight focus:outline-none focus:ring-2 focus:ring-cyan-400 text-sm"
+                >
+                  <option value="7" {% if selected_days == 7 %}selected{% endif %}>Last 7 days</option>
+                  <option value="30" {% if selected_days == 30 %}selected{% endif %}>Last 30 days</option>
+                  <option value="90" {% if selected_days == 90 %}selected{% endif %}>Last 90 days</option>
+                </select>
+
+                <!-- Custom arrow -->
+                <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-cyan-400">
+                  <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.314l3.71-4.084a.75.75 0 111.1 1.02l-4.25 4.687a.75.75 0 01-1.1 0L5.21 8.29a.75.75 0 01.02-1.08z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-stretch">
+              <div class="bg-slate-100 border-2 border-dashed border-cyan-200 rounded-lg p-4 flex flex-col">
+                <h3 class="text-lg font-semibold mb-4 text-cyan-600">Orders & Shipments</h3>
+                <div class="relative flex-1 min-h-[300px]">
+                  <canvas id="ordersShipmentsChart" class="absolute inset-0 w-full h-full"></canvas>
+                </div>
+              </div>
+
+              <div class="bg-slate-100 border-2 border-dashed border-cyan-200 rounded-lg p-4 flex flex-col">
+                <h3 class="text-lg font-semibold mb-4 text-cyan-600">Category Distribution</h3>
+                <div class="relative flex-1 min-h-[300px]">
+                  <canvas id="categoryChart" class="absolute inset-0 w-full h-full"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-12">
+        <div class="bg-white shadow rounded-lg px-4 py-6">
+          <h2 class="text-lg font-bold text-cyan-400 mb-4">Quick Actions</h2>
+
+          <!-- Responsive Grid for larger screens, scroll on small screens -->
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <!-- Action Card -->
+            <a class="bg-white hover:bg-gray-50 border border-cyan-200 rounded-lg p-6 text-center">
+              <div class="mx-auto h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6" />
+                </svg>
+              </div>
+              <h3 class="mt-4 text-sm font-medium text-cyan-600">Add Product</h3>
+              <p class="mt-1 text-sm text-gray-500">Create a new product</p>
+            </a>
+
+            <!-- New Shipment -->
+            <a href="{% url 'shipments:create_shipment' %}" class="bg-white hover:bg-gray-50 border border-cyan-200 rounded-lg p-6 text-center">
+              <div class="mx-auto h-12 w-12 rounded-full bg-yellow-100 flex items-center justify-center">
+                <svg class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+              </div>
+              <h3 class="mt-4 text-sm font-medium text-cyan-600">New Shipment</h3>
+              <p class="mt-1 text-sm text-gray-500">Create a shipment</p>
+            </a>
+
+            <!-- Add Order -->
+            <a class="bg-white hover:bg-gray-50 border border-cyan-200 rounded-lg p-6 text-center">
+              <div class="mx-auto h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+                <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 class="mt-4 text-sm font-medium text-cyan-600">Add Order</h3>
+              <p class="mt-1 text-sm text-gray-500">Process a new order</p>
+            </a>
+
+            <!-- Add Category -->
+            <a class="bg-white hover:bg-gray-50 border border-cyan-200 rounded-lg p-6 text-center">
+              <div class="mx-auto h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
+                <svg class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6" />
+                </svg>
+              </div>
+              <h3 class="mt-4 text-sm font-medium text-cyan-600">Add Category</h3>
+              <p class="mt-1 text-sm text-gray-500">Create a new category</p>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    
+    <script id="dashboard-data" type="application/json">
+      {
+        "labels": {{ chart_labels|safe }},
+        "orders": {{ order_data|safe }},
+        "shipments": {{ shipment_data|safe }}
+      }
+    </script>
+    <script id="category-data-script" type="application/json">
+      {
+        "labels": {{ category_labels|safe }},
+        "data": {{ category_data|safe }}
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+  </body>
+</html>
