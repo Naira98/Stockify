@@ -8,7 +8,7 @@
     <form method="post" class="space-y-6">
       {% csrf_token %}
       <p class="mb-6">Are you sure you want to delete the category "{{ object.name }}"?</p>
-      <p class="text-sm text-red-600 mb-6">
+      <p class="text-lg text-red-600 mb-6 ">
         Warning: This will also delete all products associated with this category!
       </p>
       
