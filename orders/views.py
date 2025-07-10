@@ -264,3 +264,27 @@ class DeleteSupermarketView(View):
 
         return redirect("orders:supermarket_list")
     
+
+@method_decorator(login_required, name="dispatch")
+class DeleteProductFromOrderView(View):
+    def post(self, request, order_id, item_id):
+        order = get_object_or_404(Order, id=order_id)
+        item = get_object_or_404(OrderItem, id=item_id, order_id=order_id)
+
+        # Check if order is not editable
+        if order.status in ["Confirmed", "Delivered"]:
+            messages.error(
+                request,
+                "You cannot delete the product as it has been already confirmed or delivered.",
+            )
+            return redirect("orders:order_details", order_id=order.pk)
+
+        product = item.product
+        item.delete()
+
+        messages.success(
+            request,
+            f"{product.name} was removed from the order, and stock was restored.",
+        )
+        return redirect("orders:order_details", order_id=order.pk)
+
