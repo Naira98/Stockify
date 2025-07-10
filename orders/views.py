@@ -250,7 +250,7 @@ class DeleteSupermarketView(View):
             orders = Order.objects.filter(supermarket=supermarket)
 
             for order in orders:
-                if order.status in ["Pending", "Loaded"]:
+                if order.status == "pending":
                     for item in order.items.all():  # type: ignore
                         item.product.quantity += item.quantity
                         item.product.save()
