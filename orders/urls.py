@@ -25,4 +25,10 @@ urlpatterns = [
         name="create_supermarket",
     ),
     path("supermarket/list/", SupermarketListView.as_view(), name="supermarket_list"),
+    path(
+        "supermarket/<int:supermarket_id>/delete/",
+        DeleteSupermarketView.as_view(),
+        name="delete_supermarket",
+    ),
+    
 ]
