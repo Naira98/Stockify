@@ -23,7 +23,7 @@ class Order(TimestampModel):
  
     supermarket = models.ForeignKey(Supermarket, on_delete=models.CASCADE)
     delivery_date = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="Pending")
     created_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="created_orders"
     )
@@ -37,6 +37,15 @@ class Order(TimestampModel):
  
     def __str__(self):
         return f"Order for {self.supermarket.name}"
+    
+    def is_pending(self):
+        return self.status == "Pending"
+
+    def is_confirmed(self):
+        return self.status == "Confirmed"
+
+    def is_delivered(self):
+        return self.status == "Delivered"
  
     def total_items(self):
         return sum(item.quantity for item in self.order_items.all()) # type: ignore

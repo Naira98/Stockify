@@ -16,11 +16,6 @@
         <i class="fas fa-shopping-cart"></i> Order Details
       </h1>
       <div class="flex gap-2">
-        {% if order.status == 'pending' and user.is_manager %}
-          <a href="{% url 'orders:confirm_order' order.pk %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow inline-flex items-center gap-2">
-            <i class="fas fa-check"></i> Confirm Order
-          </a>
-        {% endif %}
         <a href="{% url 'orders:order_list' %}" class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-50">
           <i class="fas fa-arrow-left"></i> Back to Orders
         </a>
@@ -50,9 +45,9 @@
             <p>
                 <span class="font-semibold">Status:</span>
                 <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium
-                {% if order.status == 'pending' %} bg-yellow-500 text-white
-                {% elif order.status == 'confirmed' %} bg-green-600 text-white
-                {% else %} bg-blue-500 text-white
+                {% if order.status == 'Pending' %} bg-yellow-500 text-white
+                {% elif order.status == 'Confirmed' %} bg-blue-500 text-white
+                {% else %} bg-green-600 text-white
                 {% endif %}">
                 {{ order.get_status_display }}
                 </span>
@@ -76,9 +71,16 @@
 
     <!-- Order Items Table -->
     <div class="bg-white border-2 border-dashed border-cyan-200 rounded-lg shadow p-6">
-      <h2 class="text-lg font-bold text-cyan-600 mb-4 flex items-center gap-2">
-        <i class="fas fa-list"></i> Order Items
-      </h2>
+      <div class="flex justify-between mb-6">
+        <h2 class="text-lg font-bold text-cyan-600 mb-4 flex items-center gap-2">
+          <i class="fas fa-list"></i> Order Items
+        </h2>
+
+        <a href="{% url 'orders:edit_order' pk=order.id %}" class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-50">
+          Edit Order
+        </a>
+
+      </div>
 
       {% if order_items %}
         <div class="overflow-x-auto">
@@ -114,6 +116,90 @@
         </div>
       {% endif %}
     </div>
+
+    <!-- Order Status Actions -->
+    {% if order.order_items.exists %}
+    <div class="mt-6 text-center">
+      {% if order.is_pending and user.is_staff %}
+      <!-- Confirm Order Button -->
+      <form method="post" action="{% url 'orders:confirm_order' order.pk %}">
+        {% csrf_token %}
+        <button
+          type="submit"
+          class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded shadow"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-check-circle"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <path d="m9 11 3 3L22 4" />
+          </svg>
+          Confirm Order
+        </button>
+      </form>
+
+      {% elif order.is_confirmed %}
+      <!-- Mark as Delivered Button -->
+      <form method="post" action="{% url 'orders:mark_delivered' order.pk %}">
+        {% csrf_token %}
+        <button
+          type="submit"
+          class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded shadow"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-package-check"
+          >
+            <path d="m16 16 2 2 4-4" />
+            <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" />
+            <path d="m7.5 4.27 9 5.15" />
+            <polyline points="3.29 7 12 12 20.71 7" />
+            <line x1="12" x2="12" y1="22" y2="12" />
+          </svg>
+          Mark as Delivered
+        </button>
+      </form>
+      
+      {% elif order.is_delivered %}
+      <!-- Delivery Completed Indicator -->
+      <div class="inline-flex items-center gap-2 bg-gray-200 text-gray-800 font-semibold px-5 py-2 rounded shadow">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-check-circle-2"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+        Order Delivered
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
 
   </div>
 </main>
