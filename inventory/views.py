@@ -1,4 +1,4 @@
-from pyexpat.errors import messages
+
 from django.shortcuts import render,redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView,DeleteView,TemplateView,UpdateView
@@ -6,6 +6,9 @@ from django.db.models import Q, F
 from inventory.forms import Addcategory, Addproduct,DeleteCategoryForm, ProductUpdateForm
 from .models import Category, Product
 from django.http import JsonResponse
+from django.contrib import messages
+
+
 
 from inventory import models
 
@@ -141,9 +144,26 @@ class ProductUpdateView(UpdateView):
     form_class = ProductUpdateForm
     template_name = 'inventory/edit_product.html'
     success_url = reverse_lazy('inventory:inventory')
-
+    
     def form_valid(self, form):
-        # Save the form without modifying timestamps
-        self.object = form.save(commit=False)
-        self.object.save()
+        # Get the product instance
+        product = form.instance
+        
+        # Handle image upload if new image was provided
+        if 'image' in self.request.FILES:
+            new_image = self.request.FILES['image']
+            
+            # Delete old image if it exists (except default)
+            if product.image and not product.image.name.endswith('default.png'):
+                # Delete the file from storage
+                storage, path = product.image.storage, product.image.path
+                storage.delete(path)
+            
+            # Assign and save the new image
+            product.image = new_image
+        
+        # Save the product with all changes
+        product.save()
+        
+        messages.success(self.request, f'Product "{product.name}" updated successfully!')
         return super().form_valid(form)
