@@ -16,7 +16,7 @@ class InventoryListView(ListView):
     model = Product
     template_name = 'inventory/inventory.html'
     context_object_name = 'products'
-    paginate_by = 3
+    paginate_by = 6
     
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -60,7 +60,7 @@ class InventoryListView(ListView):
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             products = list(context['products'].values(
                 'id', 'name', 'quantity', 'critical_amount',
-                category_name=models.F('category__name')
+                category_name=F('category__name')
             ))
             return JsonResponse({'products': products})
         return super().render_to_response(context, **response_kwargs)

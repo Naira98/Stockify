@@ -1,8 +1,6 @@
 from django.db import models
 from stockify.models import TimestampModel
-
-   
-        
+  
 class Category(TimestampModel):
     name = models.CharField(
         max_length=255,

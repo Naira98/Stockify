@@ -1,52 +1,107 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block sidebar %} 
+    {% include 'components/sidebar.html' with active='inventory' %}
+{% endblock sidebar %}
+
 {% block content %}
-<div class="bg-gray-50 min-h-screen p-6">
-  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-    <div class="md:flex">
-      <div class="md:flex-shrink-0">
-        <img class="h-48 w-full object-cover md:w-48" src="{{ product.image.url }}" alt="{{ product.name }}">
-      </div>
-      <div class="p-8">
-        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-         {{ product.category.name }}
+<main class="bg-white py-10">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header with Back Button -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-2xl font-bold text-cyan-600 flex items-center gap-2">
+        <i class="fas fa-box-open"></i> Product Details
+      </h1>
+      <a href="{% url 'inventory:inventory' %}" 
+         class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-50">
+        <i class="fas fa-arrow-left"></i> Back to Inventory
+      </a>
+    </div>
+
+    <!-- Product Detail Card -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-cyan-100">
+      <div class="md:flex">
+        <div class="md:flex-shrink-0 md:w-1/3 bg-cyan-50 flex items-center justify-center">
+          {% if product.image %}
+            <img class="h-full w-full object-cover" src="{{ product.image.url }}" alt="{{ product.name }}">
+          {% else %}
+            <div class="p-10 text-center">
+              <i class="fas fa-box-open fa-5x text-cyan-400 mb-4"></i>
+              <p class="text-slate-500">No image available</p>
+            </div>
+          {% endif %}
         </div>
-        <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-        category:  {{ product.category.name }}
-        </div>
-        <h1 class="block mt-1 text-lg leading-tight font-medium text-black">
-         name: {{ product.name }}
-        </h1>
-        <div class="mt-4">
-          <p class="text-gray-600">
-            <span class="font-semibold">Stock:</span> 
-            <span class="{% if product.is_low_stock %}text-red-500{% else %}text-gray-800{% endif %}">
-              {{ product.quantity }}
+        <div class="p-6 md:p-8 md:w-2/3">
+          <div class="flex items-center gap-2 text-sm text-cyan-600 font-medium mb-2">
+            <i class="fas fa-tag"></i>
+            {{ product.category.name }}
+          </div>
+          
+          <h1 class="text-xl font-bold text-cyan-800 mb-4">{{ product.name }}</h1>
+          
+          <!-- Stock Status Badge -->
+          <div class="mb-6">
+            <span class="px-3 py-1 rounded-full text-sm font-medium 
+              {% if product.quantity == 0 %}bg-red-100 text-red-800
+              {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}bg-amber-100 text-amber-800
+              {% else %}bg-cyan-100 text-cyan-800{% endif %}">
+              {% if product.quantity == 0 %}
+                <i class="fas fa-times-circle mr-1"></i>Out of Stock
+              {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}
+                <i class="fas fa-exclamation-triangle mr-1"></i>Low Stock
+              {% else %}
+                <i class="fas fa-check-circle mr-1"></i>In Stock
+              {% endif %}
             </span>
-            (Critical: {{ product.critical_amount }})
-          </p>
-          {% if product.is_low_stock %}
-            <p class="mt-2 text-red-500">⚠️ Low Stock Warning!</p>
-          {% endif %}
-          {% if product.is_out_of_stock %}
-            <p class="mt-2 text-red-500">🚫 Out of Stock!</p>
-          {% endif %}
-        </div>
-        <div class="mt-4">
-          <h2 class="text-sm font-semibold text-gray-700">Description</h2>
-          <p class="mt-2 text-gray-500">
-            {{ product.description|default:"No description available" }}
-          </p>
-        </div>
-        <div class="mt-6">
-          <a href="{% url 'inventory:inventory' %}" 
-             class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
-            Back to Inventory
-          </a>
+          </div>
+          
+          <!-- Stock Information -->
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <p class="text-sm font-medium text-cyan-700">Current Quantity</p>
+              <p class="text-lg {% if product.quantity == 0 %}text-red-600
+                              {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}text-amber-600
+                              {% else %}text-cyan-600{% endif %}">
+                <i class="fas fa-boxes mr-2"></i>{{ product.quantity }}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-cyan-700">Critical Amount</p>
+              <p class="text-lg text-slate-500">
+                <i class="fas fa-exclamation-circle mr-2"></i>{{ product.critical_amount }}
+              </p>
+            </div>
+          </div>
+          
+          <!-- Description -->
+          <div class="mb-6">
+            <h2 class="text-sm font-medium text-cyan-700 mb-2">Description</h2>
+            <div class="bg-cyan-50 border border-cyan-100 rounded p-4">
+              <p class="text-slate-600">
+                {% if product.description %}
+                  <i class="fas fa-align-left mr-2 text-cyan-400"></i>{{ product.description }}
+                {% else %}
+                  <span class="text-slate-400">No description available</span>
+                {% endif %}
+              </p>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="flex justify-end gap-4 pt-4 border-t border-cyan-100">
+            <a href="{% url 'inventory:editproduct' pk=product.id %}" 
+               class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-50">
+              <i class="fas fa-pencil-alt"></i> Edit
+            </a>
+            <a href="{% url 'inventory:inventory' %}" 
+               class="border border-cyan-600 bg-cyan-600 text-white cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-700 hover:border-cyan-700">
+              <i class="fas fa-arrow-left"></i> Back to Inventory
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</main>
 {% endblock %}
