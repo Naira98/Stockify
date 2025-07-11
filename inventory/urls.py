@@ -1,7 +1,5 @@
 
 from django.urls import path
-
-from inventory import views
 from inventory.views import Addcategoryview, DeleteCategoryConfirmView, DeleteCategoryView, InventoryListView, AddProductView, ProductDeleteView, ProductUpdateView, Productdetailview
 
 app_name = 'inventory'
