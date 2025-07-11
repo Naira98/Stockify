@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET
-from django.http import JsonResponse
+from django.http import HttpResponseNotAllowed, JsonResponse
 from django.views.generic import CreateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect, render
@@ -185,10 +185,12 @@ def edit_shipment_item(request, pk):
 @login_required
 @shipment_is_pending
 def delete_shipment_item(request, pk):
-    item = get_object_or_404(ShipmentItem, pk=pk)
-    shipment_pk = item.shipment.pk
-    item.delete()
-    return redirect("shipments:shipment_details", pk=shipment_pk)
+    if request.method == 'POST':
+        item = get_object_or_404(ShipmentItem, pk=pk)
+        shipment_pk = item.shipment.pk
+        item.delete()
+        return redirect("shipments:shipment_details", pk=shipment_pk)
+    return HttpResponseNotAllowed(['POST'])
 
 
 """ CHANGE SHIPMENT STATUS """

@@ -4,12 +4,16 @@
     <aside class="w-20 md:w-64 bg-slate-800 text-slate-100 flex flex-col justify-between shadow-md transition-all duration-300">
       <div class="p-4 md:p-6 flex flex-col flex-grow">
 
-        <!-- Logo -->
-        <a href="{% url 'dashboard' %}">
-          <div class="flex justify-center mt-4 mb-10">
-            <img src="{% static 'images/logo.png' %}" alt="Logo" />
-          </div>
-        </a>
+    <!-- Logo -->
+    <a href="{% url 'dashboard' %}">
+      <div class="flex justify-center mt-4 mb-10">
+        <!-- Show on small screens -->
+        <img src="{% static 'images/logo-small.png' %}" alt="Small Logo" class="block md:hidden" />
+        
+        <!-- Show on medium and larger screens -->
+        <img src="{% static 'images/logo.png' %}" alt="Logo" class="hidden md:block" />
+      </div>
+    </a>
 
         <!-- Navigation -->
         <nav class="flex flex-col gap-1.5 flex-grow">

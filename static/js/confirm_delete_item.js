@@ -5,10 +5,15 @@ const nameSpan = document.getElementById("productName");
 
 function openConfirmModal(element) {
   const itemId = element.dataset.id;
+  const deleteUrl = element.dataset.url;
   const productName = element.dataset.name;
 
   nameSpan.textContent = productName;
-  form.action = `/shipments/item/${itemId}/delete/`;
+  
+  form.onsubmit = function(e) {
+    e.preventDefault();
+    window.location.href = deleteUrl;
+  };
 
   modal.classList.remove("hidden");
   modal.classList.add("flex");

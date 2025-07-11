@@ -16,7 +16,9 @@ urlpatterns = [
     ),
     path("items/<int:pk>/edit/", views.edit_shipment_item, name="edit_shipment_item"),
     path(
-        "item/<int:pk>/delete/", views.delete_shipment_item, name="delete_shipment_item"
+        "item/<int:pk>/delete/",
+        views.delete_shipment_item,
+        name="delete_shipment_item",
     ),
     path("<int:pk>/mark-loaded/", views.mark_shipment_loaded, name="mark_loaded"),
     path("<int:pk>/mark-received/", views.mark_shipment_received, name="mark_received"),

@@ -163,7 +163,7 @@
           <!-- Responsive Grid for larger screens, scroll on small screens -->
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <!-- Action Card -->
-            <a class="bg-white hover:bg-gray-50 border border-cyan-200 rounded-lg p-6 text-center">
+            <a href="{% url 'inventory:addproduct' %}" class="bg-white hover:bg-gray-50 border border-cyan-200 rounded-lg p-6 text-center">
               <div class="mx-auto h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
                 <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6" />
@@ -185,7 +185,7 @@
             </a>
 
             <!-- Add Order -->
-            <a class="bg-white hover:bg-gray-50 border border-cyan-200 rounded-lg p-6 text-center">
+            <a href="{% url 'orders:create_order' %}" class="bg-white hover:bg-gray-50 border border-cyan-200 rounded-lg p-6 text-center">
               <div class="mx-auto h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
                 <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -196,7 +196,7 @@
             </a>
 
             <!-- Add Category -->
-            <a class="bg-white hover:bg-gray-50 border border-cyan-200 rounded-lg p-6 text-center">
+            <a href="{% url 'inventory:addcategory' %}" class="bg-white hover:bg-gray-50 border border-cyan-200 rounded-lg p-6 text-center">
               <div class="mx-auto h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
                 <svg class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m6-6H6" />
