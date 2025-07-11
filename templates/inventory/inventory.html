@@ -6,170 +6,175 @@
 {% endblock sidebar %} 
 
 {% block content %}
+<main class="bg-white py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-
-  <div class=" flex justify-end gap-4">
-    <a href="{% url 'inventory:addproduct' %}" 
-       class="w-60 px-4 py-2 rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400">
-      Add new Product
-    </a>
-     <a href="{% url 'inventory:addcategory' %}" 
-       class="w-60 px-4 py-2 rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400">
-      Add new category
-    </a>
-      <a href="{% url 'inventory:deletecategory' %}" 
-       class="w-60 px-4 py-2 rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400">
-      delete category
-    </a>
-</div>
-
-  <!-- Filter Controls -->
-  <div class="mb-6 flex flex-wrap items-center gap-4 mt-4">
-    <!-- Category Dropdown -->
-    <div>
-      <label for="category" class="block mb-2 text-sm font-medium text-gray-700">Select Category</label>
-      <select id="category" name="category" class="w-60 px-4 py-2 rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400">
-        <option value="">All Categories</option>
-        {% for category in categories %}
-          <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
-        {% endfor %}
-      </select>
-    </div>
-
-    <!-- Stock Filter Buttons -->
-    <div class="flex gap-2 mt-6">
-      <button id="low_stock_btn" type="button" 
-              class="px-4 py-2 rounded-md border {% if low_stock_filter %}bg-yellow-100 border-yellow-500 text-yellow-800{% else %}bg-white border-gray-300 text-gray-700{% endif %} hover:bg-yellow-50 transition-colors">
-        Low Stock
-      </button>
-      <button id="out_of_stock_btn" type="button" 
-              class="px-4 py-2 rounded-md border {% if out_of_stock_filter %}bg-red-100 border-red-500 text-red-800{% else %}bg-white border-gray-300 text-gray-700{% endif %} hover:bg-red-50 transition-colors">
-        zero Stock
-      </button>
-    </div>
-
-    <!-- Search Bar -->
-    <div class="mt-6 flex-1 max-w-md">
-      <label for="search" class="sr-only">Search</label>
-      <div class="relative flex items-center">
-        <input type="text" id="search" name="search" 
-               placeholder="Search by product name..." 
-               value="{{ current_search }}"
-               class="w-full px-4 py-2 rounded-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400">
-        {% if current_search %}
-        <button id="reset_search" type="button" class="absolute right-10 text-gray-400 hover:text-gray-600">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-        {% endif %}
-        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-        </div>
+    <!-- Header with Action Buttons -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-2xl font-bold text-cyan-600 flex items-center gap-2">
+        <i class="fas fa-boxes"></i> Inventory Management
+      </h1>
+      <div class="flex gap-4">
+        <a href="{% url 'inventory:addproduct' %}" 
+           class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-50">
+          <i class="fas fa-plus"></i> Add Product
+        </a>
+        <a href="{% url 'inventory:addcategory' %}" 
+           class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-50">
+          <i class="fas fa-tag"></i> Add Category
+        </a>
       </div>
     </div>
-  </div>
 
-  <!-- Product Cards Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    {% for product in products %}
-    <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-      <div class="relative">
-        {% if product.image %}
-          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
-        {% else %}
-          <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-            <span class="text-gray-500">No image</span>
+    <!-- Filter Controls -->
+    <div class="bg-white border-2 border-dashed border-cyan-200 rounded-lg shadow p-6 mb-8">
+      <div class="flex flex-wrap items-center gap-6">
+        <!-- Category Dropdown -->
+        <div>
+          <label for="category" class="block mb-2 text-sm font-medium text-cyan-700">Filter by Category</label>
+          <select id="category" name="category" class="border border-cyan-300 text-cyan-700 rounded shadow px-4 py-2 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+              <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Stock Filter Buttons -->
+        <div>
+          <label class="block mb-2 text-sm font-medium text-cyan-700">Stock Status</label>
+          <div class="flex gap-2">
+            <button id="low_stock_btn" type="button" 
+                    class="px-4 py-2 rounded shadow border {% if low_stock_filter %}bg-amber-100 border-amber-400 text-amber-800{% else %}bg-white border-cyan-300 text-cyan-700{% endif %} hover:bg-amber-50 transition-colors">
+              <i class="fas fa-exclamation-triangle mr-1"></i> Low Stock
+            </button>
+            <button id="out_of_stock_btn" type="button" 
+                    class="px-4 py-2 rounded shadow border {% if out_of_stock_filter %}bg-red-100 border-red-400 text-red-800{% else %}bg-white border-cyan-300 text-cyan-700{% endif %} hover:bg-red-50 transition-colors">
+              <i class="fas fa-times-circle mr-1"></i> Out of Stock
+            </button>
           </div>
-        {% endif %}
-        <div class="absolute top-2 right-2">
-          <span class="px-2 py-1 rounded-full text-xs font-medium 
-            {% if product.quantity == 0 %}bg-red-100 text-red-800
-            {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}bg-yellow-100 text-yellow-800
-            {% else %}bg-green-100 text-green-800{% endif %}">
-            {% if product.quantity == 0 %}Out of Stock
-            {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}Low Stock
-            {% else %}In Stock{% endif %}
-          </span>
-      
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-1 min-w-[250px]">
+          <label for="search" class="sr-only">Search</label>
+          <div class="relative flex items-center">
+            <input type="text" id="search" name="search" 
+                   placeholder="Search products..." 
+                   value="{{ current_search }}"
+                   class="w-full px-4 py-2 rounded shadow border border-cyan-300 text-cyan-700 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400">
+            {% if current_search %}
+            <button id="reset_search" type="button" class="absolute right-10 text-cyan-400 hover:text-cyan-600">
+              <i class="fas fa-times"></i>
+            </button>
+            {% endif %}
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <i class="fas fa-search text-cyan-400"></i>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="p-4">
-        <h3 class="font-semibold text-lg text-gray-800 truncate">{{ product.name }}</h3>
-        <p class="text-sm text-gray-500 mt-1">Category: {{ product.category.name }}</p>
-        <p class="text-sm mt-1">
-          <span class="{% if product.quantity == 0 %}text-red-600
-                      {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}text-yellow-600
-                      {% else %}text-gray-500{% endif %}">
-            Stock: {{ product.quantity }}<span> | critical_amount:{{product.critical_amount}}</span>
-          </span>
-        </p>
-        {% if product.description %}
-        <p class="text-sm text-gray-500 mt-2 line-clamp-2">{{ product.description }}</p>
+    </div>
+
+    <!-- Product Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {% for product in products %}
+      <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-cyan-100">
+        <div class="relative">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
+          {% else %}
+            <div class="w-full h-48 bg-cyan-50 flex items-center justify-center text-cyan-400">
+              <i class="fas fa-box-open fa-3x"></i>
+            </div>
+          {% endif %}
+          <div class="absolute top-2 right-2">
+            <span class="px-2 py-1 rounded-full text-xs font-medium 
+              {% if product.quantity == 0 %}bg-red-100 text-red-800
+              {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}bg-amber-100 text-amber-800
+              {% else %}bg-cyan-100 text-cyan-800{% endif %}">
+              {% if product.quantity == 0 %}<i class="fas fa-times-circle mr-1"></i>Out of Stock
+              {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}<i class="fas fa-exclamation-triangle mr-1"></i>Low Stock
+              {% else %}<i class="fas fa-check-circle mr-1"></i>In Stock{% endif %}
+            </span>
+          </div>
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-lg text-cyan-800 truncate">{{ product.name }}</h3>
+          <p class="text-sm text-cyan-600 mt-1"><i class="fas fa-tag mr-1"></i>{{ product.category.name }}</p>
+          <p class="text-sm mt-2">
+            <span class="{% if product.quantity == 0 %}text-red-600
+                        {% elif product.quantity > 0 and product.quantity <= product.critical_amount %}text-amber-600
+                        {% else %}text-cyan-600{% endif %}">
+              <i class="fas fa-boxes mr-1"></i>{{ product.quantity }} 
+              <span class="text-slate-500 ml-2"><i class="fas fa-exclamation-circle mr-1"></i>{{ product.critical_amount }}</span>
+            </span>
+          </p>
+          {% if product.description %}
+          <p class="text-sm text-slate-500 mt-2 line-clamp-2">
+            <i class="fas fa-align-left mr-1 text-cyan-400"></i>{{ product.description }}
+          </p>
+          {% endif %}
+        </div>
+        <div class="px-4 pb-4 flex justify-end gap-4">
+          <a href="{% url 'inventory:details' pk=product.id %}" 
+             class="text-cyan-600 hover:text-cyan-800 text-sm font-medium">
+            <i class="fas fa-circle-info fa-lg"></i>
+          </a>
+          <a href="{% url 'inventory:editproduct' pk=product.id %}" 
+             class="text-cyan-600 hover:text-cyan-800 text-sm font-medium">
+            <i class="fas fa-pencil-alt fa-lg"></i>
+          </a>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-span-3 text-center py-10 bg-cyan-50 rounded-lg border-2 border-dashed border-cyan-200">
+        <i class="fas fa-box-open fa-3x text-cyan-400 mb-4"></i>
+        <p class="text-slate-500 text-lg">No products found matching your criteria.</p>
+        {% if low_stock_filter %}
+          <p class="text-sm text-slate-400 mt-2">No products with low stock levels</p>
+        {% elif out_of_stock_filter %}
+          <p class="text-sm text-slate-400 mt-2">No products completely out of stock</p>
         {% endif %}
       </div>
-      <div class="px-4 pb-4 flex  justify-end gap-4">
-        <a href="{% url 'inventory:details' pk=product.id %}" 
-           class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-          <i class="fa-solid fa-circle-info"></i>
-        </a>
-         <a href="{% url 'inventory:deleteproduct' pk=product.id %}" 
-           class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-          <i class="fa-solid fa-trash-can"></i>
-        </a>
-         <a href="{% url 'inventory:editproduct' pk=product.id %}" 
-           class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-      <i class="fa-solid fa-pencil"></i>
-        </a>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="flex justify-center mt-8">
+      <div class="flex items-center gap-4">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if low_stock_filter %}&low_stock=true{% endif %}{% if out_of_stock_filter %}&out_of_stock=true{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" 
+             class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-50">
+            <i class="fas fa-chevron-left"></i> Previous
+          </a>
+        {% else %}
+          <button disabled class="border border-cyan-200 text-cyan-300 cursor-not-allowed px-4 py-2 rounded shadow inline-flex items-center gap-2">
+            <i class="fas fa-chevron-left"></i> Previous
+          </button>
+        {% endif %}
+        
+        <span class="text-cyan-700">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+        
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if low_stock_filter %}&low_stock=true{% endif %}{% if out_of_stock_filter %}&out_of_stock=true{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" 
+             class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-50">
+            Next <i class="fas fa-chevron-right"></i>
+          </a>
+        {% else %}
+          <button disabled class="border border-cyan-200 text-cyan-300 cursor-not-allowed px-4 py-2 rounded shadow inline-flex items-center gap-2">
+            Next <i class="fas fa-chevron-right"></i>
+          </button>
+        {% endif %}
       </div>
     </div>
-    {% empty %}
-    <div class="col-span-3 text-center py-10">
-      <p class="text-gray-500">No products found matching your criteria.</p>
-      {% if low_stock_filter %}
-        <p class="text-sm text-gray-400">No products with stock >0 and ≤ critical amount</p>
-      {% elif out_of_stock_filter %}
-        <p class="text-sm text-gray-400">No products completely out of stock (quantity = 0)</p>
-      {% endif %}
-    </div>
-    {% endfor %}
-  </div>
+    {% endif %}
 
-  <!-- Pagination Controls -->
-  {% if page_obj.paginator.num_pages > 1 %}
-  <div class="flex justify-center mt-8">
-    <div class="flex items-center gap-4">
-      {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if low_stock_filter %}&low_stock=true{% endif %}{% if out_of_stock_filter %}&out_of_stock=true{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" 
-           class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
-          Previous
-        </a>
-      {% else %}
-        <button disabled class="px-4 py-2 rounded-md border border-gray-300 text-gray-400 cursor-not-allowed">
-          Previous
-        </button>
-      {% endif %}
-      
-      <span class="text-gray-700">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-      </span>
-      
-      {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if low_stock_filter %}&low_stock=true{% endif %}{% if out_of_stock_filter %}&out_of_stock=true{% endif %}{% if current_search %}&search={{ current_search }}{% endif %}" 
-           class="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
-          Next
-        </a>
-      {% else %}
-        <button disabled class="px-4 py-2 rounded-md border border-gray-300 text-gray-400 cursor-not-allowed">
-          Next
-        </button>
-      {% endif %}
-    </div>
   </div>
-  {% endif %}
-</div>
+</main>
 
 <!-- Filtering JavaScript -->
 <script>
@@ -187,24 +192,24 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Update button appearance based on current filter
   if (currentLowStock) {
-    lowStockBtn.classList.add('bg-yellow-100', 'border-yellow-500', 'text-yellow-800');
-    lowStockBtn.classList.remove('bg-white', 'border-gray-300', 'text-gray-700');
+    lowStockBtn.classList.add('bg-amber-100', 'border-amber-400', 'text-amber-800');
+    lowStockBtn.classList.remove('bg-white', 'border-cyan-300', 'text-cyan-700');
     // Ensure out of stock is off when low stock is on
-    outOfStockBtn.classList.remove('bg-red-100', 'border-red-500', 'text-red-800');
-    outOfStockBtn.classList.add('bg-white', 'border-gray-300', 'text-gray-700');
+    outOfStockBtn.classList.remove('bg-red-100', 'border-red-400', 'text-red-800');
+    outOfStockBtn.classList.add('bg-white', 'border-cyan-300', 'text-cyan-700');
   }
   
   if (currentOutOfStock) {
-    outOfStockBtn.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
-    outOfStockBtn.classList.remove('bg-white', 'border-gray-300', 'text-gray-700');
+    outOfStockBtn.classList.add('bg-red-100', 'border-red-400', 'text-red-800');
+    outOfStockBtn.classList.remove('bg-white', 'border-cyan-300', 'text-cyan-700');
     // Ensure low stock is off when out of stock is on
-    lowStockBtn.classList.remove('bg-yellow-100', 'border-yellow-500', 'text-yellow-800');
-    lowStockBtn.classList.add('bg-white', 'border-gray-300', 'text-gray-700');
+    lowStockBtn.classList.remove('bg-amber-100', 'border-amber-400', 'text-amber-800');
+    lowStockBtn.classList.add('bg-white', 'border-cyan-300', 'text-cyan-700');
   }
 
   function applyFilters() {
     const categoryId = categorySelect.value;
-    const lowStockOnly = lowStockBtn.classList.contains('bg-yellow-100');
+    const lowStockOnly = lowStockBtn.classList.contains('bg-amber-100');
     const outOfStockOnly = outOfStockBtn.classList.contains('bg-red-100');
     const searchQuery = searchInput.value.trim();
     
@@ -222,15 +227,15 @@ document.addEventListener('DOMContentLoaded', function() {
   // Toggle low stock filter on button click
   lowStockBtn.addEventListener('click', function() {
     // If clicking an already active filter, turn it off
-    if (this.classList.contains('bg-yellow-100')) {
-      this.classList.remove('bg-yellow-100', 'border-yellow-500', 'text-yellow-800');
-      this.classList.add('bg-white', 'border-gray-300', 'text-gray-700');
+    if (this.classList.contains('bg-amber-100')) {
+      this.classList.remove('bg-amber-100', 'border-amber-400', 'text-amber-800');
+      this.classList.add('bg-white', 'border-cyan-300', 'text-cyan-700');
     } else {
       // Activate low stock and deactivate out of stock
-      this.classList.add('bg-yellow-100', 'border-yellow-500', 'text-yellow-800');
-      this.classList.remove('bg-white', 'border-gray-300', 'text-gray-700');
-      outOfStockBtn.classList.remove('bg-red-100', 'border-red-500', 'text-red-800');
-      outOfStockBtn.classList.add('bg-white', 'border-gray-300', 'text-gray-700');
+      this.classList.add('bg-amber-100', 'border-amber-400', 'text-amber-800');
+      this.classList.remove('bg-white', 'border-cyan-300', 'text-cyan-700');
+      outOfStockBtn.classList.remove('bg-red-100', 'border-red-400', 'text-red-800');
+      outOfStockBtn.classList.add('bg-white', 'border-cyan-300', 'text-cyan-700');
     }
     applyFilters();
   });
@@ -239,14 +244,14 @@ document.addEventListener('DOMContentLoaded', function() {
   outOfStockBtn.addEventListener('click', function() {
     // If clicking an already active filter, turn it off
     if (this.classList.contains('bg-red-100')) {
-      this.classList.remove('bg-red-100', 'border-red-500', 'text-red-800');
-      this.classList.add('bg-white', 'border-gray-300', 'text-gray-700');
+      this.classList.remove('bg-red-100', 'border-red-400', 'text-red-800');
+      this.classList.add('bg-white', 'border-cyan-300', 'text-cyan-700');
     } else {
       // Activate out of stock and deactivate low stock
-      this.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
-      this.classList.remove('bg-white', 'border-gray-300', 'text-gray-700');
-      lowStockBtn.classList.remove('bg-yellow-100', 'border-yellow-500', 'text-yellow-800');
-      lowStockBtn.classList.add('bg-white', 'border-gray-300', 'text-gray-700');
+      this.classList.add('bg-red-100', 'border-red-400', 'text-red-800');
+      this.classList.remove('bg-white', 'border-cyan-300', 'text-cyan-700');
+      lowStockBtn.classList.remove('bg-amber-100', 'border-amber-400', 'text-amber-800');
+      lowStockBtn.classList.add('bg-white', 'border-cyan-300', 'text-cyan-700');
     }
     applyFilters();
   });
@@ -255,7 +260,12 @@ document.addEventListener('DOMContentLoaded', function() {
   categorySelect.addEventListener('change', applyFilters);
   
   // Apply filters when search input changes (with debounce)
- 
+  let searchTimer;
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applyFilters, 500);
+  });
+  
   // Also apply when pressing Enter
   searchInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
@@ -273,22 +283,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
