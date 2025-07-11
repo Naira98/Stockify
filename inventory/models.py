@@ -1,25 +1,8 @@
 from django.db import models
 from stockify.models import TimestampModel
 
-class Product(TimestampModel):
-    # ... other fields ...
-    image = models.ImageField(
-        upload_to="products/",
-        null=True,  # Changed from False to True
-        blank=True,  # Changed from False to True
-        default='products/default.png'
-    )
-    
-    def save(self, *args, **kwargs):
-        # Handle image changes on save
-        if self.pk:  # Only for existing instances
-            try:
-                old = Product.objects.get(pk=self.pk)
-                if old.image and old.image != self.image:
-                    old.image.delete(save=False)
-            except Product.DoesNotExist:
-                pass
-        super().save(*args, **kwargs)
+   
+        
 class Category(TimestampModel):
     name = models.CharField(
         max_length=255,
@@ -66,8 +49,27 @@ class Product(TimestampModel):
         null=False,
         blank=False,
     )
+     
+    image = models.ImageField(
+        upload_to="products/",
+        null=True,  # Changed from False to True
+        blank=True,  # Changed from False to True
+        default='products/default.png'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+    def save(self, *args, **kwargs):
+        # Handle image changes on save
+        if self.pk:  # Only for existing instances
+            try:
+                old = Product.objects.get(pk=self.pk)
+                if old.image and old.image != self.image:
+                    old.image.delete(save=False)
+            except Product.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name}"
