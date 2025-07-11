@@ -1,43 +1,75 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block sidebar %} 
+    {% include 'components/sidebar.html' with active='inventory' %}
+{% endblock sidebar %} 
+
 {% block content %}
-<div class="bg-gray-50 min-h-screen p-6">
-  <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
-    <h1 class="text-2xl font-bold text-gray-800 mb-6">Add New category</h1>
-    
-    <form method="post" enctype="multipart/form-data" class="space-y-6">
-      {% csrf_token %}
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {% for field in form %}
-          <div class="space-y-2">
-            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
-              {{ field.label }}
-              {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
-            </label>
-            {{ field }}
-            {% if field.help_text %}
-              <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
-            {% endif %}
-            {% for error in field.errors %}
-              <p class="mt-1 text-sm text-red-600">{{ error }}</p>
-            {% endfor %}
-          </div>
-        {% endfor %}
-      </div>
-      
-      <div class="flex justify-end space-x-4 pt-6">
-        <a href="{% url 'inventory:inventory' %}" 
-           class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-          Cancel
-        </a>
-        <button type="submit" 
-                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
-          Save category
-        </button>
-      </div>
-    </form>
+<main class="bg-white py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-2xl font-bold text-cyan-600 flex items-center gap-2">
+        <i class="fas fa-tag"></i> Add New Category
+      </h1>
+      <a href="{% url 'inventory:inventory' %}" 
+         class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-50">
+        <i class="fas fa-arrow-left"></i> Back to Inventory
+      </a>
+    </div>
+
+    <!-- Form Container -->
+    <div class="bg-white border-2 border-dashed border-cyan-200 rounded-lg shadow p-6">
+      <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="space-y-4">
+          {% for field in form %}
+            <div class="space-y-2">
+              <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-cyan-700">
+                {{ field.label }}
+                {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+              </label>
+              
+              {% if field.field.widget.input_type == 'select' %}
+                <select id="{{ field.id_for_label }}" name="{{ field.name }}"
+                        class="block w-full px-4 py-2 border border-cyan-300 rounded shadow text-cyan-700 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400">
+                  {% for choice in field.field.choices %}
+                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                  {% endfor %}
+                </select>
+              {% else %}
+                <input type="{{ field.field.widget.input_type }}" id="{{ field.id_for_label }}" name="{{ field.name }}"
+                       class="block w-full px-4 py-2 border border-cyan-300 rounded shadow text-cyan-700 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400"
+                       {% if field.value %}value="{{ field.value }}"{% endif %}
+                       {% if field.field.required %}required{% endif %}>
+              {% endif %}
+              
+              {% if field.help_text %}
+                <p class="mt-1 text-sm text-cyan-500">{{ field.help_text }}</p>
+              {% endif %}
+              {% for error in field.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+        
+        <div class="flex justify-end space-x-4 pt-6">
+          <a href="{% url 'inventory:inventory' %}" 
+             class="border border-cyan-400 text-cyan-600 cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-50">
+            Cancel
+          </a>
+          <button type="submit" 
+                  class="border border-cyan-400 bg-cyan-600 text-white cursor-pointer px-4 py-2 rounded shadow inline-flex items-center gap-2 hover:bg-cyan-700">
+            <i class="fas fa-save"></i> Save Category
+          </button>
+        </div>
+      </form>
+    </div>
+
   </div>
-</div>
+</main>
 {% endblock %}
