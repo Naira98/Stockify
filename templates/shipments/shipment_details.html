@@ -58,37 +58,46 @@
     </div>
 
     <!-- Shipment Items Table -->
-    <div class="bg-white border border-gray-200 rounded-lg shadow p-6">
-      <h2 class="text-lg font-bold text-cyan-600 mb-4 flex items-center gap-2">
-        <i class="fas fa-boxes"></i> Products in Shipment
-      </h2>
+    <div class="bg-white border-2 border-dashed border-cyan-200 rounded-lg shadow p-6">
+      <div class="flex justify-between mb-6">
+        <h2 class="text-lg font-bold text-cyan-600 mb-4 flex items-center gap-2">
+          <i class="fas fa-boxes"></i> Products in Shipment
+        </h2>
+        
+      </div>
 
       {% if shipment.items.exists %}
       <div class="overflow-x-auto">
-        <table class="min-w-full border border-gray-200 text-sm">
-          <thead class="bg-gray-100 text-gray-600">
+        <table class="min-w-full text-sm text-left text-slate-700">
+          <thead class="text-xs uppercase bg-cyan-50 text-cyan-700">
             <tr>
-              <th class="py-3 px-4 border-b text-center">Product</th>
-              <th class="py-3 px-4 border-b text-center">Category</th>
-              <th class="py-3 px-4 border-b text-center">Quantity</th>
+              <th class="px-4 py-3 text-center">Product</th>
+              <th class="px-4 py-3 text-center">Category</th>
+              <th class="px-4 py-3 text-center">Quantity</th>
               {% if shipment.is_pending %}
-              <th class="py-3 px-4 border-b text-center">Actions</th>
+              <th class="px-4 py-3 text-center">Actions</th>
               {% endif %}
             </tr>
           </thead>
           <tbody>
             {% for item in shipment.items.all %}
-            <tr class="hover:bg-gray-50">
-              <td class="py-3 px-4 border-b text-center">{{ item.product.name }}</td>
-              <td class="py-3 px-4 border-b text-center">{{ item.product.category.name }}</td>
-              <td class="py-3 px-4 border-b text-center">{{ item.quantity }}</td>
+            <tr class="border-b border-slate-200 hover:bg-cyan-50">
+              <td class="px-4 py-3 font-medium text-slate-900 text-center">
+                {{ item.product.name }}
+              </td>
+              <td class="px-4 py-3 text-center">
+                {{ item.product.category.name }}
+              </td>
+              <td class="px-4 py-3 font-semibold text-slate-800 text-center">
+                {{ item.quantity }}
+              </td>
               {% if shipment.is_pending %}
-              <td class="py-3 px-4 border-b text-center">
-                <div class="flex justify-center items-center gap-2">
-                  <a href="{% url 'shipments:edit_shipment_item' item.id %}" title="Edit" class="text-indigo-600 hover:text-indigo-800">
+              <td class="px-4 py-3 text-center">
+                <div class="flex justify-center items-center gap-3">
+                  <a href="{% url 'shipments:edit_shipment_item' pk=item.id %}" title="Edit" class="text-indigo-600 hover:text-indigo-800">
                     <i class="fas fa-edit"></i>
                   </a>
-                  <button type="button" onclick="openConfirmModal(this)" data-id="{{ item.id }}" data-name="{{ item.product.name|escapejs }}" title="Delete" class="text-red-600 hover:text-red-800">
+                  <button type="button" onclick="openConfirmModal(this)" data-id="{{ item.id }}" data-name="{{ item.product.name|escapejs }}"  data-url="{% url 'shipments:delete_shipment_item' pk=item.id %}" title="Delete" class="text-red-600 hover:text-red-800">
                     <i class="fas fa-trash"></i>
                   </button>
                 </div>
@@ -100,7 +109,10 @@
         </table>
       </div>
       {% else %}
-      <p class="text-gray-600 italic">No products added to this shipment yet.</p>
+      <div class="text-center py-6 text-slate-400">
+        <i class="fas fa-box-open fa-2x mb-2"></i>
+        <p>No products added to this shipment yet.</p>
+      </div>
       {% endif %}
     </div>
 
