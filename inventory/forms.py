@@ -28,7 +28,7 @@ class Addproduct(forms.ModelForm):
 class Addcategory(forms.ModelForm):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['name']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

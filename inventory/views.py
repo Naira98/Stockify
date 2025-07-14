@@ -1,5 +1,5 @@
 
-from django.shortcuts import render,redirect
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView,DeleteView,TemplateView,UpdateView
 from django.db.models import Q, F
@@ -8,9 +8,6 @@ from .models import Category, Product
 from django.http import JsonResponse
 from django.contrib import messages
 
-
-
-from inventory import models
 
 class InventoryListView(ListView):
     model = Product
@@ -128,9 +125,11 @@ class Productdetailview(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
-        context['is_low_stock'] = product.quantity > 0 and product.quantity <= product.critical_amount
-        context['is_out_of_stock'] = product.quantity == 0
+        context['is_low_stock'] = product.quantity > 0 and product.quantity <= product.critical_amount #type: ignore
+        context['is_out_of_stock'] = product.quantity == 0 #type: ignore
         return context
+    
+
 class ProductDeleteView(DeleteView):
     model = Product
     template_name ='inventory/delete_product.html'  
